@@ -1,5 +1,18 @@
 import logo from './logo.svg';
 import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Profiles from './pages/Profiles';
+import Movies from './pages/Movies';
+import TVShows from './pages/TVShows';
+import NewPopular from './pages/NewPopular';
+import MyList from './pages/MyList';
+import SearchPage from './pages/SearchPage';
+import ProgramPage from './pages/ProgramPage';
+import ReviewPage from './pages/ReviewPage';
 
 function App() {
   return (
