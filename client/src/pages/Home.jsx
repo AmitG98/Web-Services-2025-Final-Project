@@ -3,7 +3,7 @@ import Header from '../components/Header';
 import Banner from '../components/Banner';
 import Row from '../components/Row';
 import Footer from '../components/Footer';
-// import './Home.css';
+import './Home.css';
 
 const Home = () => {
   return (
