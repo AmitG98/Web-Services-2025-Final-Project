@@ -1,18 +1,13 @@
+// src/pages/Home.jsx
+import React from 'react';
 
-import Row from '../components/Row.jsx';
+const Home = () => {
+  return (
+    <div style={{ padding: '2rem', textAlign: 'center', color: 'white', backgroundColor: '#111', height: '100vh' }}>
+      <h1>Welcome to Netflix Clone</h1>
+      <p>This is the homepage. 🎬</p>
+    </div>
+  );
+};
 
-function Home() {
-    return (
-      <div className="home-page">
-        {/* תפריט עליון (Navbar) */}
-        {/* Banner / cover שמתחלף כל כמה שניות */}
-        <Row title="Top 10 Personalized" fetchUrl="/api/programs/top-personalized" />
-        <Row title="Newest Releases" fetchUrl="/api/programs/newest" />
-        <Row title="Top 10 Most-Watched" fetchUrl="/api/programs/most-watched" />
-        {/* וכך הלאה */}
-        {/* פוטר */}
-      </div>
-    );
-  }
-  export default Home;
-  
+export default Home;

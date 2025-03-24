@@ -1,37 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home.jsx';
-import Login from './pages/Login.jsx';
-import Register from './pages/Register.jsx';
-import Profiles from './pages/Profiles.js';
-import Movies from './pages/Movies.js';
-import TVShows from './pages/TVShows.js';
-import NewPopular from './pages/NewPopular.js';
-import MyList from './pages/MyList.js';
-import SearchPage from './pages/SearchPage.js';
-import ProgramPage from './pages/ProgramPage.js';
-import ReviewPage from './pages/ReviewPage.js';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Home from './pages/Home';
 
-function App() {
+const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/profiles" element={<Profiles />} />
-        <Route path="/movies" element={<Movies />} />
-        <Route path="/tvshows" element={<TVShows />} />
-        <Route path="/new-popular" element={<NewPopular />} />
-        <Route path="/my-list" element={<MyList />} />
-        <Route path="/search" element={<SearchPage />} />
-        <Route path="/program/:programId" element={<ProgramPage />} />
-        <Route path="/review/:programId" element={<ReviewPage />} />
+        <Route path="/home" element={<Home />} />
       </Routes>
     </Router>
   );
+};
+
+export default App;
   
 //   return (
 //     <div className="App">
@@ -51,6 +38,6 @@ function App() {
 //       </header>
 //     </div>
 //   );
-}
+// }
 
-export default App;
+// export default App;
