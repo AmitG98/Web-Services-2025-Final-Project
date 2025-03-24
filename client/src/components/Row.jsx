@@ -1,29 +1,59 @@
-// function Row({ title, fetchUrl }) {
-//     const [items, setItems] = useState([]);
-  
-//     useEffect(() => {
-//       async function fetchData() {
-//         const { data } = await axios.get(fetchUrl);
-//         setItems(data.results); // לפי המבנה שמחזיר השרת
-//       }
-//       fetchData();
-//     }, [fetchUrl]);
-  
-//     return (
-//       <div className="row">
-//         <h2>{title}</h2>
-//         <div className="row-items">
-//           {items.map((item) => (
-//             <img
-//               key={item._id}
-//               src={item.posterUrl}
-//               alt={item.name}
-//               // בלחיצה אפשר לפתוח מודאל "More Info"
-//             />
-//           ))}
-//         </div>
-//       </div>
-//     );
-//   }
-//   export default Row;
-  
+import React, { useEffect, useState } from 'react';
+import './Row.css';
+
+const mockData = [
+  {
+    id: 1,
+    title: 'Breaking Bad',
+    poster: 'https://image.tmdb.org/t/p/w300/ggFHVNu6YYI5L9pCfOacjizRGt.jpg',
+  },
+  {
+    id: 2,
+    title: 'Stranger Things',
+    poster: 'https://image.tmdb.org/t/p/w300/x2LSRK2Cm7MZhjluni1msVJ3wDF.jpg',
+  },
+  {
+    id: 3,
+    title: 'The Crown',
+    poster: 'https://image.tmdb.org/t/p/w300/el1bsEMRzQxJzNdk7Q0VYneCEiM.jpg',
+  },
+  {
+    id: 4,
+    title: 'Wednesday',
+    poster: 'https://image.tmdb.org/t/p/w300/9mDFjfw3aIYDFu1eEYuZyXH9yW0.jpg',
+  },
+  {
+    id: 5,
+    title: 'The Witcher',
+    poster: 'https://image.tmdb.org/t/p/w300/zrPpUlehQaBf8YX2NrVrKK8IEpf.jpg',
+  },
+  {
+    id: 6,
+    title: 'Squid Game',
+    poster: 'https://image.tmdb.org/t/p/w300/dDlEmu3EZ0Pgg93K2SVNLCjCSvE.jpg',
+  },
+];
+
+const Row = ({ title }) => {
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    // בעתיד נשלוף API אמיתי
+    setItems(mockData);
+  }, []);
+
+  return (
+    <div className="row">
+      <h2 className="row-title">{title}</h2>
+      <div className="row-posters">
+        {items.map((item) => (
+          <div key={item.id} className="row-poster">
+            <img src={item.poster} alt={item.title} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default Row;
