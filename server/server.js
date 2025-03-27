@@ -5,9 +5,10 @@ const logger = require('morgan');
 const connectDB = require('./db/connection_db');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
-const programRoutes = require('./routes/programRoutes');
+const profileRoutes = require('./routes/profileRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const errorHandler = require('./middleware/errorHandler');
+const profileRoutes = require('./routes/profileRoutes');
 
 const port = process.env.PORT || 8080;
 
@@ -27,7 +28,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/programs', programRoutes);
+app.use('/api/profiles', profileRoutes);
 app.use('/api/reviews', reviewRoutes);
 
 app.use((req, res) => {

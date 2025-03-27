@@ -1,6 +1,20 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
+const profileSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    maxlength: 30
+  },
+  avatar: {
+    type: String,
+    required: true
+  }
+}, { _id: true });
+
+userSchema.add({ profiles: [profileSchema] });
+
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
