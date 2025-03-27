@@ -1,0 +1,11 @@
+.home-page {
+    background-color: #111;
+    color: white;
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding-bottom: 2rem;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  
