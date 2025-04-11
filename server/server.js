@@ -3,20 +3,27 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const logger = require('morgan');
 const connectDB = require('./db/connection_db');
+const path = require('path');
+const { fileURLToPath } = require('url');
+
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const errorHandler = require('./middleware/errorHandler');
-const profileRoutes = require('./routes/profileRoutes');
 
 const port = process.env.PORT || 8080;
 
 const app = express();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use("/public", express.static(path.join(__dirname, "../public")));
+
 connectDB();
 
-app.use(cors({ origin: true, credentials: true }));
+app.use(cors({ origin: ["http://localhost:3000"], credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
@@ -40,3 +47,12 @@ app.use(errorHandler);
 app.listen(port, () => {
     console.log(`Listening on: http://localhost:${port}`);
 });
+
+
+
+
+
+
+
+
+
