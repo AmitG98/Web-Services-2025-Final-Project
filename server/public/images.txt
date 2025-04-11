@@ -1,0 +1,15 @@
+Name=angryman.png
+Name=blue.png
+Name=chicken.png
+Name=dark blue.png
+Name=fluffyblue.png
+Name=fluffygrey.png
+Name=fluffyyellow.png
+Name=green.png
+Name=kids.png
+Name=panda.png
+Name=pink.png
+Name=purple.png
+Name=red.png
+Name=yellow.png
+Name=zombi.png
