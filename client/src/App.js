@@ -1,43 +1,47 @@
-// src/App.js
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Home from './pages/Home';
+// src/App.jsx
+import React from "react";
+import Register from "./pages/Register";
+import { UserSessionProvider } from "./context/UserSessionProvider";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+// import Login from "./pages/Login";
+// import Home from "./pages/Home";
+// import ProtectedRoute from "./routes/SecureAccess";
+
+const queryClient = new QueryClient();
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Register />,
+  },
+  // {
+  //   path: "/login",
+  //   element: <Login />,
+  // },
+  {
+    path: "/register",
+    element: <Register />,
+  },
+  // {
+  //   path: "/home",
+  //   element: (
+  //     <ProtectedRoute>
+  //       <Home />
+  //     </ProtectedRoute>
+  //   ),
+  // },
+]);
 
 const App = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/home" element={<Home />} />
-      </Routes>
-    </Router>
+    <UserSessionProvider>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>{" "}
+    </UserSessionProvider>
   );
 };
 
 export default App;
-  
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.js</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
-
-// export default App;
