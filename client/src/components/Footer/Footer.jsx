@@ -13,12 +13,8 @@ function Footer() {
               items={["FAQ", "Privacy", "Ad Choices"]}
               custom={<LangDropdown />}
             />
-            <FooterSection
-              items={["Help Center", "Cookie Preferences"]}
-            />
-            <FooterSection
-              items={["Netflix Shop", "Corporate Information"]}
-            />
+            <FooterSection items={["Help Center", "Cookie Preferences"]} />
+            <FooterSection items={["Netflix Shop", "Corporate Information"]} />
             <FooterSection
               items={["Terms of Use", "Do Not Sell My Personal Information"]}
             />
@@ -27,32 +23,32 @@ function Footer() {
       </footer>
 
       <style>{`
-        .footer-wrapper {
-          width: 100%;
-          background-color: rgba(0, 0, 0, 0.7);
-          color: white;
-          padding: 2rem 0;
-          position: relative;
-          z-index: 20;
-        }
+  .footer-wrapper {
+    width: 100%;
+    background-color: #0f0f0f;
+    color: white;
+    padding: 2rem 0;
+    position: relative;
+    z-index: 20;
+  }
 
-        .footer-container {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 0 1rem;
-        }
+  .footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
 
-        .footer-contact {
-          font-size: 1rem;
-        }
+  .footer-contact {
+    font-size: 1rem;
+  }
 
-        .footer-grid {
-          margin-top: 1rem;
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: space-between;
-        }
-      `}</style>
+  .footer-grid {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+`}</style>
     </>
   );
 }
