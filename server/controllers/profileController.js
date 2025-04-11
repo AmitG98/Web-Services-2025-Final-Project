@@ -1,64 +1,90 @@
-const User = require('../models/User');
+const Profile = require('../models/Profile');
 
-exports.getProfiles = async (req, res, next) => {
+const AVATAR_OPTIONS = [
+  "angryman.png", "blue.png", "chicken.png", "dark blue.png",
+  "fluffyblue.png", "fluffygrey.png", "fluffyyellow.png", "green.png",
+  "kids.png", "panda.png", "pink.png", "purple.png", "red.png",
+  "yellow.png", "zombi.png"
+];
+
+const getRandomAvatar = () => {
+  return AVATAR_OPTIONS[Math.floor(Math.random() * AVATAR_OPTIONS.length)];
+};
+
+const getProfiles = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.id);
-    res.json(user.profiles);
+    const profiles = await Profile.find({ user: req.user._id });
+    res.status(200).json(profiles);
   } catch (err) {
     next(err);
   }
 };
 
-exports.addProfile = async (req, res, next) => {
+const addProfile = async (req, res, next) => {
   try {
-    const { name } = req.body;
-    const user = await User.findById(req.user.id);
+    const userId = req.user._id;
 
-    if (user.profiles.length >= 5) {
-      return res.status(400).json({ message: 'Max 5 profiles allowed' });
+    const existingProfiles = await Profile.find({ user: userId }).limit(6);
+    if (existingProfiles.length >= 5) {
+      return res.status(400).json({ message: "You can only create up to 5 profiles." });
     }
 
-    const newProfile = {
-      name
-    };
+    const randomAvatar = getRandomAvatar();
+    const newProfile = new Profile({
+      ...req.body,
+      user: userId,
+      avatar: randomAvatar,
+    });
 
-    user.profiles.push(newProfile);
-    await user.save();
-    res.status(201).json(user.profiles);
+    await newProfile.save();
+
+    res.status(201).json({
+      message: "New profile added successfully",
+      data: newProfile,
+    });
   } catch (err) {
     next(err);
   }
 };
 
-exports.updateProfile = async (req, res, next) => {
+const updateProfile = async (req, res, next) => {
   try {
     const { profileId } = req.params;
     const { name } = req.body;
 
-    const user = await User.findById(req.user.id);
-    const profile = user.profiles.id(profileId);
-    if (!profile) return res.status(404).json({ message: 'Profile not found' });
+    const updatedProfile = await Profile.findOneAndUpdate(
+      { _id: profileId, user: req.user._id },
+      { name },
+      { new: true }
+    );
 
-    profile.name = name;
-    await user.save();
-    res.json(user.profiles);
+    if (!updatedProfile) {
+      return res.status(404).json({ message: 'Profile not found' });
+    }
+
+    res.status(200).json(updatedProfile);
   } catch (err) {
     next(err);
   }
 };
 
-exports.deleteProfile = async (req, res, next) => {
+const deleteProfile = async (req, res, next) => {
   try {
     const { profileId } = req.params;
 
-    const user = await User.findById(req.user.id);
-    const profile = user.profiles.id(profileId);
-    if (!profile) return res.status(404).json({ message: 'Profile not found' });
+    const deletedProfile = await Profile.findOneAndDelete({
+      _id: profileId,
+      user: req.user._id,
+    });
 
-    profile.remove();
-    await user.save();
-    res.json(user.profiles);
+    if (!deletedProfile) {
+      return res.status(404).json({ message: "Profile not found" });
+    }
+
+    res.status(204).end();
   } catch (err) {
     next(err);
   }
 };
+
+module.exports = { getProfiles, addProfile, updateProfile, deleteProfile}
