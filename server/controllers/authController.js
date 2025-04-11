@@ -9,7 +9,7 @@ const createToken = (user) => {
   );
 };
 
-exports.register = async (req, res, next) => {
+const register = async (req, res, next) => {
   try {
     const { username, password } = req.body;
 
@@ -34,7 +34,7 @@ exports.register = async (req, res, next) => {
 };
 
 
-exports.login = async (req, res, next) => {
+const login = async (req, res, next) => {
   try {
     const { username, password, rememberMe } = req.body;
 
@@ -58,3 +58,4 @@ exports.login = async (req, res, next) => {
   }
 };
 
+module.exports = {register, login}
