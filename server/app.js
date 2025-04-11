@@ -4,21 +4,16 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const logger = require('morgan');
 const path = require('path');
-const { fileURLToPath } = require('url');
 
 dotenv.config();
-
 const connectDB = require('./db/connection_db');
 connectDB();
 
-const authRoutes = require('./routes/authRoutes');
-const userRoutes = require('./routes/userRoutes');
-const profileRoutes = require('./routes/profileRoutes');
-const reviewRoutes = require('./routes/reviewRoutes');
+const authRoutes = require('./routers/authRoutes');
+const userRoutes = require('./routers/userRoutes');
+const profileRoutes = require('./routers/profileRoutes');
+const reviewRoutes = require('./routers/reviewRoutes');
 const errorHandler = require('./middleware/errorHandler');
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express();
 
