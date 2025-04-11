@@ -1,18 +1,16 @@
 const express = require('express');
-const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const logger = require('morgan');
 const path = require('path');
 
-dotenv.config();
 const connectDB = require('./db/connection_db');
 connectDB();
 
 const authRoutes = require('./routers/authRoutes');
-const userRoutes = require('./routers/userRoutes');
+// const userRoutes = require('./routers/userRoutes');
 const profileRoutes = require('./routers/profileRoutes');
-const reviewRoutes = require('./routers/reviewRoutes');
+// const reviewRoutes = require('./routers/reviewRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -30,13 +28,14 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
+// app.use('/api/users', userRoutes);
 app.use('/api/profiles', profileRoutes);
-app.use('/api/reviews', reviewRoutes);
+// app.use('/api/reviews', reviewRoutes);
 
 app.use((req, res) => {
   res.status(404).send("Page wasn't found");
 });
+
 app.use(errorHandler);
 
 module.exports = app;
