@@ -1,8 +1,11 @@
-import React from "react";
 import { useForm } from "react-hook-form";
 import { useUserRegister } from "../../hooks/useSession";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 function RegisterForm() {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -19,8 +22,16 @@ function RegisterForm() {
   const { mutate: createUser, isLoading, isError } = useUserRegister();
 
   const onSubmit = (formData) => {
-    createUser(formData);
-    reset();
+    createUser(formData, {
+      onSuccess: () => {
+        toast.success("Account created! Please sign in.");
+        reset();
+        navigate("/signin");
+      },
+      onError: (err) => {
+        toast.error("Registration failed.");
+      }
+    });
   };
 
   return (
@@ -29,9 +40,10 @@ function RegisterForm() {
         <h2 className="form-title">Create Account</h2>
 
         <input
+          type="text"
           placeholder="Email or Phone"
           className="form-input"
-          {...register("username", { required: true })}
+          {...register("username", { required: "Username is required" })}
         />
         {errors.username && (
           <p className="form-error">Please provide a valid email or phone</p>
@@ -42,26 +54,20 @@ function RegisterForm() {
           placeholder="Password"
           className="form-input"
           {...register("password", {
-            required: true,
-            minLength: 8,
-            pattern: /^(?=.*[A-Za-z])(?=.*\d).{8,}$/,
+            required: "Password is required",
+            minLength: {
+              value: 8,
+              message: "At least 8 characters"
+            },
+            pattern: {
+              value: /^(?=.*[A-Za-z])(?=.*\d).{8,}$/,
+              message: "Must contain at least one letter and one number"
+            }
           })}
         />
-        {errors.password?.type === "required" && (
-          <p className="form-error">Password is required</p>
-        )}
-        {errors.password?.type === "minLength" && (
-          <p className="form-error">
-            Password must be at least 8 characters
-          </p>
-        )}
-        {errors.password?.type === "pattern" && (
-          <p className="form-error">
-            Password must contain letters and digits
-          </p>
-        )}
 
-        <select className="form-select" {...register("role")}>
+        {/* <select className="form-select" {...register("role")}> */}
+        <select {...register("role", { required: true })} className="input">
           <option value="user">User</option>
           <option value="admin">Admin</option>
         </select>
