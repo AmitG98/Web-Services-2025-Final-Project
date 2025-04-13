@@ -4,13 +4,13 @@ const User = require('../models/User');
 const verifyToken = async (req, res, next) => {
   const token = req.cookies.token;
 
-  if (!token) return res.status(401).json({ message: 'Unauthorized' });
+  if (!token) return res.status(401).json({ message: 'Unauthorized: No token provided' });
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id).select('-password');
     if (!user) {
-      return res.status(401).json({ message: 'User not found' });
+      return res.status(401).json({ message: 'Unauthorized: User not found' });
     }
 
     req.user = user;
