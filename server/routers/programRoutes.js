@@ -14,8 +14,7 @@ const {
   getTmdbDetailsPreview,
 } = require("../controllers/programController");
 
-const verifyToken = require("../middleware/verifyToken"); // Auth middleware
-const isAdmin = require("../middleware/isAdmin"); // Role-checking middleware
+const { verifyToken, isAdmin } = require("../middleware/authMiddleware");
 
 // ========== PUBLIC ROUTES ========== //
 
@@ -36,8 +35,6 @@ router.get("/episodes/:seriesId/:seasonNumber", getSeriesEpisodes);
 
 // Get extra program info: production, images (TMDB)
 router.get("/extras/:type/:id", getExtraProgramInfo);
-
-
 
 // ========== ADMIN ROUTES ========== //
 
