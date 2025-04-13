@@ -1,110 +1,103 @@
+import React from "react";
 import { useForm } from "react-hook-form";
 import { useUserLogin } from "../../hooks/useSession";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { Link } from "react-router";
 
 const LoginForm = () => {
-  const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors }, reset } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
     defaultValues: {
-      email: "",
+      username: "",
       password: "",
-      rememberMe: false,
+      remember: false,
     },
   });
 
-  const { mutate: loginUser, isLoading } = useUserLogin();
+  const { mutate: loginUser, isLoading, isError } = useUserLogin();
 
   const onSubmit = (data) => {
-    loginUser({
-      email: data.email,
-      password: data.password,
-      rememberMe: data.rememberMe,
-    });
+    loginUser(data);
     reset();
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="form">
-      <h2 className="form-title">Sign In</h2>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="mt-32 h-3/4 m-5 relative z-30 bg-black/50 p-8 rounded-lg shadow-lg flex flex-col gap-4 w-10/12 lg:w-1/4 max-w-md text-white"
+    >
+      <h2 className="text-2xl font-medium">Sign In</h2>
 
       <input
-        type="email"
-        placeholder="Email"
-        {...register("email", { required: "Email is required" })}
-        className="form-input"
+        className="w-full h-12 p-3 border border-gray-600 rounded bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
+        placeholder="Email or phone number"
+        {...register("username", { required: true })}
       />
-      {errors.email && <p className="form-error">{errors.email.message}</p>}
+      {errors.username && (
+        <span className="text-red-500 text-sm">
+          Please enter a valid email or phone number
+        </span>
+      )}
 
       <input
-        type="password"
+        className="w-full h-12 p-3 border border-gray-600 rounded bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
         placeholder="Password"
+        type="password"
         {...register("password", {
-          required: "Password is required",
-          minLength: { value: 4, message: "Minimum 4 characters" },
-          maxLength: { value: 60, message: "Maximum 60 characters" },
+          required: true,
+          minLength: 4,
+          maxLength: 60,
         })}
-        className="form-input"
       />
-      {errors.password && <p className="form-error">{errors.password.message}</p>}
+      {errors.password && (
+        <span className="text-red-500 text-sm">
+          Your password must be between 4 and 60 characters.
+        </span>
+      )}
 
-      <label className="form-checkbox">
-        <input type="checkbox" {...register("rememberMe")} />
-        Remember me (1 hour)
-      </label>
-
-      <button type="submit" className="form-button" disabled={isLoading}>
-        {isLoading ? "Signing in..." : "Sign In"}
+      <button
+        type="submit"
+        className="w-full h-12 bg-red-600 text-white rounded font-bold hover:bg-red-700 transition"
+        disabled={isLoading}
+      >
+        {isLoading ? "Signing In..." : "Sign In"}
       </button>
+
+      {isError && (
+        <div className="text-red-500 text-sm">Login failed. Try again.</div>
+      )}
+
+      <div className="text-center font-light">Forget Password?</div>
+
+      <div>
+        <label className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            {...register("remember")}
+            className="w-4 h-4 bg-transparent border border-gray-400 rounded-sm appearance-none checked:text-white flex items-center justify-center before:content-['✔'] before:hidden checked:before:block before:text-white before:font-bold before:text-xs"
+          />
+          Remember me
+        </label>
+      </div>
+
+      <div className="font-light">
+        <span className="text-gray-300"> New to Netflix? </span>
+        <Link to="/signup" className="cursor-pointer font-semibold">
+          Sign up now
+        </Link>
+      </div>
+
+      <div className="text-gray-400 text-sm font-thin">
+        This page is protected by Google reCAPTCHA to ensure you're not a robot{" "}
+        <a className="text-blue-600" href="/">
+          Learn more
+        </a>
+      </div>
     </form>
   );
 };
 
 export default LoginForm;
-
-<style>
-{`
-  .form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    width: 100%;
-    max-width: 400px;
-  }
-  .form-title {
-    font-size: 2rem;
-    font-weight: bold;
-    color: white;
-    margin-bottom: 0.5rem;
-  }
-  .form-input {
-    padding: 0.75rem;
-    border-radius: 0.375rem;
-    border: 1px solid #555;
-    background: transparent;
-    color: white;
-  }
-  .form-error {
-    color: #f87171;
-    font-size: 0.875rem;
-  }
-  .form-checkbox {
-    font-size: 0.875rem;
-    color: white;
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-  }
-  .form-button {
-    background: #dc2626;
-    color: white;
-    font-weight: bold;
-    border-radius: 0.375rem;
-    padding: 0.75rem;
-    cursor: pointer;
-  }
-  .form-button:hover {
-    background: #b91c1c;
-  }
-`}
-</style>
