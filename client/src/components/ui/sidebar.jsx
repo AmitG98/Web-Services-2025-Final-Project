@@ -5,7 +5,7 @@ import { cva } from "class-variance-authority";
 import { Slot } from "@radix-ui/react-slot"
 import { PanelLeft } from "lucide-react"
 import { CustomButton } from "./button"
-import { useIsMobile } from "../../hooks/use-mobile"
+import { useDetectMobileView } from "../../hooks/useMobile"
 import { cn } from "../../lib/utils"
 import { Separator } from "./separator"
 import { Skeleton } from "./skeleton"
@@ -76,7 +76,7 @@ const SidebarProvider = React.forwardRef(
     },
     ref
   ) => {
-    const isMobile = useIsMobile();
+    const isMobile = useDetectMobileView();
 
     const [openMobile, setOpenMobile] = React.useState(false);
     const [_open, _setOpen] = React.useState(defaultOpen);
