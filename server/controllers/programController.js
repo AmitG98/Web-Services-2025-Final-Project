@@ -1,8 +1,8 @@
 const axios = require("axios");
 const Program = require("../models/Program");
 const Review = require("../models/Review");
-const User = require("../models/User");
 const MyList = require("../models/MyList");
+const Log = require("../models/Log");
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
@@ -47,6 +47,11 @@ const getHomepageContent = async (req, res, next) => {
       MyList.find({ user: userId }).sort({ createdAt: -1 }).limit(10),
     ]);
 
+    await Log.create({
+      action: "Fetched Homepage Content",
+      user: req.user._id,
+    });
+
     res.json({
       personalized,
       newest,
@@ -71,6 +76,12 @@ const getProgramDetails = async (req, res, next) => {
     if (!program) {
       program = await tmdbRequest(`/tv/${id}`) || await tmdbRequest(`/movie/${id}`);
     }
+
+    await Log.create({
+      action: "Viewed Program Details",
+      user: req.user._id,
+      details: { programId: id },
+    });
 
     res.json(program);
   } catch (err) {
@@ -97,6 +108,12 @@ const searchOrDiscoverPrograms = async (req, res, next) => {
       query: searchTerm,
       with_genres: category,
     };
+
+    await Log.create({
+      action: "User Searched or Discovered Programs",
+      user: req.user ? req.user._id : null,
+      details: { type, query, genre },
+    });
 
     const results = await tmdbRequest(endpoint, params);
     res.status(200).json(results);
@@ -200,7 +217,17 @@ const createProgramManually = async (req, res) => {
       });
   
       const saved = await newProgram.save();
-      console.log(`Admin created program: ${title} (TMDB ID: ${tmdbId})`);
+
+      await Log.create({
+        action: "Admin Created Program",
+        user: req.user._id,
+        details: {
+          title: newProgram.title,
+          tmdbId: newProgram.tmdbId,
+          programId: newProgram._id
+        },
+      });
+
       res.status(201).json({ message: "Program created", program: saved });
     } catch (err) {
       console.error("Error creating program:", err.message);
@@ -215,6 +242,13 @@ const createProgramManually = async (req, res) => {
       if (!tmdbId) return res.status(400).json({ message: "TMDB ID is required" });
   
       const program = await Program.findOne({ tmdbId: Number(tmdbId) });
+
+      await Log.create({
+        action: "Admin Checked Program Existence",
+        user: req.user._id,
+        details: { tmdbId, exists: !!program }
+      });
+
       res.status(200).json({
         exists: !!program,
         program: program ? {
@@ -253,6 +287,12 @@ const createProgramManually = async (req, res) => {
         existsInDb: existingIds.includes(item.id)
       }));
   
+      await Log.create({
+        action: "Admin Searched TMDB",
+        user: req.user._id,
+        details: { query },
+      });
+
       res.status(200).json({
         page: response.data.page,
         totalPages: response.data.total_pages,
@@ -283,6 +323,12 @@ const createProgramManually = async (req, res) => {
       const data = response.data;
       const exists = await Program.findOne({ tmdbId: Number(tmdbId) });
   
+      await Log.create({
+        action: "Admin Previewed TMDB Program",
+        user: req.user._id,
+        details: { tmdbId, type },
+      });
+
       res.status(200).json({
         ...data,
         existsInDb: !!exists
