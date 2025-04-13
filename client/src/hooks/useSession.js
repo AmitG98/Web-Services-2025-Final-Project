@@ -10,15 +10,16 @@ export const useUserLogin = () => {
 
   return useMutation({
     mutationFn: submitLogin,
-    onSuccess: (res) => {
-      if (res?.user) {
+    onSuccess: (res, variables) => {
+      const rememberMe = variables.rememberMe || false;
+      if (res?.user && rememberMe) {
         login(res.user);
         toast.success("Welcome", {
           description: `Hello, ${res.user.username}`,
         });
         res.user.role === "admin"
           ? navigate("/admin-dashboard")
-          : navigate("/who-is-watching");
+          : navigate("/profiles");
       } else {
         toast.error("No user data found");
       }
