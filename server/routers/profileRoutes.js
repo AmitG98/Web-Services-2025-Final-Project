@@ -10,6 +10,7 @@ const {
 
 router.use(verifyToken);
 
+router.post("/:profileId/interactions", addInteraction);
 router.get('/', getProfiles);
 router.post('/', addProfile);
 router.put('/:profileId', updateProfile);

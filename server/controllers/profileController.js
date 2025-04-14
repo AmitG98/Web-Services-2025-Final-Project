@@ -12,6 +12,40 @@ const getRandomAvatar = () => {
   return AVATAR_OPTIONS[Math.floor(Math.random() * AVATAR_OPTIONS.length)];
 };
 
+const addInteraction = async (req, res, next) => {
+  try {
+    const { profileId } = req.params;
+    const { programId, action } = req.body;
+
+    if (!["click", "like"].includes(action)) {
+      return res.status(400).json({ message: "Invalid action type" });
+    }
+
+    const profile = await Profile.findById(profileId);
+    if (!profile) {
+      return res.status(404).json({ message: "Profile not found" });
+    }
+
+    const programExists = await Program.exists({ _id: programId });
+    if (!programExists) {
+      return res.status(404).json({ message: "Program not found" });
+    }
+
+    profile.userHistory.push({
+      programId: 12345,
+      type: "tv",
+      action: "click"
+    });
+
+    await profile.save();
+
+    res.status(200).json({ message: "Interaction added to history" });
+  } catch (err) {
+    console.error("Error adding interaction:", err);
+    next(err);
+  }
+};
+
 const getProfiles = async (req, res, next) => {
   try {
     const profiles = await Profile.find({ user: req.user._id });
@@ -109,4 +143,4 @@ const deleteProfile = async (req, res, next) => {
   }
 };
 
-module.exports = { getProfiles, addProfile, updateProfile, deleteProfile}
+module.exports = { addInteraction, getProfiles, addProfile, updateProfile, deleteProfile}
