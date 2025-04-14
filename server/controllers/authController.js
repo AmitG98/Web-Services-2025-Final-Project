@@ -62,7 +62,7 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   try {
-    const { identifier, password } = req.body;
+    const { identifier, password, rememberMe } = req.body;
 
     if (!identifier || !password) {
       return res.status(400).json({ message: "Identifier and password are required" });
