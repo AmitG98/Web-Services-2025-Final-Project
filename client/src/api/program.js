@@ -1,4 +1,4 @@
-import axios from './axiosInstance';
+import axios from './axiosClient';
 
 export const fetchHomepageContent = async ({ type, genre } = {}) => {
     const params = {};
