@@ -10,7 +10,7 @@ const SecureAccess = ({ children, requireAdmin = false }) => {
   }
 
   if (requireAdmin && currentUser.role !== "admin") {
-    return <Navigate to="/user-dashboard" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return children;
