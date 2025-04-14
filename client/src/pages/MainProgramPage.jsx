@@ -1,9 +1,9 @@
-// MainProgramPage.jsx
-// import React, { useState } from "react";
+import React, { useState } from "react";
 import MainHeader from "../components/coreUi/MainHeader";
+import MainFooter from "../components/coreUi/MainFooter";
 
 const MainProgramPage = ({ contentType = "all" }) => {
-  // const [selectedProgram, setSelectedProgram] = useState(null);
+  const [selectedProgram, setSelectedProgram] = useState(null);
 
   return (
     <div className="max-w-screen min-h-screen bg-[#141414] text-white overflow-x-hidden relative">
@@ -14,6 +14,9 @@ const MainProgramPage = ({ contentType = "all" }) => {
       <h1 className="text-white text-3xl text-center pt-20">
         This is the {contentType} page
       </h1>
+    
+      <Footer />
+    
     </div>
   );
 };
