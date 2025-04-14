@@ -3,8 +3,8 @@ const bcrypt = require('bcrypt');
 const { Schema, model } = mongoose;
 
 const userSchema = new Schema({
-  email: { type: String, required: true, unique: true, lowercase: true, trim: true, match: [/^\S+@\S+\.\S+$/, 'Invalid email format']},
-  phone: { type: String, required: true, unique: true, match: [/^\+?\d{10,15}$/, 'Invalid phone number'], },
+  email: { type: String, sparse: true, unique: true, lowercase: true, trim: true, match: [/^\S+@\S+\.\S+$/, 'Invalid email format']},
+  phone: { type: String, sparse: true, unique: true, match: [/^\+?\d{10,15}$/, 'Invalid phone number'], },
   password: { type: String,required: true, minlength: 8, validate: {
       validator: function (v) {
       return /^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(v);
@@ -12,13 +12,23 @@ const userSchema = new Schema({
   role: {type: String, enum: ["Admin", "User"], default: "User" }
 }, { timestamps: true });
 
+userSchema.pre('validate', function (next) {
+  if (!this.email && !this.phone) {
+    const err = new Error("Either email or phone must be provided");
+    next(err);
+  } else {
+    next();
+  }
+});
+
 userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next;
+  if (!this.isModified('password')) return next();
   try {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
+    next();
   } catch (err) {
-    throw err;
+    next(err);
   }
 });
 

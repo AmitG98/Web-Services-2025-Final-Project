@@ -10,17 +10,25 @@ const createToken = (user) => {
 
 const register = async (req, res, next) => {
   try {
-    const { email, phone, password, role } = req.body;
-    console.log("📦 Register request:", req.body);
+    const { email, phone, password} = req.body;
+
+    if (!email && !phone) {
+      return res.status(400).json({ message: "Email or phone is required" });
+    }
+
     const existingUser = await User.findOne({
-      $or: [{ email }, { phone }]
+      $or: [
+        email ? { email } : null,
+        phone ? { phone } : null
+      ].filter(Boolean),
     });
+
     if (existingUser) {
-      console.log("⚠️ User already exists:", username);
       return res.status(400).json({ message: "Email or phone already in use" });
     }
+
     if (!/^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(password)) {
-      console.log("❌ Password does not meet policy");
+      console.log("Password does not meet policy");
       return res.status(400).json({
         message:
           "Password must be at least 8 characters long and include at least one letter and one digit",
@@ -33,8 +41,8 @@ const register = async (req, res, next) => {
     await Log.create({
       action: "User Registered",
       user: user._id,
-      details: { username },
       level: "info",
+      details: { email: user.email, phone: user.phone },
     });
 
     const token = createToken(user);
@@ -44,28 +52,44 @@ const register = async (req, res, next) => {
       sameSite: "strict",
       secure: process.env.NODE_ENV === "production",
     });
-    console.log("✅ User registered:", user._id);
+
     res.status(201).json({ message: "User registered", userId: user._id });
   } catch (err) {
-    console.error("❗ Error in register:", err);
+    console.error("Error in register:", err);
     next(err);
   }
 };
 
 const login = async (req, res, next) => {
   try {
-    const { email, password, rememberMe } = req.body;
+    const { identifier, password } = req.body;
 
-    const user = await User.findOne({ email });
-
-    if (!user || !(await user.comparePassword(password))) {
-      await Log.create({
-        action: "User Login Failed",
-        details: { username },
-        level: "warn",
-      });
-      return res.status(401).json({ message: 'Invalid credentials' });
+    if (!identifier || !password) {
+      return res.status(400).json({ message: "Identifier and password are required" });
     }
+
+    const user = await User.findOne({
+      $or: [
+        { email: identifier },
+        { phone: identifier }
+      ]
+    });
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    await Log.create({
+      action: "User Logged In",
+      user: user._id,
+      level: "info",
+      details: { email: user.email, phone: user.phone },
+    });
 
     const token = createToken(user);
     res.cookie("token", token, {
@@ -75,24 +99,9 @@ const login = async (req, res, next) => {
       sameSite: "strict",
     });
 
-    await Log.create({
-      action: "User Login Success",
-      user: user._id,
-      details: { username },
-      level: "info",
-    });
-
-    await Log.create({
-      action: "User Login Success",
-      user: user._id,
-      details: { username },
-      level: "info",
-    });
-
-    console.log("✅ Login successful:", user.username);
-    res.status(200).json({ message: "Login successful", user });
+    res.status(200).json({ message: 'Login successful', user });
   } catch (err) {
-    console.error("❗ Error in login:", err);
+    console.error("Error in login:", err);
     next(err);
   }
 };
