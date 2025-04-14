@@ -6,7 +6,7 @@ const SecureAccess = ({ children, requireAdmin = false }) => {
   const routeLocation = useLocation();
 
   if (!currentUser) {
-    return <Navigate to="/signin" state={{ from: routeLocation }} replace />;
+    return <Navigate to="/login" state={{ from: routeLocation }} replace />;
   }
 
   if (requireAdmin && currentUser.role !== "admin") {

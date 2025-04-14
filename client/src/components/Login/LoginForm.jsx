@@ -13,15 +13,17 @@ const LoginForm = () => {
     defaultValues: {
       username: "",
       password: "",
-      remember: false,
+      rememberMe: false,
     },
   });
 
   const { mutate: loginUser, isLoading, isError } = useUserLogin();
 
   const onSubmit = (data) => {
-    loginUser(data);
-    reset();
+    console.log("📦 Trying to log in with:", data);
+    loginUser(data, {
+      onSuccess: () => reset(), // רק אם ההתחברות הצליחה
+    });
   };
 
   return (
@@ -76,7 +78,7 @@ const LoginForm = () => {
         <label className="flex items-center gap-2">
           <input
             type="checkbox"
-            {...register("remember")}
+            {...register("rememberMe")}
             className="w-4 h-4 bg-transparent border border-gray-400 rounded-sm appearance-none checked:text-white flex items-center justify-center before:content-['✔'] before:hidden checked:before:block before:text-white before:font-bold before:text-xs"
           />
           Remember me
