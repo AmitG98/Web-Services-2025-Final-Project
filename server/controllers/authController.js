@@ -11,8 +11,8 @@ const createToken = (user) => {
 
 const register = async (req, res, next) => {
   try {
-    const { username, password } = req.body;
-    console.log("📦 Register request:", { username, password });
+    const { username, password, role } = req.body;
+    console.log("📦 Register request:", req.body);
 
     const existingUser = await User.findOne({ username });
     if (existingUser) {
@@ -27,7 +27,11 @@ const register = async (req, res, next) => {
       });
     }    
 
-    const user = new User({ username, password });
+    const user = new User({ username, password, 
+      role,
+      email: `${Date.now()}_${Math.random().toString(36).substring(2, 10)}@dummy.com`,
+      phone: `${Date.now()}${Math.floor(Math.random() * 1000)}`
+    });
     await user.save();
 
     const token = createToken(user);

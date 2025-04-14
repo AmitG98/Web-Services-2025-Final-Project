@@ -22,15 +22,17 @@ function RegisterForm() {
   const { mutate: createUser, isLoading, isError } = useUserRegister();
 
   const onSubmit = (formData) => {
+    console.log("📨 Register formData:", formData);
     createUser(formData, {
       onSuccess: () => {
         toast.success("Account created! Please sign in.");
         reset();
-        navigate("/signin");
+        navigate("/login");
       },
       onError: (err) => {
+        console.error("❌ Registration error in form:", err);
         toast.error("Registration failed.");
-      }
+      },
     });
   };
 
@@ -57,26 +59,24 @@ function RegisterForm() {
             required: "Password is required",
             minLength: {
               value: 8,
-              message: "At least 8 characters"
+              message: "At least 8 characters",
             },
             pattern: {
               value: /^(?=.*[A-Za-z])(?=.*\d).{8,}$/,
-              message: "Must contain at least one letter and one number"
-            }
+              message: "Must contain at least one letter and one number",
+            },
           })}
         />
 
-        {/* <select className="form-select" {...register("role")}> */}
-        <select {...register("role", { required: true })} className="input">
-          <option value="user">User</option>
-          <option value="admin">Admin</option>
+        <select
+          {...register("role", { required: true })}
+          className="form-input"
+        >
+          <option value="User">User</option>
+          <option value="Admin">Admin</option>
         </select>
 
-        <button
-          type="submit"
-          className="form-button"
-          disabled={isLoading}
-        >
+        <button type="submit" className="form-button" disabled={isLoading}>
           {isLoading ? "Creating..." : "Register"}
         </button>
 
@@ -86,7 +86,9 @@ function RegisterForm() {
 
         <p className="recaptcha-text">
           This page is protected by reCAPTCHA.{" "}
-          <a href="/" className="recaptcha-link">Learn more</a>
+          <a href="/" className="recaptcha-link">
+            Learn more
+          </a>
         </p>
       </form>
 
