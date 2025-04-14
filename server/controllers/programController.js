@@ -1,9 +1,11 @@
 const axios = require("axios");
 require("dotenv").config();
 const Program = require("../models/Program");
-// const Review = require("../models/Review");
-// const MyList = require("../models/MyList");
+const Review = require("../models/Review");
+const MyList = require("../models/MyList");
 const Log = require("../models/Log");
+const { getPersonalizedRecommendations } = require("./recommendationController");
+const { fetchProgramsByGenreAndType } = require("../utils/tmdbUtils");
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
@@ -38,7 +40,7 @@ const getHomepageContent = async (req, res, next) => {
       custom,
       myList,
     ] = await Promise.all([
-      Program.find({}).limit(10), // Placeholder for AI recommendations
+      getPersonalizedRecommendations(userId),
       tmdbRequest("/discover/movie", { sort_by: "release_date.desc" }),
       Program.find().sort({ views: -1 }).limit(10),
       Review.find({ user: userId }).sort({ createdAt: -1 }).limit(10),
@@ -305,39 +307,67 @@ const createProgramManually = async (req, res) => {
   };
   
   // ========== PREVIEW TMDB DETAILS WITHOUT SAVE ==========
+
+  const fetchTmdbDetails = async (tmdbId, type) => {
+    if (!tmdbId || !["movie", "tv"].includes(type)) {
+      throw new Error("Invalid TMDB ID or type");
+    }
+  
+    const url = `${TMDB_BASE_URL}/${type}/${tmdbId}`;
+    const response = await axios.get(url, {
+      params: {
+        api_key: TMDB_API_KEY,
+        language: "en-US",
+        append_to_response: "credits,images",
+      },
+    });
+  
+    const data = response.data;
+    const exists = await Program.findOne({ tmdbId: Number(tmdbId) });
+  
+    return {
+      ...data,
+      existsInDb: !!exists,
+    };
+  };
+
   const getTmdbDetailsPreview = async (req, res) => {
     try {
       const { tmdbId, type } = req.params;
-      if (!tmdbId || !["movie", "tv"].includes(type)) {
-        return res.status(400).json({ message: "Invalid TMDB ID or type" });
+      const result = await fetchTmdbDetails(tmdbId, type);
+  
+      if (req.user) {
+        await Log.create({
+          action: "Admin Previewed TMDB Program",
+          user: req.user._id,
+          details: { tmdbId, type },
+        });
       }
   
-      const url = `https://api.themoviedb.org/3/${type}/${tmdbId}`;
-      const response = await axios.get(url, {
-        params: {
-          api_key: TMDB_API_KEY,
-          language: "en-US",
-          append_to_response: "credits,images"
-        }
-      });
-  
-      const data = response.data;
-      const exists = await Program.findOne({ tmdbId: Number(tmdbId) });
-  
-      await Log.create({
-        action: "Admin Previewed TMDB Program",
-        user: req.user._id,
-        details: { tmdbId, type },
-      });
-
-      res.status(200).json({
-        ...data,
-        existsInDb: !!exists
-      });
+      res.status(200).json(result);
     } catch (err) {
+      console.error("Error in getTmdbDetailsPreview:", err.message);
       res.status(500).json({ message: "Error fetching TMDB details" });
     }
   };
+  
+  // ========== route handler ========== //
+  const getProgramsByGenreAndType = async (req, res) => {
+    const { genre, type = "movie" } = req.query;
+  
+    if (!genre) {
+      return res.status(400).json({ message: "Genre is required" });
+    }
+  
+    try {
+      const results = await fetchProgramsByGenreAndType(type, genre);
+      res.status(200).json(results.slice(0, 10));
+    } catch (err) {
+      console.error("TMDB genre/type fetch error:", err.message);
+      res.status(500).json({ message: "Failed to fetch programs by genre/type" });
+    }
+  };
+  
   
   module.exports = {
     getHomepageContent,
@@ -350,8 +380,5 @@ const createProgramManually = async (req, res) => {
     checkIfProgramExists,
     searchTmdbDirect,
     getTmdbDetailsPreview,
-  };
-
-
-
-
+    getProgramsByGenreAndType
+};

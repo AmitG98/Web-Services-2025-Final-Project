@@ -5,11 +5,13 @@ const {
   getProfiles,
   addProfile,
   updateProfile,
-  deleteProfile
+  deleteProfile,
+  addInteraction
 } = require('../controllers/profileController');
 
 router.use(verifyToken);
 
+router.post("/:profileId/interactions", addInteraction);
 router.get('/', getProfiles);
 router.post('/', addProfile);
 router.put('/:profileId', updateProfile);
