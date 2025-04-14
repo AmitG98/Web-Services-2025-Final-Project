@@ -29,43 +29,58 @@ const tmdbRequest = async (endpoint, params = {}) => {
 const getHomepageContent = async (req, res, next) => {
   try {
     const userId = req.user._id;
+    const type = req.query.type; // "movie", "tv", or undefined
+    const genre = req.query.genre || 28;
+
+    const programFilter = type ? { type } : {};
 
     const [
       personalized,
-      newest,
+      newestMovie,
+      newestTV,
       mostWatched,
       recentReviews,
       topRated,
-      animated,
-      custom,
+      animatedMovie,
+      animatedTV,
+      customMovie,
+      customTV,
       myList,
     ] = await Promise.all([
       getPersonalizedRecommendations(userId),
-      tmdbRequest("/discover/movie", { sort_by: "release_date.desc" }),
-      Program.find().sort({ views: -1 }).limit(10),
+      type !== "tv" ? tmdbRequest("/discover/movie", { sort_by: "release_date.desc" }) : [],
+      type !== "movie" ? tmdbRequest("/discover/tv", { sort_by: "first_air_date.desc" }) : [],
+      Program.find(programFilter).sort({ views: -1 }).limit(10),
       Review.find({ user: userId }).sort({ createdAt: -1 }).limit(10),
-      Program.find().sort({ averageRating: -1 }).limit(10),
-      tmdbRequest("/discover/movie", { with_genres: 16 }),
-      tmdbRequest("/discover/movie", { with_genres: req.query.genre || 28 }),
+      Program.find(programFilter).sort({ averageRating: -1 }).limit(10),
+      type !== "tv" ? tmdbRequest("/discover/movie", { with_genres: 16 }) : [],
+      type !== "movie" ? tmdbRequest("/discover/tv", { with_genres: 16 }) : [],
+      type !== "tv" ? tmdbRequest("/discover/movie", { with_genres: genre }) : [],
+      type !== "movie" ? tmdbRequest("/discover/tv", { with_genres: genre }) : [],
       MyList.find({ user: userId }).sort({ createdAt: -1 }).limit(10),
     ]);
 
+    const newest = [...newestMovie, ...newestTV].slice(0, 10);
+    const animated = [...animatedMovie, ...animatedTV].slice(0, 10);
+    const custom = [...customMovie, ...customTV].slice(0, 10);
+
     await Log.create({
       action: "Fetched Homepage Content",
-      user: req.user._id,
+      user: userId,
     });
 
     res.json({
-      personalized,
-      newest,
-      mostWatched,
-      recentReviews,
-      topRated,
-      animated,
-      custom,
-      myList,
+      personalized,    
+      newest,         
+      mostWatched,    
+      recentReviews,   
+      topRated,       
+      animated,       
+      custom,         
+      myList,         
     });
   } catch (err) {
+    console.error("Error in getHomepageContent:", err);
     next(err);
   }
 };

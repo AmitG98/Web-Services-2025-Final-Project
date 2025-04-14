@@ -1,6 +1,18 @@
 import axios from './axiosInstance';
 
-export const getHomepageContent = () => axios.get('/api/programs/home');
+export const fetchHomepageContent = async ({ type, genre } = {}) => {
+    const params = {};
+  
+    if (type) params.type = type;
+    if (genre) params.genre = genre;
+  
+    const response = await axios.get("/api/programs/home", {
+      params,
+      withCredentials: true,
+    });
+  
+    return response.data;
+};
 export const getProgramDetails = (id) => axios.get(`/api/programs/${id}`);
 export const searchPrograms = (params) => axios.get('/api/programs', { params });
 export const getProgramsByType = (type) => axios.get(`/api/programs/type/${type}`);
