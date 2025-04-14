@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { fetchCurrentUser, submitLogin, submitRegister } from "../api/userApi";
+import { fetchCurrentUser, submitLogin, submitRegister } from "../api/authApi";
 import { useSessionContext } from "../context/UserSessionProvider";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -11,15 +11,14 @@ export const useUserLogin = () => {
   return useMutation({
     mutationFn: submitLogin,
     onSuccess: (res, variables) => {
-      const rememberMe = variables.rememberMe || false;
-      if (res?.user && rememberMe) {
+      if (res?.user) {
         login(res.user);
+        if (variables.rememberMe) {
+        }
         toast.success("Welcome", {
           description: `Hello, ${res.user.username}`,
         });
-        res.user.role === "admin"
-          ? navigate("/admin-dashboard")
-          : navigate("/profiles");
+        navigate("/home");
       } else {
         toast.error("No user data found");
       }
@@ -42,9 +41,10 @@ export const useUserRegister = () => {
       toast.success("Registration successful", {
         description: "You can now log in.",
       });
-      navigate("/signin");
+      navigate("/login");
     },
     onError: (err) => {
+      console.error("❌ Registration error from server:", err);
       toast.error("Registration error", {
         description:
           err?.response?.data?.message || "Try again later.",

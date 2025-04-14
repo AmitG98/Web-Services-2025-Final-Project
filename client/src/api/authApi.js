@@ -11,6 +11,6 @@ export const submitRegister = async (userData) => {
 };
 
 export const fetchCurrentUser = async () => {
-  const { data } = await axiosClient.get("/auth/me");
+  const { data } = await axiosClient.get("/auth/profile");
   return data;
 };

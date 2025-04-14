@@ -1,5 +1,5 @@
-const User = require('../models/User');
-const jwt = require('jsonwebtoken');
+const User = require("../models/User");
+const jwt = require("jsonwebtoken");
 const Log = require("../models/Log");
 
 const createToken = (user) => {
@@ -10,18 +10,22 @@ const createToken = (user) => {
 
 const register = async (req, res, next) => {
   try {
-    const { email, phone, password } = req.body;
-
+    const { email, phone, password, role } = req.body;
+    console.log("📦 Register request:", req.body);
     const existingUser = await User.findOne({
       $or: [{ email }, { phone }]
     });
-    if (existingUser) return res.status(400).json({ message: 'Email or phone already in use' });
-
+    if (existingUser) {
+      console.log("⚠️ User already exists:", username);
+      return res.status(400).json({ message: "Email or phone already in use" });
+    }
     if (!/^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(password)) {
+      console.log("❌ Password does not meet policy");
       return res.status(400).json({
-        message: "Password must be at least 8 characters long and include at least one letter and one digit",
+        message:
+          "Password must be at least 8 characters long and include at least one letter and one digit",
       });
-    }    
+    }
 
     const user = new User({ email, phone, password });
     await user.save();
@@ -34,9 +38,16 @@ const register = async (req, res, next) => {
     });
 
     const token = createToken(user);
-    res.cookie('token', token, { httpOnly: true, maxAge: 3600000, sameSite: "strict", secure: process.env.NODE_ENV === "production",});
-    res.status(201).json({ message: 'User registered', userId: user._id });
+    res.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 3600000,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+    });
+    console.log("✅ User registered:", user._id);
+    res.status(201).json({ message: "User registered", userId: user._id });
   } catch (err) {
+    console.error("❗ Error in register:", err);
     next(err);
   }
 };
@@ -57,7 +68,7 @@ const login = async (req, res, next) => {
     }
 
     const token = createToken(user);
-    res.cookie('token', token, {
+    res.cookie("token", token, {
       httpOnly: true,
       maxAge: rememberMe ? 3600000 : undefined,
       secure: process.env.NODE_ENV === "production",
@@ -71,10 +82,19 @@ const login = async (req, res, next) => {
       level: "info",
     });
 
-    res.status(200).json({ message: 'Login successful', user });
+    await Log.create({
+      action: "User Login Success",
+      user: user._id,
+      details: { username },
+      level: "info",
+    });
+
+    console.log("✅ Login successful:", user.username);
+    res.status(200).json({ message: "Login successful", user });
   } catch (err) {
+    console.error("❗ Error in login:", err);
     next(err);
   }
 };
 
-module.exports = {register, login}
+module.exports = { register, login };
