@@ -1,4 +1,4 @@
-import axios from './axiosInstance';
+import axios from './axiosClient';
 
 export const getHomepageContent = () => axios.get('/api/programs/home');
 export const getProgramDetails = (id) => axios.get(`/api/programs/${id}`);

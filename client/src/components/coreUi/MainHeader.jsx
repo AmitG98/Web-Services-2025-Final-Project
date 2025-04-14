@@ -4,12 +4,12 @@ import { useUserAuth } from "../../hooks/useUserAuth";
 import { useGlobalSearch } from "../../hooks/useGlobalSearch";
 import { ChevronsUpDown, Bell, Search } from "lucide-react";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "../../components/ui/dropdown-menu";
+  CusMenuDropdown,
+  CusMenuTrigger,
+  CusMenuContent,
+  CusMenuItem,
+  CusMenuLabel,
+} from "./header/CustomMenuDropdown";
 
 const MainHeader = ({ activePage }) => {
   const { activeUser, logout } = useUserAuth();
@@ -24,7 +24,11 @@ const MainHeader = ({ activePage }) => {
     <header className="w-full px-4 py-3 bg-black/90 text-white flex items-center justify-between shadow-sm">
       <div className="flex items-center gap-8">
         <Link to="/home" className="text-2xl font-bold tracking-wide">
-          StreamX
+          <img
+            src="/Logo.png"
+            alt="Netflix Logo"
+            className="w-28 h-auto object-contain"
+          />
         </Link>
         <nav className="hidden sm:flex gap-6 text-sm">
           <Link
@@ -72,8 +76,8 @@ const MainHeader = ({ activePage }) => {
 
         <Bell className="cursor-pointer" />
 
-        <DropdownMenu>
-          <DropdownMenuTrigger>
+        <CusMenuDropdown>
+          <CusMenuTrigger>
             <div className="flex items-center gap-2 cursor-pointer">
               <img
                 src={activeUser?.avatar}
@@ -82,13 +86,13 @@ const MainHeader = ({ activePage }) => {
               />
               <ChevronsUpDown size={16} />
             </div>
-          </DropdownMenuTrigger>
+          </CusMenuTrigger>
 
-          <DropdownMenuContent className="w-40 bg-white text-black">
-            <DropdownMenuLabel>{activeUser?.username}</DropdownMenuLabel>
-            <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          <CusMenuContent className="w-40 bg-white text-black">
+            <CusMenuLabel>{activeUser?.username}</CusMenuLabel>
+            <CusMenuItem onClick={logout}>Logout</CusMenuItem>
+          </CusMenuContent>
+        </CusMenuDropdown>
       </div>
     </header>
   );
