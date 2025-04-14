@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronsUpDown, Bell, Search } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../../components/ui/dropdown-menu";
 
 const MainHeader = ({ activePage }) => {
   const [input, setInput] = useState("");
@@ -36,6 +37,23 @@ const MainHeader = ({ activePage }) => {
 
         <Bell className="cursor-pointer" />
         
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <div className="flex items-center gap-2 cursor-pointer">
+              <img
+                src={user.avatar}
+                alt="avatar"
+                className="w-8 h-8 rounded-full object-cover"
+              />
+              <ChevronsUpDown size={16} />
+            </div>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent className="w-40 bg-white text-black">
+            <DropdownMenuLabel>{user.username}</DropdownMenuLabel>
+            <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );
