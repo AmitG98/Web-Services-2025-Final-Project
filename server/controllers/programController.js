@@ -1,4 +1,5 @@
 const axios = require("axios");
+require("dotenv").config();
 const Program = require("../models/Program");
 const Review = require("../models/Review");
 const MyList = require("../models/MyList");
