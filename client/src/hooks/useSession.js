@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { fetchCurrentUser, submitLogin, submitRegister } from "../api/userApi";
+import { fetchCurrentUser, submitLogin, submitRegister } from "../api/authApi";
 import { useSessionContext } from "../context/UserSessionProvider";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";

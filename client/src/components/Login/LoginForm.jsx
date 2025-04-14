@@ -85,7 +85,7 @@ const LoginForm = () => {
 
       <div className="font-light">
         <span className="text-gray-300"> New to Netflix? </span>
-        <Link to="/signup" className="cursor-pointer font-semibold">
+        <Link to="/register" className="cursor-pointer font-semibold">
           Sign up now
         </Link>
       </div>
