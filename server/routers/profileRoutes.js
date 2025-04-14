@@ -5,7 +5,8 @@ const {
   getProfiles,
   addProfile,
   updateProfile,
-  deleteProfile
+  deleteProfile,
+  addInteraction
 } = require('../controllers/profileController');
 
 router.use(verifyToken);

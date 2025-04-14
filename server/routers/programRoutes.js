@@ -12,6 +12,7 @@ const {
   checkIfProgramExists,
   searchTmdbDirect,
   getTmdbDetailsPreview,
+  getProgramsByGenreAndType,
 } = require("../controllers/programController");
 
 const { verifyToken, isAdmin } = require("../middleware/authMiddleware");
@@ -35,6 +36,8 @@ router.get("/episodes/:seriesId/:seasonNumber", getSeriesEpisodes);
 
 // Get extra program info: production, images (TMDB)
 router.get("/extras/:type/:id", getExtraProgramInfo);
+
+router.get("/by-genre", getProgramsByGenreAndType);
 
 // ========== ADMIN ROUTES ========== //
 
