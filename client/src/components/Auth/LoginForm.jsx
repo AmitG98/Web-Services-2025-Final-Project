@@ -11,7 +11,7 @@ const LoginForm = () => {
     reset,
   } = useForm({
     defaultValues: {
-      username: "",
+      identifier: "",
       password: "",
       rememberMe: false,
     },
@@ -36,9 +36,9 @@ const LoginForm = () => {
       <input
         className="w-full h-12 p-3 border border-gray-600 rounded bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
         placeholder="Email or phone number"
-        {...register("username", { required: true })}
+        {...register("identifier", { required: true })}
       />
-      {errors.username && (
+      {errors.identifier && (
         <span className="text-red-500 text-sm">
           Please enter a valid email or phone number
         </span>

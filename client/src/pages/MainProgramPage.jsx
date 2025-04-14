@@ -16,16 +16,18 @@ const MainProgramPage = ({ contentType = "all" }) => {
   const randomBanner = bannerOptions?.[randomIndex];
 
   return (
-    <div className="max-w-screen min-h-screen bg-[#141414] text-white overflow-x-hidden relative">
+    <div className="min-h-screen flex flex-col bg-[#141414] text-white overflow-x-hidden">
       <div className="fixed top-0 left-0 w-full z-50">
         <MainHeader activePage={contentType} />
       </div>
 
-      <HighlightBanner program={randomBanner} />
+      <main className="flex-grow pt-24">
+        <HighlightBanner program={randomBanner} />
 
-      <h1 className="text-white text-3xl text-center pt-20">
-        This is the {contentType} page
-      </h1>
+        <h1 className="text-white text-3xl text-center pt-20">
+          This is the {contentType} page
+        </h1>
+      </main>
 
       <MainFooter />
     </div>
