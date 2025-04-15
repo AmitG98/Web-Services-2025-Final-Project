@@ -39,30 +39,30 @@ const MainProgramPage = ({ contentType = "all" }) => {
           />
 
           {/* row3-mostWatched	הכי נצפים השבוע בארץ*/}
-          {/* <ContentRow
+          <ContentRow
             title="Top 10 This Week in Israel"
             queryKey="mostWatched"
             type={contentType}
             setSelectedProgram={setSelectedProgram}
             setMoreInfoOpen={setMoreInfoOpen}
-          /> */}
+          />
 
           {/* row4-userReviews	ביקורות אחרונות של המשתמש */}
-          {/* <ContentRow
+          <ContentRow
             title="Your Recent Reviews"
             queryKey="recentReviews"
             setSelectedProgram={setSelectedProgram}
             setMoreInfoOpen={setMoreInfoOpen}
-          /> */}
+          />
 
           {/* row5-topRated	תוכניות עם דירוג גבוה */}
-          {/* <ContentRow
+          <ContentRow
             title="Critics' Choice"
             queryKey="topRated"
             type={contentType}
             setSelectedProgram={setSelectedProgram}
             setMoreInfoOpen={setMoreInfoOpen}
-          /> */}
+          />
 
           {/* row6-animated	תוכניות מקטגוריית אנימציה - working with DB*/} 
           <ContentRow
@@ -83,12 +83,12 @@ const MainProgramPage = ({ contentType = "all" }) => {
           />
 
           {/* row8-myList	התוכניות האחרונות שנוספו לרשימת הצפייה */}
-          {/* <ContentRow
+          <ContentRow
             title="My Watchlist"
             queryKey="myList"
             setSelectedProgram={setSelectedProgram}
             setMoreInfoOpen={setMoreInfoOpen}
-          /> */}
+          />
 
         </div>
       </main>

@@ -18,13 +18,13 @@ const ContentRow = ({
 
   const content = data?.[queryKey];
 
-  const handleClick = async (program) => {
-    if (profile?._id && program?._id) {
-      await addInteraction(profile._id, program._id, "click");
-    }
-    setSelectedProgram(program);
-    setMoreInfoOpen(true);
-  };
+  // const handleClick = async (program) => {
+  //   if (profile?._id && program?._id) {
+  //     await addInteraction(profile._id, program._id, "click");
+  //   }
+  //   setSelectedProgram(program);
+  //   setMoreInfoOpen(true);
+  // };
 
   if (isLoading) return <Spinner />;
   if (isError || !content) return null;

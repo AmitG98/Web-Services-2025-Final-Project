@@ -1,21 +1,27 @@
-import axios from './axiosClient';
+import axios from "./axiosClient";
 
 export const fetchHomepageContent = async ({ type, genre } = {}) => {
-    const params = {};
-  
-    if (type) params.type = type;
-    if (genre) params.genre = genre;
-    console.log("📡 fetchHomepageContent → sending request with:", params);
+  const params = {};
 
-    const response = await axios.get("/programs/home", {
-      params,
-      withCredentials: true,
-    });
-    
-    console.log("✅ fetchHomepageContent → response:", response.data);
-    return response.data;
+  if (type) params.type = type;
+  if (genre) params.genre = genre;
+  console.log("📡 fetchHomepageContent → sending request with:", params);
+
+  const response = await axios.get("/programs/home", {
+    params,
+    withCredentials: true,
+  });
+
+  console.log("✅ fetchHomepageContent → response:", response.data);
+  return response.data;
 };
 // export const getProgramDetails = (id) => axios.get(`/api/programs/${id}`);
+export const getProgramDetails = async (id) => {
+  console.log("📦 Requesting program details for ID:", id);
+  const response = await axios.get(`/programs/${id}`);
+  return response.data;
+};
+
 // export const searchPrograms = (params) => axios.get('/api/programs', { params });
 // export const getProgramsByType = (type) => axios.get(`/api/programs/type/${type}`);
 // export const getSeriesEpisodes = (seriesId, seasonNumber) => axios.get(`/api/programs/episodes/${seriesId}/${seasonNumber}`);

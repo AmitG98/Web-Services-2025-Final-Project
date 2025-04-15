@@ -3,7 +3,8 @@ import React from "react";
 import Register from "./pages/Register.jsx";
 import Login from "./pages/Login.jsx";
 import MainProgramPage from "./pages/MainProgramPage.jsx";
-import SecureAccess from "./routes/SecureAccess.jsx";
+import MoreInfo from "./pages/MoreInfo.jsx";
+// import SecureAccess from "./routes/SecureAccess.jsx";
 // import Home from "./pages/admin/AdminHome.jsx";
 // import Logs from "./pages/admin/Logs.jsx";
 // import DataManagement from "./pages/admin/DataManagement.jsx";
@@ -76,6 +77,10 @@ const router = createBrowserRouter([
   {
     path: "/tv-shows",
     element: <MainProgramPage contentType="tv" />,
+  },
+  {
+    path: "/program/:id",
+    element: <MoreInfo />,
   },
 ]);
 
