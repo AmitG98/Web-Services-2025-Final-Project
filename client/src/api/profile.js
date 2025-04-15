@@ -1,4 +1,4 @@
-import axios from './axiosInstance';
+import axios from './axiosClient';
 
 export const fetchProfiles = () => axios.get('/api/profiles');
 export const addProfile = (data) => axios.post('/api/profiles', data);
