@@ -9,7 +9,7 @@ import {
   CusMenuContent,
   CusMenuItem,
   CusMenuLabel,
-} from "./header/CustomMenuDropdown";
+} from "./CustomMenuDropdown";
 
 const MainHeader = ({ activePage }) => {
   const { activeUser, logout } = useUserAuth();

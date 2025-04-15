@@ -29,8 +29,8 @@ const LoginForm = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="mt-32 h-3/4 m-5 relative z-30 bg-black/50 p-8 rounded-lg shadow-lg flex flex-col gap-4 w-10/12 lg:w-1/4 max-w-md text-white"
-    >
+      className="relative bg-black/50 p-8 rounded-lg shadow-lg flex flex-col gap-4 max-w-[400px] w-[90%] z-30"
+      >
       <h2 className="text-2xl font-medium">Sign In</h2>
 
       <input

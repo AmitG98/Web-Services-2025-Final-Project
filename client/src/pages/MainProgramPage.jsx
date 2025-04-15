@@ -1,21 +1,15 @@
 import React, { useState } from "react";
 import MainHeader from "../components/coreUi/MainHeader";
 import MainFooter from "../components/coreUi/MainFooter";
+import ContentRow from "../components/coreUi/ContentRow";
 import HighlightBanner from "../components/coreUi/HighlightBanner";
-import { useProgramList } from "../hooks/useProgramList";
-
-import FreshArrivals from "../components/Rows/2-FreshArrivals";
-import TopWeeklyHits from "../components/Rows/3-TopWeeklyHits";
-import RecentReviewsByUser from "../components/Rows/4-RecentReviewsByUser";
-import CriticsChoice from "../components/Rows/5-CriticsChoice";
-import ToonWorld from "../components/Rows/6-ToonWorld";
-import EditorPicks from "../components/Rows/7-EditorPicks";
-import MyWatchlistRow from "../components/Rows/8-MyWatchlistRow";
+import { useHomepagePrograms } from "../hooks/useProgramList";
 
 const MainProgramPage = ({ contentType = "all" }) => {
   const [selectedProgram, setSelectedProgram] = useState(null);
+  const [moreInfoOpen, setMoreInfoOpen] = useState(false);
 
-  const { data: bannerOptions } = useProgramList({
+  const { data: bannerOptions } = useHomepagePrograms({
     query: "popular",
     type: contentType === "all" ? "movie" : contentType,
   });
@@ -32,30 +26,70 @@ const MainProgramPage = ({ contentType = "all" }) => {
       <main className="flex-grow pt-24">
         <HighlightBanner program={randomBanner} />
 
-        {/* <h1 className="text-white text-3xl text-center pt-20">
-          This is the {contentType} page
-        </h1> */}
         <div className="relative z-10 px-3 sm:px-10 lg:px-20 space-y-12 pt-5">
-          {/* <SmartMatches setSelected={setSelectedProgram} type={contentType} /> */}
-          <FreshArrivals
-            setSelectedMovie={setSelectedProgram}
+          {/*row1-recommended	התאמות אישיות למשתמש*/}
+
+          {/* row2-newest	התכנים הכי חדשים בנטפליקס - working with DB */}
+          <ContentRow
+            title="New on Netflix"
+            queryKey="newest"
             type={contentType}
+            setSelectedProgram={setSelectedProgram}
+            setMoreInfoOpen={setMoreInfoOpen}
           />
-          <TopWeeklyHits
-            setSelectedMovie={setSelectedProgram}
+
+          {/* row3-mostWatched	הכי נצפים השבוע בארץ*/}
+          {/* <ContentRow
+            title="Top 10 This Week in Israel"
+            queryKey="mostWatched"
             type={contentType}
-          />
-          <RecentReviewsByUser setSelectedMovie={setSelectedProgram} />
-          <CriticsChoice
-            setSelectedMovie={setSelectedProgram}
+            setSelectedProgram={setSelectedProgram}
+            setMoreInfoOpen={setMoreInfoOpen}
+          /> */}
+
+          {/* row4-userReviews	ביקורות אחרונות של המשתמש */}
+          {/* <ContentRow
+            title="Your Recent Reviews"
+            queryKey="recentReviews"
+            setSelectedProgram={setSelectedProgram}
+            setMoreInfoOpen={setMoreInfoOpen}
+          /> */}
+
+          {/* row5-topRated	תוכניות עם דירוג גבוה */}
+          {/* <ContentRow
+            title="Critics' Choice"
+            queryKey="topRated"
             type={contentType}
-          />
-          <ToonWorld setSelectedMovie={setSelectedProgram} type={contentType} />
-          <EditorPicks
-            setSelectedMovie={setSelectedProgram}
+            setSelectedProgram={setSelectedProgram}
+            setMoreInfoOpen={setMoreInfoOpen}
+          /> */}
+
+          {/* row6-animated	תוכניות מקטגוריית אנימציה - working with DB*/} 
+          <ContentRow
+            title="Animation Zone"
+            queryKey="animated"
             type={contentType}
+            setSelectedProgram={setSelectedProgram}
+            setMoreInfoOpen={setMoreInfoOpen}
           />
-          <MyWatchlistRow setSelectedMovie={setSelectedProgram} />
+
+          {/* row7-custom	תוכניות מקטגוריה לבחירתכם - working with DB */}
+          <ContentRow
+            title="Editor's Picks"
+            queryKey="custom"
+            type={contentType}
+            setSelectedProgram={setSelectedProgram}
+            setMoreInfoOpen={setMoreInfoOpen}
+          />
+
+          {/* row8-myList	התוכניות האחרונות שנוספו לרשימת הצפייה */}
+          {/* <ContentRow
+            title="My Watchlist"
+            queryKey="myList"
+            setSelectedProgram={setSelectedProgram}
+            setMoreInfoOpen={setMoreInfoOpen}
+          /> */}
+
         </div>
       </main>
 
