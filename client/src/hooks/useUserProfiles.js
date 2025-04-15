@@ -1,24 +1,52 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { fetchProfiles, addProfile } from "../api/profile";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { fetchProfiles, addProfile, updateProfile, deleteProfile } from "../api/profile";
 import { toast } from "sonner";
 
 export const useProfilesList = () =>
   useQuery({
     queryKey: ["profiles"],
     queryFn: fetchProfiles,
-    onError: (err) =>
-      toast.error("Couldn't load profiles", {
-        description: err?.response?.data?.message || "Please refresh.",
-      }),
     refetchOnWindowFocus: false,
   });
 
-export const useCreateProfile = () =>
-  useMutation({
+export const useCreateProfile = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
     mutationFn: addProfile,
-    onSuccess: () => toast.success("Profile created!"),
-    onError: (err) =>
-      toast.error("Profile creation failed", {
-        description: err?.response?.data?.message || "Try again.",
-      }),
+    onSuccess: () => {
+      toast.success("Profile added");
+      queryClient.invalidateQueries(["profiles"]); // ✅ רענון נתונים
+    },
+    onError: () => {
+      toast.error("Failed to add profile");
+    },
   });
+};
+
+export const useDeleteProfile = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deleteProfile,
+    onSuccess: () => {
+      toast.success("Profile deleted");
+      queryClient.invalidateQueries(["profiles"]);
+    },
+    onError: () => {
+      toast.error("Failed to delete profile");
+    },
+  });
+};
+
+export const useUpdateProfile = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, newName }) => updateProfile(id, { name: newName }),
+    onSuccess: () => {
+      toast.success("Profile updated");
+      queryClient.invalidateQueries(["profiles"]);
+    },
+    onError: () => {
+      toast.error("Failed to update profile");
+    },
+  });
+};

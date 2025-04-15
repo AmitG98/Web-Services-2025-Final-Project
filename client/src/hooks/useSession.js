@@ -18,10 +18,12 @@ export const useUserLogin = () => {
         toast.success("Welcome", {
           description: `Hello, ${res.user.username}`,
         });
-        navigate("/home");
-      } else {
-        toast.error("No user data found");
-      }
+        if (res.user.role === "Admin") {
+          navigate("/admin-dashboard");
+        } else {
+          navigate("/profiles"); 
+        }
+      } 
     },
     onError: (err) => {
       toast.error("Login error", {

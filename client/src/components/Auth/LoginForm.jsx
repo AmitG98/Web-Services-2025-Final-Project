@@ -1,9 +1,12 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useUserLogin } from "../../hooks/useSession";
 import { Link } from "react-router";
 
 const LoginForm = () => {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -22,7 +25,10 @@ const LoginForm = () => {
   const onSubmit = (data) => {
     console.log("📦 Trying to log in with:", data);
     loginUser(data, {
-      onSuccess: () => reset(), // רק אם ההתחברות הצליחה
+      onSuccess: () => {
+        reset();
+        navigate("/profiles");
+      },
     });
   };
 
