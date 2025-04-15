@@ -55,8 +55,14 @@ const MainHeader = ({ activePage }) => {
           >
             TV Shows
           </Link>
+          <Link to="/new&popular" className="opacity-70">
+            New & Popular
+          </Link>
           <Link to="/my-list" className="opacity-70">
             My List
+          </Link>
+          <Link to="/browse" className="opacity-70">
+            Browse
           </Link>
         </nav>
       </div>
