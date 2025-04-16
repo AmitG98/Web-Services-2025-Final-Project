@@ -18,6 +18,11 @@ const ProfileCard = ({ profile, onSelect, onDelete, onEdit }) => {
       onEdit(profile._id, editedName);
     }
   };
+
+  const handleSelect = () => {
+    onSelect(profile);
+  };
+  
   console.log(
     "Avatar src:",
     `${process.env.REACT_APP_SERVER_URL}/public/${profile.avatar}`
@@ -32,6 +37,7 @@ const ProfileCard = ({ profile, onSelect, onDelete, onEdit }) => {
           )}`}
           alt="avatar"
           className="w-24 h-24 rounded-md object-cover cursor-pointer"
+          onClick={handleSelect}
         />
         <button
           className="absolute top-1 right-1 bg-black/60 p-1 rounded-full text-white hover:bg-red-600"
