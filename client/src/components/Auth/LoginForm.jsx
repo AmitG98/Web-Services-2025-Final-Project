@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { submitLogin } from "../../api/authApi"; // ✅ מייבאת את ה-API
-import { useSessionContext } from "../../context/UserSessionProvider"; // ✅ כדי לעדכן context
-import { toast } from "sonner"; // ✅ כדי להראות toast
+import { submitLogin } from "../../api/authApi"; 
+import { useSessionContext } from "../../context/UserSessionProvider";
+import { toast } from "sonner"; 
 import { Link } from "react-router-dom";
 
 function LoginForm() {
   const navigate = useNavigate();
-  const { login } = useSessionContext(); // ✅ משמש כדי לעדכן context עם המשתמש
-  const [serverError, setServerError] = useState(null); // חדש
+  const { login } = useSessionContext();
+  const [serverError, setServerError] = useState(null);
 
   const {
     register,
@@ -52,22 +52,30 @@ function LoginForm() {
       <h2 className="text-2xl font-medium text-white">Sign In</h2>
 
       <input
-        className="form-input"
+        className="w-full h-12 p-3 border border-gray-600 rounded bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
         placeholder="Email or phone number"
         {...register("identifier", { required: true })}
       />
       {errors.identifier && (
-        <span className="form-error">Please enter a valid email or phone number</span>
+        <span className="text-red-500 text-sm">
+          Please enter a valid email or phone number
+        </span>
       )}
 
       <input
-        type="password"
+        className="w-full h-12 p-3 border border-gray-600 rounded bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
         placeholder="Password"
-        className="form-input"
-        {...register("password", { required: true })}
+        type="password"
+        {...register("password", {
+          required: true,
+          minLength: 4,
+          maxLength: 60,
+        })}
       />
       {errors.password && (
-        <span className="form-error">Password is required</span>
+        <span className="text-red-500 text-sm">
+          Your password must be between 4 and 60 characters.
+        </span>
       )}
       <button
         type="submit"
@@ -108,6 +116,6 @@ function LoginForm() {
       </div>
     </form>
   );
-}
+};
 
 export default LoginForm;

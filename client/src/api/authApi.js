@@ -1,16 +1,16 @@
 import axiosClient from "./axiosClient";
 
 export const submitLogin = async (credentials) => {
-  const { data } = await axiosClient.post("api/auth/login", credentials);
+  const { data } = await axiosClient.post("/auth/login", credentials);
   return data;
 };
 
 export const submitRegister = async (userData) => {
-  const { data } = await axiosClient.post("api/auth/register", userData);
+  const { data } = await axiosClient.post("/auth/register", userData);
   return data;
 };
 
 export const fetchCurrentUser = async () => {
-  const { data } = await axiosClient.get("api/auth/profile");
+  const { data } = await axiosClient.get("/auth/profile");
   return data;
 };
