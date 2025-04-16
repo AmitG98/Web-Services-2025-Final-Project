@@ -5,7 +5,8 @@ const Review = require("../models/Review");
 const MyList = require("../models/MyList");
 const Log = require("../models/Log");
 const { getPersonalizedRecommendations } = require("./recommendationController");
-const { fetchProgramsByGenreAndType } = require("../utils/tmdbUtils");
+const { fetchProgramsByGenreAndType, getTMDBImageUrl } = require("../utils/tmdbUtils");
+const { getTopWatchedInIsrael } = require("../utils/tmdbService");
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
@@ -25,6 +26,16 @@ const tmdbRequest = async (endpoint, params = {}) => {
   return response.data.results || response.data;
 };
 
+const mapImageUrls = (programs) =>
+  programs.map((p) => ({
+    ...p,
+    posterPath: getTMDBImageUrl(p.poster_path || p.posterPath, "w500"),
+    backdropPath: getTMDBImageUrl(p.backdrop_path || p.backdropPath, "w780"),
+}));
+
+const filterWithImage = (items) =>
+  items.filter((item) => item.poster_path || item.backdrop_path || item.posterPath || item.backdropPath);
+
 // ========== HOMEPAGE ROWS ========== //
 const getHomepageContent = async (req, res, next) => {
   try {
@@ -35,22 +46,22 @@ const getHomepageContent = async (req, res, next) => {
     const programFilter = type ? { type } : {};
 
     const [
-      personalized,
+      personalizedRaw,
       newestMovie,
       newestTV,
-      mostWatched,
-      recentReviews,
-      topRated,
+      mostWatchedRaw,
+      recentReviewsRaw,
+      topRatedRaw,
       animatedMovie,
       animatedTV,
       customMovie,
       customTV,
-      myList,
+      myListRaw,
     ] = await Promise.all([
       getPersonalizedRecommendations(userId),
       type !== "tv" ? tmdbRequest("/discover/movie", { sort_by: "release_date.desc" }) : [],
       type !== "movie" ? tmdbRequest("/discover/tv", { sort_by: "first_air_date.desc" }) : [],
-      Program.find(programFilter).sort({ views: -1 }).limit(10),
+      getTopWatchedInIsrael(15),
       Review.find({ user: userId }).sort({ createdAt: -1 }).limit(10),
       Program.find(programFilter).sort({ averageRating: -1 }).limit(10),
       type !== "tv" ? tmdbRequest("/discover/movie", { with_genres: 16 }) : [],
@@ -60,9 +71,23 @@ const getHomepageContent = async (req, res, next) => {
       MyList.find({ user: userId }).sort({ createdAt: -1 }).limit(10),
     ]);
 
-    const newest = [...newestMovie, ...newestTV].slice(0, 10);
-    const animated = [...animatedMovie, ...animatedTV].slice(0, 10);
-    const custom = [...customMovie, ...customTV].slice(0, 10);
+    const newest = filterWithImage([...newestMovie, ...newestTV]).slice(0, 10);
+    const animated = filterWithImage([...animatedMovie, ...animatedTV]).slice(0, 10);
+    const custom = filterWithImage([...customMovie, ...customTV]).slice(0, 10);
+
+    const mostWatched = mapImageUrls(filterWithImage(mostWatchedRaw)).slice(0, 10);
+    const topRated = mapImageUrls(filterWithImage(topRatedRaw)).slice(0, 10);
+    const personalized = mapImageUrls(filterWithImage(personalizedRaw)).slice(0, 10);
+
+    const recentReviews = recentReviewsRaw.map((review) => ({
+      ...review.toObject(),
+      program: mapImageUrls(filterWithImage([review.program]))[0],
+    }));
+
+    const myList = myListRaw.map((item) => ({
+      ...item.toObject(),
+      program: mapImageUrls(filterWithImage([item.program]))[0],
+    }));
 
     await Log.create({
       action: "Fetched Homepage Content",
@@ -70,14 +95,14 @@ const getHomepageContent = async (req, res, next) => {
     });
 
     res.json({
-      personalized,    
-      newest,         
-      mostWatched,    
-      recentReviews,   
-      topRated,       
-      animated,       
-      custom,         
-      myList,         
+      personalized,
+      newest: mapImageUrls(newest),
+      mostWatched,
+      recentReviews,
+      topRated,
+      animated: mapImageUrls(animated),
+      custom: mapImageUrls(custom),
+      myList,
     });
   } catch (err) {
     console.error("Error in getHomepageContent:", err);
@@ -94,12 +119,6 @@ const getProgramDetails = async (req, res, next) => {
     if (!program) {
       program = await tmdbRequest(`/tv/${id}`) || await tmdbRequest(`/movie/${id}`);
     }
-
-    await Log.create({
-      action: "Viewed Program Details",
-      user: req.user._id,
-      details: { programId: id },
-    });
 
     res.json(program);
   } catch (err) {

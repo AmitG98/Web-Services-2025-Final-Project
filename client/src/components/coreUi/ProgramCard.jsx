@@ -14,12 +14,27 @@ const ProgramCard = ({ program }) => {
     navigate(`/program/${program._id || program.id}`);
   };
 
+  const imageUrl =
+  program.posterPath;
+
+  console.log("🧩 Image Debug:", {
+    title: program.title || program.name,
+    posterPath: program.posterPath,
+    rawPoster: program.poster_path,
+    fallbackUsed: !program.posterPath && !program.poster_path,
+    imageUrl,
+  });
+
   return (
     <img
-      src={`https://image.tmdb.org/t/p/w500${program.poster_path}`}
+      src={imageUrl}
       alt={program.title || program.name}
-      className="min-w-[218px] h-[123px] object-cover cursor-pointer"
+      className="min-w-[218px] h-[123px] object-cover cursor-pointer rounded hover:scale-105 transition-transform"
       onClick={handleClick}
+      onError={(e) => {
+        e.target.onerror = null;
+        e.target.src = "/fallback-poster.png";
+      }}
     />
   );
 };

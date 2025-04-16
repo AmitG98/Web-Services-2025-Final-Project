@@ -25,7 +25,6 @@ const ContentRow = ({
   //   setSelectedProgram(program);
   //   setMoreInfoOpen(true);
   // };
-
   if (isLoading) return <Spinner />;
   if (isError || !content) return null;
 
@@ -36,16 +35,16 @@ const ContentRow = ({
       <div className="relative flex items-center w-full">
       <div className="w-full flex gap-2 overflow-x-auto whitespace-nowrap scroll-smooth scrollbar-hide">
       {content.map((program) => (
-            <ProgramCard
-              key={program._id || program.id}
-              program={program}
-              onClick={() => {
-                addInteraction(profile?._id, program._id, "click");
-                setSelectedProgram(program);
-                setMoreInfoOpen(true);
-              }}
-            />
-          ))}
+          <ProgramCard
+            key={`${program.type}-${program.tmdbId || program._id || program.id}`}
+            program={program}
+            onClick={() => {
+              addInteraction(profile?._id, program._id, "click");
+              setSelectedProgram(program);
+              setMoreInfoOpen(true);
+            }}
+          />
+        ))}
         </div>
       </div>
     </section>
