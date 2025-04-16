@@ -10,6 +10,7 @@ import MoreInfo from "./MoreInfo";
 const ProgramGridPage = ({ title, query, type = "movie", activePage }) => {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const { activeUser } = useUserAuth();
+  console.log("🔁 ProgramGridPage is rendering");
 
   const myListResult = useMyMovieList(activeUser?._id);
   const programListResult = useProgramList(type);
@@ -18,6 +19,11 @@ const ProgramGridPage = ({ title, query, type = "movie", activePage }) => {
   const { data: programData, isLoading, error } = isMyList
     ? myListResult
     : programListResult;
+
+  console.log("📦 Loaded programs:", programData);
+  if (programData?.length) {
+    console.log("Poster URLs:", programData.map(p => p.posterPath));
+  }
 
   if (isLoading) return <Spinner />;
   if (error)
@@ -36,14 +42,12 @@ const ProgramGridPage = ({ title, query, type = "movie", activePage }) => {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
             {programData.map((movie) => (
               <div
-                key={movie.id}
+                key={movie.tmdbId || movie._id || movie.id}
                 className="cursor-pointer flex flex-col"
                 onClick={() => setSelectedMovie(movie.id)}
               >
                 <img
-                  src={`https://image.tmdb.org/t/p/w500${
-                    movie.posterPath || movie.poster_path
-                  }`}
+                  src={movie.posterPath || "/fallback-poster.png"}
                   alt={movie.title || "Movie Poster"}
                   className="min-w-[160px] sm:min-w-[180px] md:min-w-[218px] h-[120px] md:h-[123px] object-cover rounded hover:scale-105 transition-transform"
                   onError={(e) => {

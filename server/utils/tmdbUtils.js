@@ -1,5 +1,11 @@
 const axios = require("axios");
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
+const TMDB_BASE_URL = "https://api.themoviedb.org/3";
+
+const getTMDBImageUrl = (path, size = "original") => {
+  if (!path) return null;
+  return `https://image.tmdb.org/t/p/${size}${path}`;
+};
 
 const tmdbRequest = async (endpoint, params = {}) => {
   const config = {
@@ -22,4 +28,4 @@ const fetchProgramsByGenreAndType = async (type = "movie", genreId = 28) => {
   });
 };
 
-module.exports = { fetchProgramsByGenreAndType };
+module.exports = {TMDB_BASE_URL, tmdbRequest, fetchProgramsByGenreAndType, getTMDBImageUrl};
