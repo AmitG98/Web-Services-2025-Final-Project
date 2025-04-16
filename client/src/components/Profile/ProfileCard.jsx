@@ -18,15 +18,20 @@ const ProfileCard = ({ profile, onSelect, onDelete, onEdit }) => {
       onEdit(profile._id, editedName);
     }
   };
+  console.log(
+    "Avatar src:",
+    `${process.env.REACT_APP_SERVER_URL}/public/${profile.avatar}`
+  );
 
   return (
     <div className="relative flex flex-col items-center gap-2">
       <div className="relative group">
         <img
-          src={avatars[profile.avatarIndex]}
-          alt="Profile avatar"
+          src={`${process.env.REACT_APP_SERVER_URL}/public/${encodeURIComponent(
+            profile.avatar
+          )}`}
+          alt="avatar"
           className="w-24 h-24 rounded-md object-cover cursor-pointer"
-          onClick={() => onSelect(profile)}
         />
         <button
           className="absolute top-1 right-1 bg-black/60 p-1 rounded-full text-white hover:bg-red-600"

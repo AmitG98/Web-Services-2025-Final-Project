@@ -1,13 +1,18 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useProfilesList, useCreateProfile, useDeleteProfile, useUpdateProfile } from "../hooks/useUserProfiles";
-import { CustomButton } from "../components/ui/CustomButton";
-import ProfileCard from "../components/ui/ProfileCard";
+import {
+  useProfilesList,
+  useCreateProfile,
+  useDeleteProfile,
+  useUpdateProfile,
+} from "../hooks/useUserProfiles";
+import ProfileCard from "../components/Profile/ProfileCard";
+import AddProfileButton from "../components/Profile/AddProfileButton";
 
 const Profiles = () => {
   const navigate = useNavigate();
   const { data } = useProfilesList();
-  const profiles = data?.profiles || [];
+  const profiles = data || [];
 
   const { mutate: createProfile } = useCreateProfile();
   const { mutate: deleteProfile } = useDeleteProfile();
@@ -37,7 +42,7 @@ const Profiles = () => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white p-6">
       <h1 className="text-3xl font-semibold mb-6">Who's watching?</h1>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+      <div className="flex gap-6 justify-center flex-wrap sm:flex-nowrap">
         {profiles?.map((profile) => (
           <ProfileCard
             key={profile._id}
@@ -49,14 +54,7 @@ const Profiles = () => {
         ))}
 
         {profiles?.length < 5 && (
-          <CustomButton
-            onClick={handleAddProfile}
-            type="secondary"
-            size="lg"
-            className="text-2xl font-bold w-28 h-28"
-          >
-            +
-          </CustomButton>
+          <AddProfileButton onAdd={(name) => createProfile({ name })} />
         )}
       </div>
     </div>
