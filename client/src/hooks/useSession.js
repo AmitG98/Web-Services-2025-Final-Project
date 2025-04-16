@@ -34,6 +34,27 @@ export const useUserLogin = () => {
   });
 };
 
+// export const useUserRegister = () => {
+//   const navigate = useNavigate();
+
+//   return useMutation({
+//     mutationFn: submitRegister,
+//     onSuccess: () => {
+//       toast.success("Registration successful", {
+//         description: "You can now log in.",
+//       });
+//       navigate("/login");
+//     },
+//     onError: (err) => {
+//       console.error("❌ Registration error from server:", err);
+//       toast.error("Registration error", {
+//         description:
+//           err?.response?.data?.message || "Try again later.",
+//       });
+//     },
+//   });
+// };
+
 export const useUserQuery = () => {
   const { login, setCurrentUser } = useSessionContext();
   const navigate = useNavigate();

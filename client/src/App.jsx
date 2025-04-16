@@ -5,7 +5,7 @@ import Login from "./pages/Login.jsx";
 import MainProgramPage from "./pages/MainProgramPage.jsx";
 import MoreInfo from "./pages/MoreInfo.jsx";
 import Profiles from "./pages/Profiles.jsx";
-import NewAndPopular from "./pages/NewAndPopular.jsx";
+import ProgramGridPage from "./pages/ProgramGridPage.jsx";
 // import SecureAccess from "./routes/SecureAccess.jsx";
 // import Home from "./pages/admin/AdminHome.jsx";
 // import Logs from "./pages/admin/Logs.jsx";
@@ -87,7 +87,25 @@ const router = createBrowserRouter([
   },
   {
     path: "/new&popular",
-    element: <NewAndPopular />,
+    element: (
+      <ProgramGridPage
+        title="New & Popular"
+        query="newest"
+        type="movie"
+        activePage="new&popular"
+      />
+    ),
+  },
+  {
+    path: "/my-list",
+    element: (
+      <ProgramGridPage
+        title="My List"
+        query="myList"
+        type="movie"
+        activePage="my-list"
+      />
+    ),
   },
 ]);
 

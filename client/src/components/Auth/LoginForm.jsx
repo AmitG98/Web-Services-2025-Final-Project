@@ -6,7 +6,7 @@ import { useSessionContext } from "../../context/UserSessionProvider"; // ✅ כ
 import { toast } from "sonner"; // ✅ כדי להראות toast
 import { Link } from "react-router-dom";
 
-const LoginForm = () => {
+function LoginForm() {
   const navigate = useNavigate();
   const { login } = useSessionContext(); // ✅ משמש כדי לעדכן context עם המשתמש
   const [serverError, setServerError] = useState(null); // חדש
@@ -52,30 +52,22 @@ const LoginForm = () => {
       <h2 className="text-2xl font-medium text-white">Sign In</h2>
 
       <input
-        className="w-full h-12 p-3 border border-gray-600 rounded bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
+        className="form-input"
         placeholder="Email or phone number"
         {...register("identifier", { required: true })}
       />
       {errors.identifier && (
-        <span className="text-red-500 text-sm">
-          Please enter a valid email or phone number
-        </span>
+        <span className="form-error">Please enter a valid email or phone number</span>
       )}
 
       <input
-        className="w-full h-12 p-3 border border-gray-600 rounded bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
-        placeholder="Password"
         type="password"
-        {...register("password", {
-          required: true,
-          minLength: 4,
-          maxLength: 60,
-        })}
+        placeholder="Password"
+        className="form-input"
+        {...register("password", { required: true })}
       />
       {errors.password && (
-        <span className="text-red-500 text-sm">
-          Your password must be between 4 and 60 characters.
-        </span>
+        <span className="form-error">Password is required</span>
       )}
       <button
         type="submit"
@@ -116,6 +108,6 @@ const LoginForm = () => {
       </div>
     </form>
   );
-};
+}
 
 export default LoginForm;
