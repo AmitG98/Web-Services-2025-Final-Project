@@ -4,15 +4,15 @@ import MainHeader from "../components/coreUi/MainHeader";
 import MainFooter from "../components/coreUi/MainFooter";
 import { useProgramList } from "../hooks/useProgramList";
 import { useMyMovieList } from "../hooks/useMyMovieList";
-import { useAuth } from "../context/authContext";
+import { useUserAuth } from "../hooks/useUserAuth";
 import MoreInfo from "./MoreInfo";
 
 const ProgramGridPage = ({ title, query, type = "movie", activePage }) => {
   const [selectedMovie, setSelectedMovie] = useState(null);
-  const { user } = useAuth();
+  const { activeUser } = useUserAuth();
 
-  const myListResult = useMyMovieList(user._id);
-  const programListResult = useProgramList(type, query);
+  const myListResult = useMyMovieList(activeUser?._id);
+  const programListResult = useProgramList(type);
 
   const isMyList = query === "myList";
   const { data: programData, isLoading, error } = isMyList
