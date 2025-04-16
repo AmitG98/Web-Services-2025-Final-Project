@@ -10,7 +10,7 @@ const createToken = (user) => {
 
 const register = async (req, res, next) => {
   try {
-    const { email, phone, password} = req.body;
+    const { email, phone, password, role} = req.body;
 
     if (!email && !phone) {
       return res.status(400).json({ message: "Email or phone is required" });
@@ -35,14 +35,17 @@ const register = async (req, res, next) => {
       });
     }
 
-    const user = new User({ email, phone, password });
+    const allowedRoles = ["user", "admin", "moderator"];
+    const userRole = allowedRoles.includes(role) ? role : "user";
+
+    const user = new User({ email, phone, password, role: userRole });
     await user.save();
 
     await Log.create({
       action: "User Registered",
       user: user._id,
       level: "info",
-      details: { email: user.email, phone: user.phone },
+      details: { email: user.email, phone: user.phone, role: user.role },
     });
 
     const token = createToken(user);
