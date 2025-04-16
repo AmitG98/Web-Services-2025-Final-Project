@@ -21,6 +21,15 @@ const MainHeader = ({ activePage }) => {
     if (e.key === "Enter") updateSearch(input);
   };
 
+  const navLinks = [
+    { label: "Home", to: "/home", key: "all" },
+    { label: "Movies", to: "/movies", key: "movie" },
+    { label: "TV Shows", to: "/tv-shows", key: "tv" },
+    { label: "New & Popular", to: "/new&popular", key: "new&popular" },
+    { label: "My List", to: "/my-list", key: "my-list" },
+    { label: "Browse", to: "/browse", key: "browse" },
+  ];
+
   return (
     <header className="w-full px-4 py-3 bg-black/90 text-white flex items-center justify-between shadow-sm">
       <div className="flex items-center gap-8">
@@ -31,40 +40,21 @@ const MainHeader = ({ activePage }) => {
             className="w-28 h-auto object-contain"
           />
         </Link>
+
         <nav className="hidden sm:flex gap-6 text-sm">
-          <Link
-            to="/home"
-            className={
-              activePage === "all" ? "font-bold underline" : "opacity-70"
-            }
-          >
-            Home
-          </Link>
-          <Link
-            to="/movies"
-            className={
-              activePage === "movie" ? "font-bold underline" : "opacity-70"
-            }
-          >
-            Movies
-          </Link>
-          <Link
-            to="/tv-shows"
-            className={
-              activePage === "tv" ? "font-bold underline" : "opacity-70"
-            }
-          >
-            TV Shows
-          </Link>
-          <Link to="/new&popular" className="opacity-70">
-            New & Popular
-          </Link>
-          <Link to="/my-list" className="opacity-70">
-            My List
-          </Link>
-          <Link to="/browse" className="opacity-70">
-            Browse
-          </Link>
+          {navLinks.map((link) => (
+            <Link
+              key={link.key}
+              to={link.to}
+              className={
+                activePage === link.key
+                  ? "font-bold underline"
+                  : "opacity-70 hover:opacity-100 transition"
+              }
+            >
+              {link.label}
+            </Link>
+          ))}
         </nav>
       </div>
 

@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { submitRegister } from "../../api/authApi";
 
 function RegisterForm() {
   const navigate = useNavigate();
@@ -25,7 +26,9 @@ function RegisterForm() {
     const identifier = formData.identifier.trim();
     const { password, role } = formData;
 
-    const payload = { password, role };
+    const payload = { password, role }; // 
+
+    console.log("🚀 Payload to register:", payload);
 
     if (isEmail(identifier)) {
       payload.email = identifier;
@@ -37,19 +40,7 @@ function RegisterForm() {
     }
 
     try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Registration failed");
-      }
-
+      const data = await submitRegister(payload);
       toast.success("Account created! Please sign in.");
       reset();
       navigate("/login");
