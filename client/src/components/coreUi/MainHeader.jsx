@@ -15,6 +15,7 @@ const MainHeader = ({ activePage }) => {
   const { activeUser, logout } = useUserAuth();
   const { updateSearch } = useGlobalSearch();
   const [input, setInput] = useState("");
+  const selectedProfile = JSON.parse(sessionStorage.getItem("selectedProfile"));
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") updateSearch(input);
@@ -86,9 +87,9 @@ const MainHeader = ({ activePage }) => {
           <CusMenuTrigger>
             <div className="flex items-center gap-2 cursor-pointer">
               <img
-                src={activeUser?.avatar}
-                alt="avatar"
-                className="w-8 h-8 rounded-full object-cover"
+                src={`${process.env.REACT_APP_SERVER_URL}/public/${selectedProfile?.avatar}`}
+                alt="Profile Avatar"
+                className="w-10 h-10 rounded-full"
               />
               <ChevronsUpDown size={16} />
             </div>

@@ -15,15 +15,14 @@ export const fetchHomepageContent = async ({ type, genre } = {}) => {
   console.log("✅ fetchHomepageContent → response:", response.data);
   return response.data;
 };
-// export const getProgramDetails = (id) => axios.get(`/api/programs/${id}`);
 export const getProgramDetails = async (id) => {
   console.log("📦 Requesting program details for ID:", id);
   const response = await axios.get(`/programs/${id}`);
   return response.data;
 };
+export const getProgramsByType = (type) => axios.get(`/programs/type/${type}`);
 
 // export const searchPrograms = (params) => axios.get('/api/programs', { params });
-// export const getProgramsByType = (type) => axios.get(`/api/programs/type/${type}`);
 // export const getSeriesEpisodes = (seriesId, seasonNumber) => axios.get(`/api/programs/episodes/${seriesId}/${seasonNumber}`);
 // export const getExtraInfo = (type, id) => axios.get(`/api/programs/extras/${type}/${id}`);
 // export const createProgram = (data) => axios.post('/api/programs/admin/create', data);

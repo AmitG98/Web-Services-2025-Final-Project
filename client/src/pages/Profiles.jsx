@@ -8,9 +8,12 @@ import {
 } from "../hooks/useUserProfiles";
 import ProfileCard from "../components/Profile/ProfileCard";
 import AddProfileButton from "../components/Profile/AddProfileButton";
+import { useSessionContext } from "../context/UserSessionProvider";
 
 const Profiles = () => {
   const navigate = useNavigate();
+  const { chooseProfile } = useSessionContext();
+
   const { data } = useProfilesList();
   const profiles = data || [];
 
@@ -19,7 +22,8 @@ const Profiles = () => {
   const { mutate: updateProfile } = useUpdateProfile();
 
   const handleSelect = (profile) => {
-    localStorage.setItem("selectedProfile", JSON.stringify(profile));
+    sessionStorage.setItem("selectedProfile", JSON.stringify(profile)); // הוספה כאן
+    chooseProfile(profile);
     navigate("/home");
   };
 
@@ -29,13 +33,6 @@ const Profiles = () => {
 
   const handleEdit = (id, newName) => {
     updateProfile({ id, newName });
-  };
-
-  const handleAddProfile = () => {
-    const newName = prompt("Enter a name for the new profile:");
-    if (newName) {
-      createProfile({ name: newName });
-    }
   };
 
   return (
@@ -54,7 +51,9 @@ const Profiles = () => {
         ))}
 
         {profiles?.length < 5 && (
-          <AddProfileButton onAdd={(name) => createProfile({ name })} />
+          <AddProfileButton
+            onAdd={(name) => createProfile({ name })}
+          />
         )}
       </div>
     </div>

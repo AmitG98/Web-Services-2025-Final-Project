@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import { useUserRegister } from "../../hooks/useSession";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
@@ -13,27 +12,51 @@ function RegisterForm() {
     reset,
   } = useForm({
     defaultValues: {
-      username: "",
+      identifier: "",
       password: "",
-      role: "user",
+      role: "User",
     },
   });
 
-  const { mutate: createUser, isLoading, isError } = useUserRegister();
+  const isEmail = (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+  const isPhone = (val) => /^\d{9,15}$/.test(val);
 
-  const onSubmit = (formData) => {
-    console.log("📨 Register formData:", formData);
-    createUser(formData, {
-      onSuccess: () => {
-        toast.success("Account created! Please sign in.");
-        reset();
-        navigate("/login");
-      },
-      onError: (err) => {
-        console.error("❌ Registration error in form:", err);
-        toast.error("Registration failed.");
-      },
-    });
+  const onSubmit = async (formData) => {
+    const identifier = formData.identifier.trim();
+    const { password, role } = formData;
+
+    const payload = { password, role };
+
+    if (isEmail(identifier)) {
+      payload.email = identifier;
+    } else if (isPhone(identifier)) {
+      payload.phone = identifier;
+    } else {
+      toast.error("Please enter a valid email or phone number");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Registration failed");
+      }
+
+      toast.success("Account created! Please sign in.");
+      reset();
+      navigate("/login");
+    } catch (err) {
+      console.error("❌ Registration error:", err.message);
+      toast.error(err.message || "Registration failed");
+    }
   };
 
   return (
@@ -45,10 +68,10 @@ function RegisterForm() {
           type="text"
           placeholder="Email or Phone"
           className="form-input"
-          {...register("username", { required: "Username is required" })}
+          {...register("identifier", { required: "Email or phone is required" })}
         />
-        {errors.username && (
-          <p className="form-error">Please provide a valid email or phone</p>
+        {errors.identifier && (
+          <p className="form-error">{errors.identifier.message}</p>
         )}
 
         <input
@@ -67,6 +90,9 @@ function RegisterForm() {
             },
           })}
         />
+        {errors.password && (
+          <p className="form-error">{errors.password.message}</p>
+        )}
 
         <select
           {...register("role", { required: true })}
@@ -76,13 +102,9 @@ function RegisterForm() {
           <option value="Admin">Admin</option>
         </select>
 
-        <button type="submit" className="form-button" disabled={isLoading}>
-          {isLoading ? "Creating..." : "Register"}
+        <button type="submit" className="form-button">
+          Register
         </button>
-
-        {isError && (
-          <p className="form-error">Something went wrong. Try again.</p>
-        )}
 
         <p className="recaptcha-text">
           This page is protected by reCAPTCHA.{" "}

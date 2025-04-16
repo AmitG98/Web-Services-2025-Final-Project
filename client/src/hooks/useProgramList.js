@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 // import { useQuery, useMutation } from "@tanstack/react-query";
 import {
   fetchHomepageContent,
-  // getProgramsByType,
+  getProgramsByType,
   // getProgramDetails,
   // createProgram,
   // searchPrograms
@@ -23,17 +23,17 @@ export const useHomepagePrograms = (filters = {}) => {
   });
 };
 
-// // General program list by filters
-// export const useProgramList = (type = "movie") =>
-//   useQuery({
-//     queryKey: ["programs", type],
-//     queryFn: () => getProgramsByType(type),
-//     onError: () =>
-//       toast.error("Failed to load programs", {
-//         description: "Something went wrong!",
-//       }),
-//     refetchOnWindowFocus: false,
-//   });
+// General program list by filters
+export const useProgramList = (type = "movie") =>
+  useQuery({
+    queryKey: ["programs", type],
+    queryFn: () => getProgramsByType(type),
+    onError: () =>
+      toast.error("Failed to load programs", {
+        description: "Something went wrong!",
+      }),
+    refetchOnWindowFocus: false,
+  });
 
 // // Program details by ID
 // export const useProgramDetails = (id, type = "movie") =>

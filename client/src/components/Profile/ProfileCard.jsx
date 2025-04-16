@@ -1,13 +1,6 @@
 import React, { useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 
-const avatars = [
-  "/avatars/avatar-1.png",
-  "/avatars/avatar-2.png",
-  "/avatars/avatar-3.png",
-  "/avatars/avatar-4.png",
-];
-
 const ProfileCard = ({ profile, onSelect, onDelete, onEdit }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(profile.name);
@@ -22,11 +15,6 @@ const ProfileCard = ({ profile, onSelect, onDelete, onEdit }) => {
   const handleSelect = () => {
     onSelect(profile);
   };
-  
-  console.log(
-    "Avatar src:",
-    `${process.env.REACT_APP_SERVER_URL}/public/${profile.avatar}`
-  );
 
   return (
     <div className="relative flex flex-col items-center gap-2">

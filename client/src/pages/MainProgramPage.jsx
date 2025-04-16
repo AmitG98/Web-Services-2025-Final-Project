@@ -6,8 +6,8 @@ import HighlightBanner from "../components/coreUi/HighlightBanner";
 import { useHomepagePrograms } from "../hooks/useProgramList";
 
 const MainProgramPage = ({ contentType = "all" }) => {
-  const [selectedProgram, setSelectedProgram] = useState(null);
-  const [moreInfoOpen, setMoreInfoOpen] = useState(false);
+  const [setSelectedProgram] = useState(null);
+  const [setMoreInfoOpen] = useState(false);
 
   const { data: bannerOptions } = useHomepagePrograms({
     query: "popular",
