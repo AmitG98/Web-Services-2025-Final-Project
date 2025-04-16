@@ -9,10 +9,9 @@ import MoreInfo from "./MoreInfo";
 
 const ProgramGridPage = ({ title, query, type = "movie", activePage }) => {
   const [selectedMovie, setSelectedMovie] = useState(null);
-  const { activeUser } = useUserAuth();
-  console.log("🔁 ProgramGridPage is rendering");
+  // const { activeUser } = useUserAuth();
 
-  const myListResult = useMyMovieList(activeUser?._id);
+  const myListResult = useMyMovieList();
   const programListResult = useProgramList(type);
 
   const isMyList = query === "myList";

@@ -3,11 +3,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getMyList, addToMyList, removeFromMyList } from "../api/myList";
 import { toast } from "sonner";
 
-export const useMyMovieList = (userId) => {
+export const useMyMovieList = () => {
   return useQuery({
-    queryKey: ["my-list", userId],
-    queryFn: () => getMyList(userId),
-    enabled: Boolean(userId),
+    queryKey: ["MyList"],
+    queryFn: () => getMyList(),
   });
 };
 
@@ -20,7 +19,7 @@ export const useAddToMyList = () => {
     onSuccess: () => {
       toast.dismiss();
       toast.success("Added to your list!");
-      queryClient.invalidateQueries({ queryKey: ["my-list"] });
+      queryClient.invalidateQueries({ queryKey: ["myList"] });
     },
     onError: (error) => {
       toast.dismiss();

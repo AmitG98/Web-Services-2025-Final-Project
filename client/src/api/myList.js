@@ -1,6 +1,7 @@
 import axios from './axiosClient';
 
-export const getMyList = () => axios.get('/api/my-list');
-export const addToMyList = (programId, data) => axios.post(`/api/my-list/${programId}`, data);
-export const removeFromMyList = (programId) => axios.delete(`/api/my-list/${programId}`);
-export const getRecentMyList = () => axios.get('/api/my-list/recent');
+export const getMyList = () =>
+    axios.get('/myList').then(res => res.data.items);
+export const addToMyList = (data) => axios.post('/myList', data);
+export const removeFromMyList = (programId) => axios.delete(`/myList/${programId}`);
+export const getRecentMyList = () => axios.get('/myList/recent');

@@ -1,5 +1,6 @@
 const axios = require("axios");
 require("dotenv").config();
+const mongoose = require('mongoose');
 const Program = require("../models/Program");
 const Review = require("../models/Review");
 const MyList = require("../models/MyList");
@@ -12,28 +13,6 @@ const { buildRecentReviews, getTopRated, buildMyList } = require("../utils/progr
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 
-// ========== UTILS ========== //
-// const tmdbRequest = async (endpoint, params = {}) => {
-//   const url = `${TMDB_BASE_URL}${endpoint}`;
-//   const config = {
-//     params: {
-//       api_key: TMDB_API_KEY,
-//       language: "en-US",
-//       page: 1,
-//       ...params,
-//     },
-//   };
-//   const response = await axios.get(url, config);
-//   return response.data.results || response.data;
-// };
-
-// const mapImageUrls = (programs) =>
-//   programs.map((p) => ({
-//     ...p,
-//     posterPath: getTMDBImageUrl(p.poster_path || p.posterPath, "w500"),
-//     backdropPath: getTMDBImageUrl(p.backdrop_path || p.backdropPath, "w780"),
-// }));
-
 const filterWithImage = (items) =>
   items.filter((item) => item.poster_path || item.backdrop_path || item.posterPath || item.backdropPath);
 
@@ -42,8 +21,7 @@ const getHomepageContent = async (req, res, next) => {
   try {
     const userId = req.user._id;
     const type = req.query.type; // "movie", "tv", or undefined
-    const genre = req.query.genre || 28;
-
+    const genre = req.query.genre || 35;
     const programFilter = type ? { type } : {};
 
     const [
@@ -75,7 +53,7 @@ const getHomepageContent = async (req, res, next) => {
       type !== "movie"
         ? tmdbRequest("/discover/tv", { with_genres: genre })
         : [],
-      MyList.find({ user: userId }).sort({ createdAt: -1 }).limit(10),
+      MyList.find({ userId: new mongoose.Types.ObjectId(userId) }).sort({ createdAt: -1 }).limit(10),
     ]);
 
     const recentReviews = await buildRecentReviews(recentReviewsRaw);
@@ -442,4 +420,5 @@ module.exports = {
   searchTmdbDirect,
   getTmdbDetailsPreview,
   getProgramsByGenreAndType,
+  filterWithImage
 };

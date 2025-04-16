@@ -1,5 +1,8 @@
 const MyList = require("../models/MyList");
 const Log = require("../models/Log");
+const { buildMyList } = require("../utils/programUtils");
+const { filterWithImage } = require("./programController");
+
 
 const addToList = async (req, res, next) => {
   try {
@@ -50,28 +53,17 @@ const removeFromList = async (req, res, next) => {
 
 const getMyList = async (req, res, next) => {
   try {
-    const { limit = 20, offset = 0 } = req.query;
+    const rawItems = await MyList.find({ userId: req.user._id }).sort({ createdAt: -1 });
+    const items = await buildMyList(rawItems);
+    const filtered = filterWithImage(items);
 
-    const items = await MyList.find({ userId: req.user._id })
-      .sort({ createdAt: -1 })
-      .skip(parseInt(offset))
-      .limit(parseInt(limit));
-
-    const total = await MyList.countDocuments({ userId: req.user._id });
-
-    res.status(200).json({
-      items,
-      pagination: {
-        total,
-        limit: parseInt(limit),
-        offset: parseInt(offset),
-        hasMore: parseInt(offset) + parseInt(limit) < total,
-      },
-    });
+    res.status(200).json({ items: filtered });
   } catch (err) {
+    console.error("Error in getMyList:", err.message);
     next(err);
   }
 };
+
 
 const getRecentItems = async (req, res, next) => {
   try {

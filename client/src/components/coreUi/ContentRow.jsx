@@ -4,7 +4,7 @@ import ProgramCard from "./ProgramCard";
 import Spinner from "../ui/spinner";
 // import MoreInfo from "../../pages/MoreInfo";
 import { useProfilesList } from "../../hooks/useUserProfiles";
-import { addInteraction } from "../../api/logs";
+// import { addInteraction } from "../../api/logs";
 
 const ContentRow = ({
   title,
