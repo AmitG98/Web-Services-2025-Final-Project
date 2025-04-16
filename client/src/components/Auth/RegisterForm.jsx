@@ -1,9 +1,11 @@
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { submitRegister } from "../../api/authApi";
 
 function RegisterForm() {
+  const [serverError, setServerError] = useState(null);
   const navigate = useNavigate();
 
   const {
@@ -23,6 +25,7 @@ function RegisterForm() {
   const isPhone = (val) => /^\d{9,15}$/.test(val);
 
   const onSubmit = async (formData) => {
+    setServerError(null);
     const identifier = formData.identifier.trim();
     const { password, role } = formData;
 
@@ -45,13 +48,16 @@ function RegisterForm() {
     });
     console.log("📦 Final payload:", payload);
     try {
-      const data = await submitRegister(payload);
+      await submitRegister(payload);
       toast.success("Account created! Please sign in.");
       reset();
       navigate("/login");
     } catch (err) {
-      console.error("Registration error:", err.message);
-      toast.error(err.message || "Registration failed");
+      const message =
+        err?.response?.data?.message || "Registration failed. Please try again.";
+      console.error("Registration error:", message);
+      setServerError(message); // מציגים שגיאה מתחת לטופס
+      toast.error("Registration failed", { description: message });
     }
   };
 
@@ -101,6 +107,9 @@ function RegisterForm() {
         <button type="submit" className="form-button">
           Register
         </button>
+        {serverError && (
+          <p className="form-error text-center mt-2">{serverError}</p>
+        )}
 
         <p className="recaptcha-text">
           This page is protected by reCAPTCHA.{" "}

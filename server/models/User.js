@@ -3,8 +3,8 @@ const bcrypt = require('bcrypt');
 const { Schema, model } = mongoose;
 
 const userSchema = new Schema({
-  email: { type: String, sparse: true, unique: true, lowercase: true, trim: true, match: [/^\S+@\S+\.\S+$/, 'Invalid email format']},
-  phone: { type: String, sparse: true, unique: true, match: [/^\+?\d{10,15}$/, 'Invalid phone number'], },
+  email: { type: String, sparse: true, default: undefined, unique: true, lowercase: true, trim: true, match: [/^\S+@\S+\.\S+$/, 'Invalid email format']},
+  phone: { type: String, sparse: true, default: undefined, unique: true, match: [/^\+?\d{10,15}$/, 'Invalid phone number'], },
   password: { type: String,required: true, minlength: 8, validate: {
       validator: function (v) {
       return /^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(v);

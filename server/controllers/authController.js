@@ -39,7 +39,7 @@ const register = async (req, res, next) => {
 
     const userData = { password, role: userRole };
     if (email) userData.email = email;
-    if (phone) userData.phone = phone;
+    if (phone != null) userData.phone = phone;
 
     const user = new User(userData);
     await user.save();
