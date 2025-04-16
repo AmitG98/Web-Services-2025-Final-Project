@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import MainHeader from "../components/coreUi/MainHeader";
 import MainFooter from "../components/coreUi/MainFooter";
 import ContentRow from "../components/coreUi/ContentRow";
-import HighlightBanner from "../components/coreUi/HighlightBanner";
+import HeroSection from "../components/coreUi/HeroSection";
 import { useHomepagePrograms } from "../hooks/useProgramList";
 
 const MainProgramPage = ({ contentType = "all" }) => {
@@ -15,19 +15,26 @@ const MainProgramPage = ({ contentType = "all" }) => {
   });
 
   const randomIndex = Math.floor(Math.random() * (bannerOptions?.length || 0));
-  const randomBanner = bannerOptions?.[randomIndex];
-
+  const randomBanner = bannerOptions?.[randomIndex] || {
+    title: "House Of Ninjas",
+    overview:
+      "Years after retiring from their formidable ninja lives, a dysfunctional family must return to shadowy missions to counteract a string of looming threats.",
+    backdrop_path: "HouseOfNinjas-Hero.png",
+  };  
+  console.log("🎬 randomBanner:", randomBanner);
+  
   return (
     <div className="min-h-screen flex flex-col bg-[#141414] text-white overflow-x-hidden">
       <div className="fixed top-0 left-0 w-full z-50">
         <MainHeader activePage={contentType} />
       </div>
 
-      <main className="flex-grow pt-24">
-        <HighlightBanner program={randomBanner} />
+      <main className="flex-grow pt-0">
+        <HeroSection program={randomBanner} />
 
         <div className="relative z-10 px-3 sm:px-10 lg:px-20 space-y-12 pt-5">
           {/*row1-recommended	התאמות אישיות למשתמש*/}
+
 
           {/* row2-newest	התכנים הכי חדשים בנטפליקס - working with DB */}
           <ContentRow
@@ -64,7 +71,7 @@ const MainProgramPage = ({ contentType = "all" }) => {
             setMoreInfoOpen={setMoreInfoOpen}
           />
 
-          {/* row6-animated	תוכניות מקטגוריית אנימציה - working with DB*/} 
+          {/* row6-animated	תוכניות מקטגוריית אנימציה - working with DB*/}
           <ContentRow
             title="Animation Zone"
             queryKey="animated"
@@ -89,7 +96,6 @@ const MainProgramPage = ({ contentType = "all" }) => {
             setSelectedProgram={setSelectedProgram}
             setMoreInfoOpen={setMoreInfoOpen}
           />
-
         </div>
       </main>
 

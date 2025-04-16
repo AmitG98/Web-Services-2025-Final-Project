@@ -33,9 +33,9 @@ const ContentRow = ({
     <section className="mt-8 w-full">
       <h3 className="font-medium text-[20px] mb-3 relative z-10">{title}</h3>
 
-      <div className="relative flex items-center w-full">
-      <div className="w-full flex gap-2 overflow-x-auto whitespace-nowrap scroll-smooth scrollbar-hide">
-      {content.map((program) => (
+      <div className="relative w-full overflow-x-auto scroll-smooth">
+        <div className="inline-flex gap-2 px-2">
+          {content.map((program) => (
             <ProgramCard
               key={program._id || program.id}
               program={program}

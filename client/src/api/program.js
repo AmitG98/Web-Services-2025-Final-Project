@@ -5,18 +5,18 @@ export const fetchHomepageContent = async ({ type, genre } = {}) => {
 
   if (type) params.type = type;
   if (genre) params.genre = genre;
-  console.log("📡 fetchHomepageContent → sending request with:", params);
+  // console.log("📡 fetchHomepageContent → sending request with:", params);
 
   const response = await axios.get("/programs/home", {
     params,
     withCredentials: true,
   });
 
-  console.log("✅ fetchHomepageContent → response:", response.data);
+  // console.log("✅ fetchHomepageContent → response:", response.data);
   return response.data;
 };
 export const getProgramDetails = async (id) => {
-  console.log("📦 Requesting program details for ID:", id);
+  // console.log("📦 Requesting program details for ID:", id);
   const response = await axios.get(`/programs/${id}`);
   return response.data;
 };

@@ -11,7 +11,7 @@ import { toast } from "sonner";
 
 // Homepage content
 export const useHomepagePrograms = (filters = {}) => {
-  console.log("📤 Sending request to /programs/home with filters:", filters);
+  // console.log("📤 Sending request to /programs/home with filters:", filters);
   return useQuery({
     queryKey: ["homepage-programs", filters],
     queryFn: () => fetchHomepageContent(filters),
