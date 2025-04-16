@@ -34,11 +34,14 @@ const register = async (req, res, next) => {
           "Password must be at least 8 characters long and include at least one letter and one digit",
       });
     }
-
     const allowedRoles = ["user", "admin", "moderator"];
     const userRole = allowedRoles.includes(role) ? role : "user";
 
-    const user = new User({ email, phone, password, role: userRole });
+    const userData = { password, role: userRole };
+    if (email) userData.email = email;
+    if (phone) userData.phone = phone;
+
+    const user = new User(userData);
     await user.save();
 
     await Log.create({
@@ -70,7 +73,7 @@ const login = async (req, res, next) => {
     if (!identifier || !password) {
       return res.status(400).json({ message: "Identifier and password are required" });
     }
-
+    console.log(`test 1 ${identifier}`);
     const user = await User.findOne({
       $or: [
         { email: identifier },
@@ -86,6 +89,7 @@ const login = async (req, res, next) => {
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
+    console.log("test2");
 
     await Log.create({
       action: "User Logged In",
@@ -93,6 +97,7 @@ const login = async (req, res, next) => {
       level: "info",
       details: { email: user.email, phone: user.phone },
     });
+    console.log("test3");
 
     const token = createToken(user);
     res.cookie("token", token, {
