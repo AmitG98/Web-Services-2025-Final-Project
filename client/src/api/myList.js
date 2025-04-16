@@ -1,4 +1,4 @@
-import axios from './axiosInstance';
+import axios from './axiosClient';
 
 export const getMyList = () => axios.get('/api/my-list');
 export const addToMyList = (programId, data) => axios.post(`/api/my-list/${programId}`, data);

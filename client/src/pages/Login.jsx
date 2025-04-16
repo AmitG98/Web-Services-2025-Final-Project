@@ -1,16 +1,14 @@
 import React from "react";
-import LoginLayout from "../components/Login/LoginLayout";
-import LoginForm from "../components/Login/LoginForm";
-import Footer from "../components/Footer/Footer";
+import AuthLayout from "../components/Auth/AuthLayout";
+import LoginForm from "../components/Auth/LoginForm";
 
 const Login = () => {
   return (
-    <LoginLayout>
+    <AuthLayout>
       <div className="flex flex-col items-center z-30 relative">
         <LoginForm />
-        <Footer />
       </div>
-    </LoginLayout>
+    </AuthLayout>
   );
 };
 

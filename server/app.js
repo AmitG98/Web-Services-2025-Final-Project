@@ -18,7 +18,7 @@ const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 
-app.use("/public", express.static(path.join(__dirname, "../public")));
+app.use("/public", express.static(path.join(__dirname, "public")));
 
 app.use(cors({ origin: ["http://localhost:3000"], credentials: true }));
 app.use(express.json());
@@ -40,6 +40,10 @@ app.use("/api/recommendations", recommendationRoutes);
 
 app.use((req, res) => {
   res.status(404).send("Page wasn't found");
+});
+
+app.get("/debug", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/yellow.png"));
 });
 
 app.use(errorHandler);

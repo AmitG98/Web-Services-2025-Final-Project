@@ -1,4 +1,4 @@
-import axios from './axiosInstance';
+import axios from './axiosClient';
 
 export const addReview = (data) => axios.post('/api/reviews', data);
 export const getReviewsByProgram = (programId) => axios.get(`/api/reviews/program/${programId}`);

@@ -58,28 +58,23 @@ const getProfiles = async (req, res, next) => {
 const addProfile = async (req, res, next) => {
   try {
     const userId = req.user._id;
-
     const existingProfiles = await Profile.find({ user: userId }).limit(6);
     if (existingProfiles.length >= 5) {
       return res.status(400).json({ message: "You can only create up to 5 profiles." });
     }
-
     const randomAvatar = getRandomAvatar();
     const newProfile = new Profile({
       ...req.body,
       user: userId,
       avatar: randomAvatar,
     });
-
     await newProfile.save();
-
     await Log.create({
       action: "Profile Created",
       user: userId,
       details: { profileId: newProfile._id, name: newProfile.name, avatar: newProfile.avatar },
       level: "info"
     });    
-
     res.status(201).json({
       message: "New profile added successfully",
       data: newProfile,
@@ -93,24 +88,20 @@ const updateProfile = async (req, res, next) => {
   try {
     const { profileId } = req.params;
     const { name } = req.body;
-
     const updatedProfile = await Profile.findOneAndUpdate(
       { _id: profileId, user: req.user._id },
       { name },
       { new: true }
     );
-
     if (!updatedProfile) {
       return res.status(404).json({ message: 'Profile not found' });
     }
-
     await Log.create({
       action: "Profile Updated",
       user: req.user._id,
       details: { profileId, updatedFields: { name } },
       level: "info"
     });
-
     res.status(200).json(updatedProfile);
   } catch (err) {
     next(err);
@@ -120,23 +111,19 @@ const updateProfile = async (req, res, next) => {
 const deleteProfile = async (req, res, next) => {
   try {
     const { profileId } = req.params;
-
     const deletedProfile = await Profile.findOneAndDelete({
       _id: profileId,
       user: req.user._id,
     });
-
     if (!deletedProfile) {
       return res.status(404).json({ message: "Profile not found" });
     }
-
     await Log.create({
       action: "Profile Deleted",
       user: req.user._id,
       details: { profileId },
       level: "warn"
     });    
-
     res.status(204).end();
   } catch (err) {
     next(err);

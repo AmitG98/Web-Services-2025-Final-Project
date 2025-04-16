@@ -1,9 +1,12 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useUserLogin } from "../../hooks/useSession";
 import { Link } from "react-router";
 
 const LoginForm = () => {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -11,7 +14,7 @@ const LoginForm = () => {
     reset,
   } = useForm({
     defaultValues: {
-      username: "",
+      identifier: "",
       password: "",
       rememberMe: false,
     },
@@ -22,23 +25,26 @@ const LoginForm = () => {
   const onSubmit = (data) => {
     console.log("📦 Trying to log in with:", data);
     loginUser(data, {
-      onSuccess: () => reset(), // רק אם ההתחברות הצליחה
+      onSuccess: () => {
+        reset();
+        navigate("/profiles");
+      },
     });
   };
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="mt-32 h-3/4 m-5 relative z-30 bg-black/50 p-8 rounded-lg shadow-lg flex flex-col gap-4 w-10/12 lg:w-1/4 max-w-md text-white"
-    >
+      className="relative bg-black/50 p-8 rounded-lg shadow-lg flex flex-col gap-4 max-w-[400px] w-[90%] z-30"
+      >
       <h2 className="text-2xl font-medium">Sign In</h2>
 
       <input
         className="w-full h-12 p-3 border border-gray-600 rounded bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
         placeholder="Email or phone number"
-        {...register("username", { required: true })}
+        {...register("identifier", { required: true })}
       />
-      {errors.username && (
+      {errors.identifier && (
         <span className="text-red-500 text-sm">
           Please enter a valid email or phone number
         </span>
