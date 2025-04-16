@@ -26,7 +26,9 @@ function RegisterForm() {
     const identifier = formData.identifier.trim();
     const { password, role } = formData;
 
-    const payload = { password, role };
+    const payload = { password, role }; // 
+
+    console.log("🚀 Payload to register:", payload);
 
     if (isEmail(identifier)) {
       payload.email = identifier;
