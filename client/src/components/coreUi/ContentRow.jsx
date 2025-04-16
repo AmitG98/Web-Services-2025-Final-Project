@@ -36,12 +36,7 @@ const ContentRow = ({
           {content.map((program) => (
             <ProgramCard
               key={`${program.type}-${program.tmdbId || program._id || program.id}`}
-              program={program}
-              // onClick={() => {
-              //   addInteraction(profile?._id, program._id, "click");
-              //   setSelectedProgram(program);
-              //   setMoreInfoOpen(true);
-              // }}
+              program={program.program || program}
             />
           ))}
         </div>

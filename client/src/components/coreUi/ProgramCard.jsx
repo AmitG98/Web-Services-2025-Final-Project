@@ -17,8 +17,17 @@ const ProgramCard = ({ program }) => {
     navigate(`/program/${id}`);
   };
 
-  const imageUrl = program.posterPath;
+  const imageUrl =
+  program.posterPath;
 
+  // console.log("🧩 Image Debug:", {
+  //   title: program.title || program.name,
+  //   posterPath: program.posterPath,
+  //   rawPoster: program.poster_path,
+  //   fallbackUsed: !program.posterPath && !program.poster_path,
+  //   imageUrl,
+  // });
+  
   return (
     <img
       src={imageUrl}

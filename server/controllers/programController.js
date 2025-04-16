@@ -4,39 +4,35 @@ const Program = require("../models/Program");
 const Review = require("../models/Review");
 const MyList = require("../models/MyList");
 const Log = require("../models/Log");
-const {
-  getPersonalizedRecommendations,
-} = require("./recommendationController");
-const {
-  fetchProgramsByGenreAndType,
-  getTMDBImageUrl,
-} = require("../utils/tmdbUtils");
+const { getPersonalizedRecommendations } = require("./recommendationController");
+const { fetchProgramsByGenreAndType, tmdbRequest, mapImageUrls, fetchTmdbDetails } = require("../utils/tmdbUtils");
 const { getTopWatchedInIsrael } = require("../utils/tmdbService");
+const { buildRecentReviews, getTopRated, buildMyList } = require("../utils/programUtils");
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 
 // ========== UTILS ========== //
-const tmdbRequest = async (endpoint, params = {}) => {
-  const url = `${TMDB_BASE_URL}${endpoint}`;
-  const config = {
-    params: {
-      api_key: TMDB_API_KEY,
-      language: "en-US",
-      page: 1,
-      ...params,
-    },
-  };
-  const response = await axios.get(url, config);
-  return response.data.results || response.data;
-};
+// const tmdbRequest = async (endpoint, params = {}) => {
+//   const url = `${TMDB_BASE_URL}${endpoint}`;
+//   const config = {
+//     params: {
+//       api_key: TMDB_API_KEY,
+//       language: "en-US",
+//       page: 1,
+//       ...params,
+//     },
+//   };
+//   const response = await axios.get(url, config);
+//   return response.data.results || response.data;
+// };
 
-const mapImageUrls = (programs) =>
-  programs.map((p) => ({
-    ...p,
-    posterPath: getTMDBImageUrl(p.poster_path || p.posterPath, "w500"),
-    backdropPath: getTMDBImageUrl(p.backdrop_path || p.backdropPath, "w780"),
-  }));
+// const mapImageUrls = (programs) =>
+//   programs.map((p) => ({
+//     ...p,
+//     posterPath: getTMDBImageUrl(p.poster_path || p.posterPath, "w500"),
+//     backdropPath: getTMDBImageUrl(p.backdrop_path || p.backdropPath, "w780"),
+// }));
 
 const filterWithImage = (items) =>
   items.filter(
@@ -77,8 +73,10 @@ const getHomepageContent = async (req, res, next) => {
         ? tmdbRequest("/discover/tv", { sort_by: "first_air_date.desc" })
         : [],
       getTopWatchedInIsrael(15),
-      Review.find({ user: userId }).sort({ createdAt: -1 }).limit(10),
-      Program.find(programFilter).sort({ averageRating: -1 }).limit(10),
+      Review.find({ user: userId, media: { $type: "string" } })
+        .sort({ createdAt: -1 })
+        .limit(10),
+      getTopRated(type || "movie", 10),
       type !== "tv" ? tmdbRequest("/discover/movie", { with_genres: 16 }) : [],
       type !== "movie" ? tmdbRequest("/discover/tv", { with_genres: 16 }) : [],
       type !== "tv"
@@ -90,6 +88,7 @@ const getHomepageContent = async (req, res, next) => {
       MyList.find({ user: userId }).sort({ createdAt: -1 }).limit(10),
     ]);
 
+    const recentReviews = await buildRecentReviews(recentReviewsRaw);
     const newest = filterWithImage([...newestMovie, ...newestTV]).slice(0, 10);
     const animated = filterWithImage([...animatedMovie, ...animatedTV]).slice(
       0,
@@ -107,15 +106,7 @@ const getHomepageContent = async (req, res, next) => {
       10
     );
 
-    const recentReviews = recentReviewsRaw.map((review) => ({
-      ...review.toObject(),
-      program: mapImageUrls(filterWithImage([review.program]))[0],
-    }));
-
-    const myList = myListRaw.map((item) => ({
-      ...item.toObject(),
-      program: mapImageUrls(filterWithImage([item.program]))[0],
-    }));
+    const myList = await buildMyList(myListRaw);
 
     await Log.create({
       action: "Fetched Homepage Content",
@@ -153,7 +144,7 @@ const getProgramDetails = async (req, res) => {
       });
       return res.status(200).json(response.data);
     } catch (tvErr) {
-      console.warn("⚠️ TV fetch failed, trying as Movie...");
+      console.warn("⚠ TV fetch failed, trying as Movie...");
     }
     url = `${TMDB_BASE_URL}/movie/${tmdbId}`;
     const response = await axios.get(url, {
@@ -166,9 +157,9 @@ const getProgramDetails = async (req, res) => {
     return res.status(200).json(response.data);
 
   } catch (err) {
-    console.error("❌ getProgramDetails failed:", err.message);
-    return res.status(500).json({ message: "Failed to fetch program details" });
-  }
+    console.error("getProgramDetails failed:", err.message);
+    return res.status(500).json({ message: "Failed to fetch program details" });
+  }
 };
 
 // ========== TMDB SEARCH/DISCOVERY ========== //
@@ -343,7 +334,7 @@ const createProgramManually = async (req, res) => {
     res.status(201).json({ message: "Program created", program: saved });
   } catch (err) {
     console.error("Error creating program:", err.message);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -419,30 +410,6 @@ const searchTmdbDirect = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: "Error searching TMDB" });
   }
-};
-
-// ========== PREVIEW TMDB DETAILS WITHOUT SAVE ==========
-const fetchTmdbDetails = async (tmdbId, type) => {
-  if (!tmdbId || !["movie", "tv"].includes(type)) {
-    throw new Error("Invalid TMDB ID or type");
-  }
-
-  const url = `${TMDB_BASE_URL}/${type}/${tmdbId}`;
-  const response = await axios.get(url, {
-    params: {
-      api_key: TMDB_API_KEY,
-      language: "en-US",
-      append_to_response: "credits,images",
-    },
-  });
-
-  const data = response.data;
-  const exists = await Program.findOne({ tmdbId: Number(tmdbId) });
-
-  return {
-    ...data,
-    existsInDb: !!exists,
-  };
 };
 
 const getTmdbDetailsPreview = async (req, res) => {

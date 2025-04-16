@@ -23,8 +23,7 @@ const { verifyToken, isAdmin } = require("../middleware/authMiddleware");
 router.get("/home", verifyToken, getHomepageContent);
 
 // Get a single program (DB or TMDB)
-// router.get("/:id", verifyToken, getProgramDetails);
-router.get("/tmdb/:tmdbId", getProgramDetails); // ← פתוח לכל משתמש
+router.get("/tmdb/:tmdbId", verifyToken, getProgramDetails);
 
 // Search or discover programs (TMDB)
 router.get("/", searchOrDiscoverPrograms);
