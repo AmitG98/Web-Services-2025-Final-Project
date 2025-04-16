@@ -1,16 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useUserLogin } from "../../hooks/useSession";
-import { Link } from "react-router";
+import { submitLogin } from "../../api/authApi"; // ✅ מייבאת את ה-API
+import { useSessionContext } from "../../context/UserSessionProvider"; // ✅ כדי לעדכן context
+import { toast } from "sonner"; // ✅ כדי להראות toast
+import { Link } from "react-router-dom";
 
 const LoginForm = () => {
   const navigate = useNavigate();
+  const { login } = useSessionContext(); // ✅ משמש כדי לעדכן context עם המשתמש
+  const [serverError, setServerError] = useState(null); // חדש
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     reset,
   } = useForm({
     defaultValues: {
@@ -20,16 +24,24 @@ const LoginForm = () => {
     },
   });
 
-  const { mutate: loginUser, isLoading, isError } = useUserLogin();
+  const onSubmit = async (data) => {
+    setServerError(null);
+    try {
+      const res = await submitLogin(data);
 
-  const onSubmit = (data) => {
-    console.log("📦 Trying to log in with:", data);
-    loginUser(data, {
-      onSuccess: () => {
+      if (res?.user) {
+        login(res.user);
+        toast.success(`Welcome, ${res.user.username || res.user.email}`);
+        navigate(res.user.role === "admin" ? "/admin-dashboard" : "/profiles");
         reset();
-        navigate("/profiles");
-      },
-    });
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      const message =
+        err?.response?.data?.message || "Something went wrong. Try again.";
+      toast.error("Login failed", { description: message });
+      setServerError(message); // פה מציגים שגיאה מתחת לטופס
+    }
   };
 
   return (
@@ -37,7 +49,7 @@ const LoginForm = () => {
       onSubmit={handleSubmit(onSubmit)}
       className="relative bg-black/50 p-8 rounded-lg shadow-lg flex flex-col gap-4 max-w-[400px] w-[90%] z-30"
       >
-      <h2 className="text-2xl font-medium">Sign In</h2>
+      <h2 className="text-2xl font-medium text-white">Sign In</h2>
 
       <input
         className="w-full h-12 p-3 border border-gray-600 rounded bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
@@ -65,23 +77,21 @@ const LoginForm = () => {
           Your password must be between 4 and 60 characters.
         </span>
       )}
-
       <button
         type="submit"
         className="w-full h-12 bg-red-600 text-white rounded font-bold hover:bg-red-700 transition"
-        disabled={isLoading}
+        disabled={isSubmitting}
       >
-        {isLoading ? "Signing In..." : "Sign In"}
+        {isSubmitting ? "Signing In..." : "Sign In"}
       </button>
-
-      {isError && (
-        <div className="text-red-500 text-sm">Login failed. Try again.</div>
+      {serverError && (
+        <div className="text-red-500 text-sm text-center mt-2">
+          {serverError}
+        </div>
       )}
-
-      <div className="text-center font-light">Forget Password?</div>
-
+      <div className="text-center font-light text-white">Forget Password?</div>
       <div>
-        <label className="flex items-center gap-2">
+        <label className="flex items-center gap-2 text-white">
           <input
             type="checkbox"
             {...register("rememberMe")}
@@ -93,8 +103,8 @@ const LoginForm = () => {
 
       <div className="font-light">
         <span className="text-gray-300"> New to Netflix? </span>
-        <Link to="/register" className="cursor-pointer font-semibold">
-          Sign up now
+        <Link to="/register" className="cursor-pointer font-semibold text-white">
+          Sign up now.
         </Link>
       </div>
 

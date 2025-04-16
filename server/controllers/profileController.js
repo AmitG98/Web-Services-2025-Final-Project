@@ -1,4 +1,5 @@
 const Profile = require('../models/Profile');
+const Program = require('../models/Program');
 const Log = require("../models/Log");
 
 const AVATAR_OPTIONS = [

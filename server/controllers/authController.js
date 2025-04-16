@@ -73,7 +73,6 @@ const login = async (req, res, next) => {
     if (!identifier || !password) {
       return res.status(400).json({ message: "Identifier and password are required" });
     }
-    console.log(`test 1 ${identifier}`);
     const user = await User.findOne({
       $or: [
         { email: identifier },
@@ -82,14 +81,13 @@ const login = async (req, res, next) => {
     });
 
     if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(404).json({ message: "User not found" });
     }
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "Incorrect password" });
     }
-    console.log("test2");
 
     await Log.create({
       action: "User Logged In",
@@ -97,7 +95,6 @@ const login = async (req, res, next) => {
       level: "info",
       details: { email: user.email, phone: user.phone },
     });
-    console.log("test3");
 
     const token = createToken(user);
     res.cookie("token", token, {
