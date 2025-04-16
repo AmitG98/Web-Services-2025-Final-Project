@@ -15,11 +15,12 @@ export const fetchHomepageContent = async ({ type, genre } = {}) => {
   // console.log("✅ fetchHomepageContent → response:", response.data);
   return response.data;
 };
+
 export const getProgramDetails = async (id) => {
-  // console.log("📦 Requesting program details for ID:", id);
   const response = await axios.get(`/programs/${id}`);
   return response.data;
 };
+
 export const getProgramsByType = (type) => axios.get(`/programs/type/${type}`);
 
 // export const searchPrograms = (params) => axios.get('/api/programs', { params });

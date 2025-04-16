@@ -6,8 +6,8 @@ import HeroSection from "../components/coreUi/HeroSection";
 import { useHomepagePrograms } from "../hooks/useProgramList";
 
 const MainProgramPage = ({ contentType = "all" }) => {
-  const [setSelectedProgram] = useState(null);
-  const [setMoreInfoOpen] = useState(false);
+  const [selectedProgram, setSelectedProgram] = useState(null);
+  const [moreInfoOpen, setMoreInfoOpen] = useState(false);
 
   const { data: bannerOptions } = useHomepagePrograms({
     query: "popular",
@@ -20,9 +20,9 @@ const MainProgramPage = ({ contentType = "all" }) => {
     overview:
       "Years after retiring from their formidable ninja lives, a dysfunctional family must return to shadowy missions to counteract a string of looming threats.",
     backdrop_path: "HouseOfNinjas-Hero.png",
-  };  
+  };
   console.log("🎬 randomBanner:", randomBanner);
-  
+
   return (
     <div className="min-h-screen flex flex-col bg-[#141414] text-white overflow-x-hidden">
       <div className="fixed top-0 left-0 w-full z-50">
@@ -34,7 +34,6 @@ const MainProgramPage = ({ contentType = "all" }) => {
 
         <div className="relative z-10 px-3 sm:px-10 lg:px-20 space-y-12 pt-5">
           {/*row1-recommended	התאמות אישיות למשתמש*/}
-
 
           {/* row2-newest	התכנים הכי חדשים בנטפליקס - working with DB */}
           <ContentRow
