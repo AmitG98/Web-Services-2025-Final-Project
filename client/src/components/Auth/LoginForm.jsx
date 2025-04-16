@@ -1,11 +1,13 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useUserLogin } from "../../hooks/useSession";
-import { Link } from "react-router";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { submitLogin } from "../../api/authApi";
+import { useUserAuth } from "../../context/useUserAuth";
 
-const LoginForm = () => {
+function LoginForm() {
   const navigate = useNavigate();
+  const { login } = useUserAuth();
 
   const {
     register,
@@ -20,92 +22,92 @@ const LoginForm = () => {
     },
   });
 
-  const { mutate: loginUser, isLoading, isError } = useUserLogin();
+  const isEmail = (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+  const isPhone = (val) => /^\d{9,15}$/.test(val);
 
-  const onSubmit = (data) => {
-    console.log("📦 Trying to log in with:", data);
-    loginUser(data, {
-      onSuccess: () => {
+  const onSubmit = async (formData) => {
+    const identifier = formData.identifier.trim();
+    const { password } = formData;
+
+    const payload = { password };
+
+    if (isEmail(identifier)) {
+      payload.email = identifier;
+    } else if (isPhone(identifier)) {
+      payload.phone = identifier;
+    } else {
+      toast.error("Please enter a valid email or phone number");
+      return;
+    }
+
+    try {
+      const data = await submitLogin(payload);
+
+      if (data?.user) {
+        login(data.user); // שמירה ב־sessionStorage
+        toast.success("Welcome back!");
+
         reset();
-        navigate("/profiles");
-      },
-    });
+
+        if (data.user.role === "Admin") {
+          navigate("/admin-dashboard");
+        } else {
+          navigate("/profiles");
+        }
+      } else {
+        toast.error("Invalid credentials");
+      }
+    } catch (err) {
+      console.error("❌ Login error:", err.message);
+      toast.error(err.message || "Login failed");
+    }
   };
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="relative bg-black/50 p-8 rounded-lg shadow-lg flex flex-col gap-4 max-w-[400px] w-[90%] z-30"
-      >
-      <h2 className="text-2xl font-medium">Sign In</h2>
+    >
+      <h2 className="text-2xl font-medium text-white">Sign In</h2>
 
       <input
-        className="w-full h-12 p-3 border border-gray-600 rounded bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
+        className="form-input"
         placeholder="Email or phone number"
         {...register("identifier", { required: true })}
       />
       {errors.identifier && (
-        <span className="text-red-500 text-sm">
-          Please enter a valid email or phone number
-        </span>
+        <span className="form-error">Please enter a valid email or phone number</span>
       )}
 
       <input
-        className="w-full h-12 p-3 border border-gray-600 rounded bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
-        placeholder="Password"
         type="password"
-        {...register("password", {
-          required: true,
-          minLength: 4,
-          maxLength: 60,
-        })}
+        placeholder="Password"
+        className="form-input"
+        {...register("password", { required: true })}
       />
       {errors.password && (
-        <span className="text-red-500 text-sm">
-          Your password must be between 4 and 60 characters.
-        </span>
+        <span className="form-error">Password is required</span>
       )}
 
-      <button
-        type="submit"
-        className="w-full h-12 bg-red-600 text-white rounded font-bold hover:bg-red-700 transition"
-        disabled={isLoading}
-      >
-        {isLoading ? "Signing In..." : "Sign In"}
+      <label className="flex items-center gap-2 text-white">
+        <input
+          type="checkbox"
+          {...register("rememberMe")}
+          className="form-checkbox"
+        />
+        Remember me
+      </label>
+
+      <button type="submit" className="form-button">
+        Sign In
       </button>
 
-      {isError && (
-        <div className="text-red-500 text-sm">Login failed. Try again.</div>
-      )}
-
-      <div className="text-center font-light">Forget Password?</div>
-
-      <div>
-        <label className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            {...register("rememberMe")}
-            className="w-4 h-4 bg-transparent border border-gray-400 rounded-sm appearance-none checked:text-white flex items-center justify-center before:content-['✔'] before:hidden checked:before:block before:text-white before:font-bold before:text-xs"
-          />
-          Remember me
-        </label>
-      </div>
-
-      <div className="font-light">
-        <span className="text-gray-300"> New to Netflix? </span>
-        <Link to="/register" className="cursor-pointer font-semibold">
-          Sign up now
-        </Link>
-      </div>
-
-      <div className="text-gray-400 text-sm font-thin">
-        This page is protected by Google reCAPTCHA to ensure you're not a robot{" "}
-        <a className="text-blue-600" href="/">
-          Learn more
-        </a>
+      <div className="text-white text-sm text-center font-light">
+        New to Netflix?{" "}
+        <a href="/register" className="text-blue-400 font-semibold">Sign up now</a>
       </div>
     </form>
   );
-};
+}
 
 export default LoginForm;
