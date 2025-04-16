@@ -11,19 +11,13 @@ const ProgramCard = ({ program }) => {
     if (profile?._id && program?._id) {
       await addInteraction(profile._id, program._id, "click");
     }
-    navigate(`/program/${program._id || program.id}`);
+    console.log("🧩 program object in ProgramCard:", program);
+    const id = program.id; // רק TMDB ID
+    console.log("🧩 TMDB ID in ProgramCard:", id);
+    navigate(`/program/${id}`);
   };
 
-  const imageUrl =
-  program.posterPath;
-
-  console.log("🧩 Image Debug:", {
-    title: program.title || program.name,
-    posterPath: program.posterPath,
-    rawPoster: program.poster_path,
-    fallbackUsed: !program.posterPath && !program.poster_path,
-    imageUrl,
-  });
+  const imageUrl = program.posterPath;
 
   return (
     <img

@@ -5,7 +5,7 @@ import MainFooter from "../components/coreUi/MainFooter";
 import { useProgramList } from "../hooks/useProgramList";
 import { useMyMovieList } from "../hooks/useMyMovieList";
 import { useUserAuth } from "../hooks/useUserAuth";
-import MoreInfo from "./MoreInfo";
+import MoreInfo from './MoreInfo';
 
 const ProgramGridPage = ({ title, query, type = "movie", activePage }) => {
   const [selectedMovie, setSelectedMovie] = useState(null);

@@ -23,7 +23,8 @@ const { verifyToken, isAdmin } = require("../middleware/authMiddleware");
 router.get("/home", verifyToken, getHomepageContent);
 
 // Get a single program (DB or TMDB)
-router.get("/:id", verifyToken, getProgramDetails);
+// router.get("/:id", verifyToken, getProgramDetails);
+router.get("/tmdb/:tmdbId", getProgramDetails); // ← פתוח לכל משתמש
 
 // Search or discover programs (TMDB)
 router.get("/", searchOrDiscoverPrograms);
@@ -52,5 +53,6 @@ router.get("/admin/search", verifyToken, isAdmin, searchTmdbDirect);
 
 // Preview TMDB program details before inserting
 router.get("/admin/tmdb/:type/:tmdbId", verifyToken, isAdmin, getTmdbDetailsPreview);
+
 
 module.exports = router;

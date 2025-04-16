@@ -16,9 +16,23 @@ export const fetchHomepageContent = async ({ type, genre } = {}) => {
   return response.data;
 };
 
-export const getProgramDetails = async (id) => {
-  const response = await axios.get(`/programs/${id}`);
-  return response.data;
+// export const getProgramDetails = async (id) => {
+//   const response = await axios.get(`/programs/${id}`);
+//   return response.data;
+// };
+
+// export const getProgramDetails = async (id, type = "movie") => {
+//   console.log("program id in programAPI is:", id)
+//   const { data } = await axios.get(`/programs/${id}`, {
+//     params: { type },
+//   });
+//   return data;
+// };
+
+export const getProgramDetails = async (tmdbId) => {
+  console.log("📥 program id in programAPI is:", tmdbId);
+  const { data } = await axios.get(`/programs/tmdb/${tmdbId}`);
+  return data;
 };
 
 export const getProgramsByType = (type) => axios.get(`/programs/type/${type}`);
