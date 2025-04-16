@@ -17,14 +17,14 @@ const ProgramCard = ({ program }) => {
   const imageUrl =
   program.posterPath;
 
-  console.log("🧩 Image Debug:", {
-    title: program.title || program.name,
-    posterPath: program.posterPath,
-    rawPoster: program.poster_path,
-    fallbackUsed: !program.posterPath && !program.poster_path,
-    imageUrl,
-  });
-
+  // console.log("🧩 Image Debug:", {
+  //   title: program.title || program.name,
+  //   posterPath: program.posterPath,
+  //   rawPoster: program.poster_path,
+  //   fallbackUsed: !program.posterPath && !program.poster_path,
+  //   imageUrl,
+  // });
+  
   return (
     <img
       src={imageUrl}
