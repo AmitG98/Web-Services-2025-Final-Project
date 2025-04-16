@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { submitRegister } from "../../api/authApi";
 
 function RegisterForm() {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ function RegisterForm() {
     defaultValues: {
       identifier: "",
       password: "",
-      role: "User",
+      role: "user",
     },
   });
 
@@ -36,25 +37,20 @@ function RegisterForm() {
       return;
     }
 
+    if (!payload.email) delete payload.email;
+    if (!payload.phone) delete payload.phone;
+
+    Object.keys(payload).forEach((key) => {
+      if (payload[key] == null) delete payload[key];
+    });
+    console.log("📦 Final payload:", payload);
     try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Registration failed");
-      }
-
+      const data = await submitRegister(payload);
       toast.success("Account created! Please sign in.");
       reset();
       navigate("/login");
     } catch (err) {
-      console.error("❌ Registration error:", err.message);
+      console.error("Registration error:", err.message);
       toast.error(err.message || "Registration failed");
     }
   };
@@ -98,8 +94,8 @@ function RegisterForm() {
           {...register("role", { required: true })}
           className="form-input"
         >
-          <option value="User">User</option>
-          <option value="Admin">Admin</option>
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
         </select>
 
         <button type="submit" className="form-button">

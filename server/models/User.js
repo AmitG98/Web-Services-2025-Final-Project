@@ -9,7 +9,7 @@ const userSchema = new Schema({
       validator: function (v) {
       return /^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(v);
     }, message: 'Password must contain at least one letter and one number.' }},
-  role: {type: String, enum: ["Admin", "User"], default: "User" }
+  role: {type: String, lowercase: true, enum: ["admin", "user"], default: "User" }
 }, { timestamps: true });
 
 userSchema.pre('validate', function (next) {
