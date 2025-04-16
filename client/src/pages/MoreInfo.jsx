@@ -12,6 +12,8 @@ import { useAuth } from "../context/authContext";
 import { useAddToMyList } from "../hooks/useMyMovieList";
 import { useNavigate, useParams } from "react-router-dom";
 import { useProgramDetails } from "../hooks/useProgramDetails";
+import EpisodesList from "../components/MoreInfo/EpisodesList";
+import ExtraProgramDetails from "../components/MoreInfo/ExtraProgramDetails";
 
 export default function MoreInfo({ isOpen = true, onClose = () => {} }) {
   const { id: programId } = useParams();
@@ -22,6 +24,7 @@ export default function MoreInfo({ isOpen = true, onClose = () => {} }) {
 
   const { data, isLoading } = useProgramDetails(programId);
   const { mutate: addToList, isLoading: isAdding } = useAddToMyList();
+  const isTvSeries = data?.first_air_date !== undefined;
 
   const handleClose = () => {
     onClose();
@@ -228,14 +231,8 @@ export default function MoreInfo({ isOpen = true, onClose = () => {} }) {
               </div>
             </div>
 
-            {data?.type === "tv" && (
-              <div className="w-11/12 mx-auto flex flex-col mt-5">
-                <div className="w-full flex justify-between items-center mb-4">
-                  <span className="text-xs font-light md:text-2xl">
-                    Episodes
-                  </span>
-                </div>
-              </div>
+            {isTvSeries && (
+              <EpisodesList seriesId={data.id} seasons={data.seasons} />
             )}
 
             <div className="mt-8 w-full">
@@ -264,6 +261,9 @@ export default function MoreInfo({ isOpen = true, onClose = () => {} }) {
                 {data.belongs_to_collection?.name || "Unknown"}
               </p>
             </div>
+
+            <ExtraProgramDetails programId={data.id} type={isTvSeries ? "tv" : "movie"} />
+
           </Box>
         </DialogContent>
       </div>

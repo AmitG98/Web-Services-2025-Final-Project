@@ -39,7 +39,13 @@ export const getProgramsByType = (type) => axios.get(`/programs/type/${type}`);
 
 // export const searchPrograms = (params) => axios.get('/api/programs', { params });
 // export const getSeriesEpisodes = (seriesId, seasonNumber) => axios.get(`/api/programs/episodes/${seriesId}/${seasonNumber}`);
+
 // export const getExtraInfo = (type, id) => axios.get(`/api/programs/extras/${type}/${id}`);
+export const getExtraProgramInfo = async (type, id) => {
+  const { data } = await axios.get(`/programs/extras/${type}/${id}`);
+  return data;
+};
+
 // export const createProgram = (data) => axios.post('/api/programs/admin/create', data);
 // export const checkProgram = (tmdbId) => axios.get(`/api/programs/admin/check/${tmdbId}`);
 // export const searchTmdb = (params) => axios.get('/api/programs/admin/search', { params });

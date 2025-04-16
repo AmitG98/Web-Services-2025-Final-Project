@@ -36,10 +36,8 @@ const MainProgramPage = ({ contentType = "all" }) => {
           {/*row1-recommended	התאמות אישיות למשתמש*/}
           <ContentRow
             title="Matched to You"
-            queryKey="MatchedToYou"
+            queryKey="personalized"
             type={contentType}
-            setSelectedProgram={setSelectedProgram}
-            setMoreInfoOpen={setMoreInfoOpen}
           />
 
           {/* row2-newest	התכנים הכי חדשים בנטפליקס */}
@@ -47,8 +45,6 @@ const MainProgramPage = ({ contentType = "all" }) => {
             title="New on Netflix"
             queryKey="newest"
             type={contentType}
-            setSelectedProgram={setSelectedProgram}
-            setMoreInfoOpen={setMoreInfoOpen}
           />
 
           {/* row3-mostWatched	הכי נצפים השבוע בארץ*/}
@@ -56,16 +52,12 @@ const MainProgramPage = ({ contentType = "all" }) => {
             title="Top 10 in Israel Today"
             queryKey="mostWatched"
             type={contentType}
-            setSelectedProgram={setSelectedProgram}
-            setMoreInfoOpen={setMoreInfoOpen}
           />
 
           {/* row4-userReviews	ביקורות אחרונות של המשתמש */}
           <ContentRow
             title="Last 10 reviewed programs"
             queryKey="recentReviews"
-            setSelectedProgram={setSelectedProgram}
-            setMoreInfoOpen={setMoreInfoOpen}
           />
 
           {/* row5-topRated	תוכניות עם דירוג גבוה */}
@@ -73,8 +65,6 @@ const MainProgramPage = ({ contentType = "all" }) => {
             title="Top-rated programs"
             queryKey="topRated"
             type={contentType}
-            setSelectedProgram={setSelectedProgram}
-            setMoreInfoOpen={setMoreInfoOpen}
           />
 
           {/* row6-animated	תוכניות מקטגוריית אנימציה */}
@@ -82,8 +72,6 @@ const MainProgramPage = ({ contentType = "all" }) => {
             title="Animation"
             queryKey="animated"
             type={contentType}
-            setSelectedProgram={setSelectedProgram}
-            setMoreInfoOpen={setMoreInfoOpen}
           />
 
           {/* row7-custom	תוכניות מקטגוריה לבחירתכם */}
@@ -91,16 +79,12 @@ const MainProgramPage = ({ contentType = "all" }) => {
             title="Action"
             queryKey="custom"
             type={contentType}
-            setSelectedProgram={setSelectedProgram}
-            setMoreInfoOpen={setMoreInfoOpen}
           />
 
           {/* row8-myList	התוכניות האחרונות שנוספו לרשימת הצפייה */}
           <ContentRow
             title="My List"
             queryKey="myList"
-            setSelectedProgram={setSelectedProgram}
-            setMoreInfoOpen={setMoreInfoOpen}
           />
         </div>
       </main>
