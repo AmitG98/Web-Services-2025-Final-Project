@@ -3,7 +3,7 @@ import React from "react";
 import Register from "./pages/Register.jsx";
 import Login from "./pages/Login.jsx";
 import MainProgramPage from "./pages/MainProgramPage.jsx";
-import MoreInfo from "./pages/MoreInfo.jsx";
+import MoreInfo from './pages/MoreInfo';
 import Profiles from "./pages/Profiles.jsx";
 import ProgramGridPage from "./pages/ProgramGridPage.jsx";
 import Browse from "./pages/Browse.jsx";

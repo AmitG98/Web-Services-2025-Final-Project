@@ -14,7 +14,13 @@ const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 
 const filterWithImage = (items) =>
-  items.filter((item) => item.poster_path || item.backdrop_path || item.posterPath || item.backdropPath);
+  items.filter(
+    (item) =>
+      item.poster_path ||
+      item.backdrop_path ||
+      item.posterPath ||
+      item.backdropPath
+  );
 
 // ========== HOMEPAGE ROWS ========== //
 const getHomepageContent = async (req, res, next) => {
@@ -38,8 +44,12 @@ const getHomepageContent = async (req, res, next) => {
       myListRaw,
     ] = await Promise.all([
       getPersonalizedRecommendations(userId),
-      type !== "tv" ? tmdbRequest("/discover/movie", { sort_by: "release_date.desc" }) : [],
-      type !== "movie" ? tmdbRequest("/discover/tv", { sort_by: "first_air_date.desc" }) : [],
+      type !== "tv"
+        ? tmdbRequest("/discover/movie", { sort_by: "release_date.desc" })
+        : [],
+      type !== "movie"
+        ? tmdbRequest("/discover/tv", { sort_by: "first_air_date.desc" })
+        : [],
       getTopWatchedInIsrael(15),
       Review.find({ user: userId, media: { $type: "string" } })
         .sort({ createdAt: -1 })
@@ -58,12 +68,21 @@ const getHomepageContent = async (req, res, next) => {
 
     const recentReviews = await buildRecentReviews(recentReviewsRaw);
     const newest = filterWithImage([...newestMovie, ...newestTV]).slice(0, 10);
-    const animated = filterWithImage([...animatedMovie, ...animatedTV]).slice(0, 10);
+    const animated = filterWithImage([...animatedMovie, ...animatedTV]).slice(
+      0,
+      10
+    );
     const custom = filterWithImage([...customMovie, ...customTV]).slice(0, 10);
 
-    const mostWatched = mapImageUrls(filterWithImage(mostWatchedRaw)).slice(0, 10);
+    const mostWatched = mapImageUrls(filterWithImage(mostWatchedRaw)).slice(
+      0,
+      10
+    );
     const topRated = mapImageUrls(filterWithImage(topRatedRaw)).slice(0, 10);
-    const personalized = mapImageUrls(filterWithImage(personalizedRaw)).slice(0, 10);
+    const personalized = mapImageUrls(filterWithImage(personalizedRaw)).slice(
+      0,
+      10
+    );
 
     const myList = await buildMyList(myListRaw);
 

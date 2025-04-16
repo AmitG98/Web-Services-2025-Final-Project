@@ -3,15 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 import {
   fetchHomepageContent,
   getProgramsByType,
-  // getProgramDetails,
-  // createProgram,
-  // searchPrograms
+  getProgramDetails,
 } from "../api/program";
 import { toast } from "sonner";
 
 // Homepage content
 export const useHomepagePrograms = (filters = {}) => {
-  // console.log("📤 Sending request to /programs/home with filters:", filters);
   return useQuery({
     queryKey: ["homepage-programs", filters],
     queryFn: () => fetchHomepageContent(filters),
@@ -35,14 +32,14 @@ export const useProgramList = (type = "movie") =>
     refetchOnWindowFocus: false,
   });
 
-// // Program details by ID
-// export const useProgramDetails = (id, type = "movie") =>
-//   useQuery({
-//     queryKey: ["program-detail", id, type],
-//     queryFn: () => getProgramDetails(id, type),
-//     enabled: !!id,
-//     onError: () => toast.error("Couldn't fetch details"),
-//   });
+// Program details by ID
+export const useProgramDetails = (id, type = "movie") =>
+  useQuery({
+    queryKey: ["program-detail", id, type],
+    queryFn: () => getProgramDetails(id, type),
+    enabled: !!id,
+    onError: () => toast.error("Couldn't fetch details"),
+  });
 
 // // Program search
 // export const useProgramSearch = (params = {}) =>

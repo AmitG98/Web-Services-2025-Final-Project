@@ -11,7 +11,10 @@ const ProgramCard = ({ program }) => {
     if (profile?._id && program?._id) {
       await addInteraction(profile._id, program._id, "click");
     }
-    navigate(`/program/${program._id || program.id}`);
+    console.log("🧩 program object in ProgramCard:", program);
+    const id = program.id; // רק TMDB ID
+    console.log("🧩 TMDB ID in ProgramCard:", id);
+    navigate(`/program/${id}`);
   };
 
   const imageUrl =
