@@ -3,19 +3,20 @@ import { useParams } from "react-router-dom";
 import { getProgramDetails } from "../api/program";
 import { addInteraction } from "../api/logs";
 import { useProfilesList } from "../hooks/useUserProfiles";
-import { useAddToWatchlist  } from "../hooks/useWatchlist"; // ודאי שקיים
+// import { useSelectedProfile } from "../hooks/useSelectedProfile";
+import { useAddToWatchlist } from "../hooks/useWatchlist"; // ודאי שקיים
 
 const MoreInfo = () => {
   const { id } = useParams();
   const [program, setProgram] = useState(null);
   const { data: profile } = useProfilesList();
-  const { mutate: addToList, isLoading: isAdding } = useAddToWatchlist ();
+  const { mutate: addToList, isLoading: isAdding } = useAddToWatchlist();
+  console.log("📥 Requested ID from URL:", id);
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await getProgramDetails(id);
+      const result = await getProgramDetails(id, profile._id);
       setProgram(result);
-
       if (profile?._id && result?._id) {
         await addInteraction(profile._id, result._id, "click");
       }
@@ -45,7 +46,9 @@ const MoreInfo = () => {
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: `url(https://image.tmdb.org/t/p/original${program.backdrop_path || program.poster_path})`,
+          backgroundImage: `url(https://image.tmdb.org/t/p/original${
+            program.backdrop_path || program.poster_path
+          })`,
         }}
       />
       {/* שכבת כהות מעל */}
@@ -53,7 +56,9 @@ const MoreInfo = () => {
 
       {/* תוכן */}
       <div className="relative z-10 px-6 py-16 max-w-5xl mx-auto">
-        <h1 className="text-4xl font-bold mb-4">{program.title || program.name}</h1>
+        <h1 className="text-4xl font-bold mb-4">
+          {program.title || program.name}
+        </h1>
 
         <div className="flex gap-3 items-center mb-6">
           <button
@@ -75,7 +80,8 @@ const MoreInfo = () => {
 
         <div className="text-sm text-gray-400">
           <p>
-            <span className="text-white">Rating:</span> {program.vote_average} / 10
+            <span className="text-white">Rating:</span> {program.vote_average} /
+            10
           </p>
           <p>
             <span className="text-white">Genres:</span>{" "}

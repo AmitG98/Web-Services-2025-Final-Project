@@ -39,11 +39,11 @@ const ContentRow = ({
             <ProgramCard
               key={program._id || program.id}
               program={program}
-              onClick={() => {
-                addInteraction(profile?._id, program._id, "click");
-                setSelectedProgram(program);
-                setMoreInfoOpen(true);
-              }}
+              // onClick={() => {
+              //   addInteraction(profile?._id, program._id, "click");
+              //   setSelectedProgram(program);
+              //   setMoreInfoOpen(true);
+              // }}
             />
           ))}
         </div>
