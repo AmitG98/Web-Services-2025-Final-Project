@@ -4,6 +4,7 @@ import MainFooter from "../components/coreUi/MainFooter";
 import ContentRow from "../components/coreUi/ContentRow";
 import HeroSection from "../components/coreUi/HeroSection";
 import { useHomepagePrograms } from "../hooks/useProgramList";
+import MoreInfo from "./MoreInfo";
 
 const MainProgramPage = ({ contentType = "all" }) => {
   const [selectedProgram, setSelectedProgram] = useState(null);
@@ -38,6 +39,10 @@ const MainProgramPage = ({ contentType = "all" }) => {
             title="Matched to You"
             queryKey="personalized"
             type={contentType}
+            onProgramClick={(program) => {
+              setSelectedProgram(program);
+              setMoreInfoOpen(true);
+            }}
           />
 
           {/* row2-newest	התכנים הכי חדשים בנטפליקס */}
@@ -45,24 +50,40 @@ const MainProgramPage = ({ contentType = "all" }) => {
             title="New on Netflix"
             queryKey="newest"
             type={contentType}
+            onProgramClick={(program) => {
+              setSelectedProgram(program);
+              setMoreInfoOpen(true);
+            }}
           />
 
           <ContentRow
             title="Top 10 in Israel Today"
             queryKey="mostWatched"
             type={contentType}
+            onProgramClick={(program) => {
+              setSelectedProgram(program);
+              setMoreInfoOpen(true);
+            }}
           />
 
           <ContentRow
             title="Last 10 reviewed programs"
             queryKey="recentReviews"
             type={contentType}
+            onProgramClick={(program) => {
+              setSelectedProgram(program);
+              setMoreInfoOpen(true);
+            }}
           />
 
           <ContentRow
             title="Top-rated programs"
             queryKey="topRated"
             type={contentType}
+            onProgramClick={(program) => {
+              setSelectedProgram(program);
+              setMoreInfoOpen(true);
+            }}
           />
 
           {/* row6-animated	תוכניות מקטגוריית אנימציה */}
@@ -70,6 +91,10 @@ const MainProgramPage = ({ contentType = "all" }) => {
             title="Animation"
             queryKey="animated"
             type={contentType}
+            onProgramClick={(program) => {
+              setSelectedProgram(program);
+              setMoreInfoOpen(true);
+            }}
           />
 
           {/* row7-custom	תוכניות מקטגוריה לבחירתכם */}
@@ -77,15 +102,31 @@ const MainProgramPage = ({ contentType = "all" }) => {
             title="Comedy"
             queryKey="custom"
             type={contentType}
+            onProgramClick={(program) => {
+              setSelectedProgram(program);
+              setMoreInfoOpen(true);
+            }}
           />
 
           <ContentRow
             title="My List"
             queryKey="myList"
             type={contentType}
+            onProgramClick={(program) => {
+              setSelectedProgram(program);
+              setMoreInfoOpen(true);
+            }}
           />
         </div>
       </main>
+
+      {moreInfoOpen && selectedProgram && (
+        <MoreInfo
+          isOpen={moreInfoOpen}
+          onClose={() => setMoreInfoOpen(false)}
+          program={selectedProgram} 
+        />
+      )}
 
       <MainFooter />
     </div>

@@ -10,20 +10,23 @@ import MinimizeIcon from "@mui/icons-material/CloseFullscreen";
 import Spinner from "../components/ui/spinner";
 import { useAuth } from "../context/authContext";
 import { useAddToMyList } from "../hooks/useMyMovieList";
-import { useNavigate, useParams } from "react-router-dom";
-import { useProgramDetails } from "../hooks/useProgramDetails";
+// import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+// import { useProgramDetails } from "../hooks/useProgramDetails";
 import EpisodesList from "../components/MoreInfo/EpisodesList";
 import ExtraProgramDetails from "../components/MoreInfo/ExtraProgramDetails";
 
-export default function MoreInfo({ isOpen = true, onClose = () => {} }) {
-  const { id: programId } = useParams();
+export default function MoreInfo({ isOpen = true, onClose = () => {}, program }) {
+  // const { id: programId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
   const [open, setOpen] = React.useState(isOpen);
   const [isFullScreen, setIsFullScreen] = React.useState(false);
 
-  const { data, isLoading } = useProgramDetails(programId);
   const { mutate: addToList, isLoading: isAdding } = useAddToMyList();
+
+  const { useProgramDetails } = require("../hooks/useProgramDetails");
+  const { data, isLoading } = useProgramDetails(program?.id);
   const isTvSeries = data?.first_air_date !== undefined;
 
   const handleClose = () => {
@@ -106,10 +109,7 @@ export default function MoreInfo({ isOpen = true, onClose = () => {} }) {
             <IconButton
               edge="end"
               color="inherit"
-              onClick={() => {
-                onClose();
-                navigate("/home");
-              }}
+              onClick={handleClose}
             >
               <CloseIcon />
             </IconButton>
@@ -158,7 +158,7 @@ export default function MoreInfo({ isOpen = true, onClose = () => {} }) {
                 className="mt-5 w-24 h-8 bg-white rounded-sm text-black flex items-center justify-center gap-3"
                 onClick={() =>
                   navigate(
-                    `review/${programId}?posterPath=${data?.poster_path}`
+                    `review/${program.id}?posterPath=${data?.poster_path}`
                   )
                 }
               >

@@ -1,10 +1,10 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { addInteraction } from "../../api/logs";
 import { useProfilesList } from "../../hooks/useUserProfiles";
 
-const ProgramCard = ({ program }) => {
-  const navigate = useNavigate();
+const ProgramCard = ({ program, onClick }) => {
+  // const navigate = useNavigate();
   const { data: profile } = useProfilesList();
 
   const handleClick = async () => {
@@ -12,9 +12,10 @@ const ProgramCard = ({ program }) => {
       await addInteraction(profile._id, program._id, "click");
     }
     console.log("🧩 program object in ProgramCard:", program);
-    const id = program.id; // רק TMDB ID
-    console.log("🧩 TMDB ID in ProgramCard:", id);
-    navigate(`/program/${id}`);
+    // const id = program.id; // רק TMDB ID
+    // console.log("🧩 TMDB ID in ProgramCard:", id);
+    // navigate(`/program/${id}`);
+    onClick?.(program);
   };
 
   const imageUrl =

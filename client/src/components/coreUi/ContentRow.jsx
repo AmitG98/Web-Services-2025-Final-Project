@@ -10,12 +10,13 @@ const ContentRow = ({
   title,
   queryKey,
   type,
+  onProgramClick,
 }) => {
 
   const { data, isLoading, isError } = useHomepagePrograms({ query: queryKey, type });
 // const { data: profile } = useProfilesList();
-
   const content = data?.[queryKey];
+  
   if (isLoading) return <Spinner />;
   if (isError || !content) return null;
 
@@ -28,6 +29,8 @@ const ContentRow = ({
             <ProgramCard
               key={`${program.type}-${program.tmdbId || program._id || program.id}`}
               program={program.program || program}
+              
+              onClick={(program) => onProgramClick?.(program)}
             />
           ))}
         </div>
