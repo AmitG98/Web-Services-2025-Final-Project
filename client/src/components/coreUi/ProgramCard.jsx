@@ -33,7 +33,7 @@ const ProgramCard = ({ program, onClick }) => {
     <img
       src={imageUrl}
       alt={program.title || program.name}
-      className="min-w-[218px] h-[123px] object-cover cursor-pointer rounded hover:scale-105 transition-transform"
+      className="min-w-[218px] h-[123px] object-cover cursor-pointer rounded-sm hover:scale-105 transition-transform"
       onClick={handleClick}
       onError={(e) => {
         e.target.onerror = null;

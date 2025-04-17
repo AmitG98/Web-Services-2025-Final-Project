@@ -4,24 +4,28 @@ import MainHeader from "../components/coreUi/MainHeader";
 import MainFooter from "../components/coreUi/MainFooter";
 import { useProgramList } from "../hooks/useProgramList";
 import { useMyMovieList } from "../hooks/useMyMovieList";
-// import { useUserAuth } from "../hooks/useUserAuth";
-import MoreInfo from './MoreInfo';
+import MoreInfo from "./MoreInfo";
+import ProgramCard from "../components/coreUi/ProgramCard";
 
 const ProgramGridPage = ({ title, query, type = "movie", activePage }) => {
-  const [selectedMovie, setSelectedMovie] = useState(null);
-  // const { activeUser } = useUserAuth();
+  const [selectedProgram, setSelectedProgram] = useState(null);
 
   const myListResult = useMyMovieList();
   const programListResult = useProgramList(type);
 
   const isMyList = query === "myList";
-  const { data: programData, isLoading, error } = isMyList
-    ? myListResult
-    : programListResult;
+  const {
+    data: programData,
+    isLoading,
+    error,
+  } = isMyList ? myListResult : programListResult;
 
   console.log("📦 Loaded programs:", programData);
   if (programData?.length) {
-    console.log("Poster URLs:", programData.map(p => p.posterPath));
+    console.log(
+      "Poster URLs:",
+      programData.map((p) => p.posterPath)
+    );
   }
 
   if (isLoading) return <Spinner />;
@@ -39,23 +43,21 @@ const ProgramGridPage = ({ title, query, type = "movie", activePage }) => {
 
         {programData?.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-            {programData.map((movie) => (
-              <div
-                key={movie.tmdbId || movie._id || movie.id}
-                className="cursor-pointer flex flex-col"
-                onClick={() => setSelectedMovie(movie.id)}
-              >
-                <img
-                  src={movie.posterPath || "/fallback-poster.png"}
-                  alt={movie.title || "Movie Poster"}
-                  className="min-w-[160px] sm:min-w-[180px] md:min-w-[218px] h-[120px] md:h-[123px] object-cover rounded hover:scale-105 transition-transform"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "/fallback-poster.png";
+            {programData.map((program) => (
+              <div key={program.tmdbId || program._id || program.id}>
+                <ProgramCard
+                  program={program}
+                  onClick={(program) => {
+                    console.log("🖱️ Program clicked:", program);
+                    const normalized = {
+                      ...program,
+                      id: program.programId?.split("-").pop(),
+                    };
+                    setSelectedProgram(normalized);
                   }}
                 />
-                <p className="mt-2 text-sm font-medium truncate">
-                  {movie.title}
+                <p className="mt-2 text-sm font-medium truncate text-center">
+                  {program.title || program.name}
                 </p>
               </div>
             ))}
@@ -65,11 +67,11 @@ const ProgramGridPage = ({ title, query, type = "movie", activePage }) => {
         )}
       </div>
 
-      {selectedMovie && (
+      {selectedProgram && (
         <MoreInfo
-          movie={selectedMovie}
+          program={selectedProgram}
           isOpen={true}
-          onClose={() => setSelectedMovie(null)}
+          onClose={() => setSelectedProgram(null)}
         />
       )}
 
