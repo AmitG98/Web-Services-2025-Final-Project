@@ -4,7 +4,7 @@ import MainHeader from "../components/coreUi/MainHeader";
 import MainFooter from "../components/coreUi/MainFooter";
 import { useProgramList } from "../hooks/useProgramList";
 import { useMyMovieList } from "../hooks/useMyMovieList";
-import { useUserAuth } from "../hooks/useUserAuth";
+// import { useUserAuth } from "../hooks/useUserAuth";
 import MoreInfo from './MoreInfo';
 
 const ProgramGridPage = ({ title, query, type = "movie", activePage }) => {

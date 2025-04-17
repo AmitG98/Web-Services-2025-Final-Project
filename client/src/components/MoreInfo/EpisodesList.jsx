@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { useSeriesEpisodes } from "../../hooks/useSeriesEpisodes";
 
 const EpisodesList = ({ seriesId, seasons = [] }) => {
-  const [openSeason, setOpenSeason] = useState(null); 
+  const [openSeason, setOpenSeason] = useState(null);
 
   const toggleSeason = (seasonNumber) => {
     setOpenSeason((prev) => (prev === seasonNumber ? null : seasonNumber));
-  };      <h4 className="text-white text-lg font-semibold mb-2">Episodes</h4>
-  
+  };
+  <h4 className="text-white text-lg font-semibold mb-2">Episodes</h4>;
+
   return (
     <div className="w-11/12 mx-auto mt-4 text-left">
       <h4 className="text-white text-lg font-semibold mb-2">Episodes</h4>
@@ -25,8 +26,13 @@ const EpisodesList = ({ seriesId, seasons = [] }) => {
   );
 };
 
-// const SeasonEpisodes = ({ seriesId, seasonNumber, seasonName }) => {
-const SeasonEpisodes = ({ seriesId, seasonNumber, seasonName, isOpen, onToggle }) => {
+const SeasonEpisodes = ({
+  seriesId,
+  seasonNumber,
+  seasonName,
+  isOpen,
+  onToggle,
+}) => {
   const {
     data: episodes,
     isLoading,
@@ -47,11 +53,18 @@ const SeasonEpisodes = ({ seriesId, seasonNumber, seasonName, isOpen, onToggle }
 
       {isOpen && (
         <div className="bg-gray-900 px-4 py-2">
-          {isLoading && <p className="text-white text-sm">Loading season {seasonNumber}...</p>}
+          {isLoading && (
+            <p className="text-white text-sm">
+              Loading season {seasonNumber}...
+            </p>
+          )}
           {error && (
             <p className="text-red-500 text-sm">
               Error loading season {seasonNumber}
             </p>
+          )}
+          {episodes?.length === 0 && !isLoading && !error && (
+            <p className="text-white text-sm italic">No episodes available for this season.</p>
           )}
           {episodes?.length > 0 && (
             <ul className="space-y-1">

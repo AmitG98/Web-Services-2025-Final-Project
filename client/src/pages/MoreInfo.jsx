@@ -16,7 +16,11 @@ import { useNavigate } from "react-router-dom";
 import EpisodesList from "../components/MoreInfo/EpisodesList";
 import ExtraProgramDetails from "../components/MoreInfo/ExtraProgramDetails";
 
-export default function MoreInfo({ isOpen = true, onClose = () => {}, program }) {
+export default function MoreInfo({
+  isOpen = true,
+  onClose = () => {},
+  program,
+}) {
   // const { id: programId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -106,11 +110,7 @@ export default function MoreInfo({ isOpen = true, onClose = () => {}, program })
             >
               {isFullScreen ? <MinimizeIcon /> : <MaximizeIcon />}
             </IconButton>
-            <IconButton
-              edge="end"
-              color="inherit"
-              onClick={handleClose}
-            >
+            <IconButton edge="end" color="inherit" onClick={handleClose}>
               <CloseIcon />
             </IconButton>
           </Box>
@@ -138,7 +138,7 @@ export default function MoreInfo({ isOpen = true, onClose = () => {}, program })
               textAlign: "center",
             }}
           >
-            <div className="flex gap-1 items-center mt-64 relative z-10">
+            <div className="flex gap-1 items-center mt-12 relative z-10">
               <img
                 src={"./NetflixLogoLetter.png"}
                 alt="Logo"
@@ -150,7 +150,10 @@ export default function MoreInfo({ isOpen = true, onClose = () => {}, program })
             </div>
 
             <h1 className="font-extrabold text-3xl uppercase flex justify-start">
-              {data.original_title}
+              {data.title ||
+                data.name ||
+                data.original_title ||
+                data.original_name}
             </h1>
 
             <div className="flex gap-2 items-center">
@@ -262,8 +265,10 @@ export default function MoreInfo({ isOpen = true, onClose = () => {}, program })
               </p>
             </div>
 
-            <ExtraProgramDetails programId={data.id} type={isTvSeries ? "tv" : "movie"} />
-
+            <ExtraProgramDetails
+              programId={data.id}
+              type={isTvSeries ? "tv" : "movie"}
+            />
           </Box>
         </DialogContent>
       </div>
