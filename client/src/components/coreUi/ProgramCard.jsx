@@ -8,18 +8,25 @@ const ProgramCard = ({ program, onClick }) => {
   const { data: profile } = useProfilesList();
 
   const handleClick = async () => {
+    console.log("🧩 [ProgramCard] program object:", program);
+    const id = program?.id || program?.programId?.split("-").pop() || program?.tmdbId;
+    const programId = program?.programId;
+    const tmdbId = program?.tmdbId;
+
+    if (!id) {
+      console.warn("⚠️ [ProgramCard] Missing usable ID. Can't proceed.");
+      return;
+    }
+  
+    const normalizedProgram = { ...program, id };
+  
     if (profile?._id && program?._id) {
       await addInteraction(profile._id, program._id, "click");
     }
-    console.log("🧩 program object in ProgramCard:", program);
-    // const id = program.id; // רק TMDB ID
-    // console.log("🧩 TMDB ID in ProgramCard:", id);
-    // navigate(`/program/${id}`);
-    onClick?.(program);
+    onClick?.(normalizedProgram);
   };
 
-  const imageUrl =
-  program.posterPath;
+  const imageUrl = program.posterPath;
 
   // console.log("🧩 Image Debug:", {
   //   title: program.title || program.name,
@@ -28,7 +35,7 @@ const ProgramCard = ({ program, onClick }) => {
   //   fallbackUsed: !program.posterPath && !program.poster_path,
   //   imageUrl,
   // });
-  
+
   return (
     <img
       src={imageUrl}
