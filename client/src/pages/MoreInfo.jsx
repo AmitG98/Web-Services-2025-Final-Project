@@ -7,12 +7,11 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import MaximizeIcon from "@mui/icons-material/OpenInFull";
 import MinimizeIcon from "@mui/icons-material/CloseFullscreen";
+import { Button } from "../components/ui/button";
 import Spinner from "../components/ui/spinner";
 import { useAuth } from "../context/authContext";
 import { useAddToMyList } from "../hooks/useMyMovieList";
-// import { useNavigate, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-// import { useProgramDetails } from "../hooks/useProgramDetails";
 import EpisodesList from "../components/MoreInfo/EpisodesList";
 import ExtraProgramDetails from "../components/MoreInfo/ExtraProgramDetails";
 
@@ -21,7 +20,6 @@ export default function MoreInfo({
   onClose = () => {},
   program,
 }) {
-  // const { id: programId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
   const [open, setOpen] = React.useState(isOpen);
@@ -157,16 +155,17 @@ export default function MoreInfo({
             </h1>
 
             <div className="flex gap-2 items-center">
-              <button
+              <Button
                 className="mt-5 w-24 h-8 bg-white rounded-sm text-black flex items-center justify-center gap-3"
                 onClick={() =>
                   navigate(
-                    `review/${program.id}?posterPath=${data?.poster_path}`
+                    `/review/${program.id}?posterPath=${data?.poster_path}`
                   )
                 }
               >
-                <i className="fa-solid fa-play"></i> Review
-              </button>
+                <i className="fa-solid fa-pen"></i> Review
+              </Button>
+
               <button
                 className="w-8 mt-5 h-8 rounded-full bg-transparent border border-gray-400 flex items-center justify-center"
                 onClick={handleAddToList}

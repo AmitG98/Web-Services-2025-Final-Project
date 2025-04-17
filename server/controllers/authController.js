@@ -4,23 +4,20 @@ const Log = require("../models/Log");
 
 const createToken = (user) => {
   return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
-    expiresIn: '1h',
+    expiresIn: "1h",
   });
 };
 
 const register = async (req, res, next) => {
   try {
-    const { email, phone, password, role} = req.body;
+    const { email, phone, password, role } = req.body;
 
     if (!email && !phone) {
       return res.status(400).json({ message: "Email or phone is required" });
     }
 
     const existingUser = await User.findOne({
-      $or: [
-        email ? { email } : null,
-        phone ? { phone } : null
-      ].filter(Boolean),
+      $or: [email ? { email } : null, phone ? { phone } : null].filter(Boolean),
     });
 
     if (existingUser) {
@@ -71,13 +68,12 @@ const login = async (req, res, next) => {
     const { identifier, password, rememberMe } = req.body;
 
     if (!identifier || !password) {
-      return res.status(400).json({ message: "Identifier and password are required" });
+      return res
+        .status(400)
+        .json({ message: "Identifier and password are required" });
     }
     const user = await User.findOne({
-      $or: [
-        { email: identifier },
-        { phone: identifier }
-      ]
+      $or: [{ email: identifier }, { phone: identifier }],
     });
 
     if (!user) {
@@ -104,7 +100,11 @@ const login = async (req, res, next) => {
       sameSite: "strict",
     });
 
-    res.status(200).json({ message: 'Login successful', user });
+    res
+      .status(200)
+      .json({ message: "Login successful", user,
+        //  accessToken: token 
+        });
   } catch (err) {
     console.error("Error in login:", err);
     next(err);

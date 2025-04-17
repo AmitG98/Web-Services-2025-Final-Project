@@ -47,7 +47,7 @@ const MainHeader = ({ activePage }) => {
               key={link.key}
               to={link.to}
               className={
-                activePage === link.key
+                activePage && activePage === link.key
                   ? "font-bold underline"
                   : "opacity-70 hover:opacity-100 transition"
               }

@@ -10,25 +10,33 @@ function MainFooter() {
           {/* Social Icons - מיושרים לפי הקו של הלינקים */}
           <div className="flex gap-5">
             <a
-              href="#"
+              href="https://facebook.com"
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-gray-800 p-2 rounded-full hover:bg-[#1877F2] transition"
             >
               <FaFacebook className="text-white text-xl" />
             </a>
             <a
-              href="#"
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-gray-800 p-2 rounded-full hover:bg-[#E1306C] transition"
             >
               <FaInstagram className="text-white text-xl" />
             </a>
             <a
-              href="#"
+              href="https://twitter.com"
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-gray-800 p-2 rounded-full hover:bg-[#1DA1F2] transition"
             >
               <FaTwitter className="text-white text-xl" />
             </a>
             <a
-              href="#"
+              href="https://youtube.com"
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-gray-800 p-2 rounded-full hover:bg-[#FF0000] transition"
             >
               <FaYoutube className="text-white text-xl" />

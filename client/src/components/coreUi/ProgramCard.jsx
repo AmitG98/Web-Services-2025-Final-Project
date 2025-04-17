@@ -1,18 +1,14 @@
 import React from "react";
-// import { useNavigate } from "react-router-dom";
 import { addInteraction } from "../../api/logs";
 import { useProfilesList } from "../../hooks/useUserProfiles";
 
 const ProgramCard = ({ program, onClick }) => {
-  // const navigate = useNavigate();
   const { data: profile } = useProfilesList();
 
   const handleClick = async () => {
     console.log("🧩 [ProgramCard] program object:", program);
     const id = program?.id || program?.programId?.split("-").pop() || program?.tmdbId;
-    const programId = program?.programId;
-    const tmdbId = program?.tmdbId;
-
+    
     if (!id) {
       console.warn("⚠️ [ProgramCard] Missing usable ID. Can't proceed.");
       return;

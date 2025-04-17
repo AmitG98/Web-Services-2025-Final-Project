@@ -1,16 +1,15 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { addReview, getMyReviews } from "../api/review";
-import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
 export const useSubmitReview = () => {
-  const navigate = useNavigate();
-
   return useMutation({
     mutationFn: addReview,
+    onMutate: (data) => {
+      console.log("📡 Submitting via useMutation:", data);
+    },
     onSuccess: () => {
       toast.success("Review posted!");
-      navigate("/");
     },
     onError: (err) => {
       toast.error("Couldn't post review", {

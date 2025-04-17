@@ -10,7 +10,7 @@ connectDB();
 const authRoutes = require('./routers/authRoutes');
 const profileRoutes = require('./routers/profileRoutes');
 const programRoutes = require('./routers/programRoutes');
-const reviewRoutes = require('./routers/reviewRoutes');
+const reviewRoutes = require("./routers/reviewRoutes");
 const myListRoutes = require('./routers/myListRoutes');
 const logRoutes = require("./routers/logRoutes");
 const recommendationRoutes = require("./routers/recommendationRoutes");
@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/profiles', profileRoutes);
 app.use('/api/programs', programRoutes);
-app.use('/api/reviews', reviewRoutes);
+app.use("/api/reviews", reviewRoutes);
 app.use('/api/myList', myListRoutes);
 app.use("/api/logs", logRoutes);
 app.use("/api/recommendations", recommendationRoutes);

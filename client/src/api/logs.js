@@ -6,7 +6,7 @@ export const fetchLogs = async () => {
 };
 
 export const addInteraction = async (profileId, programId, action) => {
-  const response = await axios.post("/api/logs/interactions", {
+  const response = await axios.post("/logs/interactions", {
     profileId,
     programId,
     action,

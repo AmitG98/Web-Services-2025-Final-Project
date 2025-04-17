@@ -28,8 +28,10 @@ function LoginForm() {
     setServerError(null);
     try {
       const res = await submitLogin(data);
+      console.log("🔐 Login response:", res);
 
       if (res?.user) {
+        sessionStorage.setItem("user", JSON.stringify({ accessToken: res.accessToken }));
         login(res.user);
         toast.success(`Welcome, ${res.user.username || res.user.email}`);
         navigate(res.user.role === "admin" ? "/admin-dashboard" : "/profiles");
@@ -40,7 +42,7 @@ function LoginForm() {
       const message =
         err?.response?.data?.message || "Something went wrong. Try again.";
       toast.error("Login failed", { description: message });
-      setServerError(message); // פה מציגים שגיאה מתחת לטופס
+      setServerError(message);
     }
   };
 

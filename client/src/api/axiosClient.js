@@ -3,11 +3,24 @@ import axios from "axios";
 const BASE_URL = process.env.REACT_APP_API_URL;
 
 const axiosClient = axios.create({
+  // baseURL: "http://localhost:8080/api",
   baseURL: BASE_URL || "http://localhost:8080/api",
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
+});
+
+axiosClient.interceptors.request.use((config) => {
+  const session = JSON.parse(sessionStorage.getItem("user"));
+  const token = session?.accessToken;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+    // console.log("🛂 Attached token:", token);
+  } else {
+    // console.warn("🚫 No token in sessionStorage");
+  }
+  return config;
 });
 
 axiosClient.interceptors.response.use(

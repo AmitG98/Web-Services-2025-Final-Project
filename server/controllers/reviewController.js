@@ -3,14 +3,102 @@ const Program = require("../models/Program");
 const Log = require("../models/Log");
 
 // === Add or Create Review ===
+// const addReview = async (req, res, next) => {
+//   try {
+//     console.log("check!!")
+//     console.log("📥 Incoming review request");
+//     console.log("🧾 req.body:", req.body);
+//     console.log("👤 req.user:", req.user);
+
+//     const { mediaId, profileId, rating, comment, isPublic, spoiler } = req.body;
+//     // const userId = req.user._id;
+//     const userId = req.body.userId || "demo-user-id";
+
+//     const existingReview = await Review.findOne({ user: userId, profile: profileId, media: mediaId });
+//     if (existingReview) {
+//       return res.status(400).json({ message: "You have already reviewed this program." });
+//     }
+
+//     const review = new Review({
+//       user: userId,
+//       profile: profileId,
+//       media: mediaId,
+//       rating: rating || 0,
+//       comment,
+//       isPublic: isPublic !== undefined ? isPublic : true,
+//       spoiler: spoiler || false,
+//     });
+
+//     await review.save();
+
+//     await Log.create({
+//       action: "Review Added",
+//       user: req.user._id,
+//       details: {
+//         reviewId: review._id,
+//         mediaId,
+//         profileId,
+//         rating,
+//         isPublic
+//       },
+//       level: "info"
+//     });
+
+//     if (typeof mediaId !== "string" || !mediaId.startsWith("tmdb-")) {
+//       const stats = await Review.aggregate([
+//         { $match: { media: mediaId, rating: { $gt: 0 } } },
+//         {
+//           $group: {
+//             _id: "$media",
+//             averageRating: { $avg: "$rating" },
+//             totalReviews: { $sum: 1 },
+//           },
+//         },
+//       ]);
+//       await Program.findByIdAndUpdate(mediaId, {
+//         averageRating: stats[0]?.averageRating || 0,
+//         reviewCount: stats[0]?.totalReviews || 0,
+//       });
+//     }
+
+//     res.status(201).json({ message: "Review created successfully", review });
+//   } catch (err) {
+//     console.error("🔥 REVIEW ERROR:", err);
+//     next(err);
+//   }
+// };
+
 const addReview = async (req, res, next) => {
   try {
-    const { mediaId, profileId, rating, comment, isPublic, spoiler } = req.body;
-    const userId = req.user._id;
+    console.log("📥 Incoming review request");
+    console.log("🧾 req.body:", req.body);
+    console.log("👤 userId:", req.body.userId);
+    console.log("🧸 profileId:", req.body.profileId);
 
-    const existingReview = await Review.findOne({ user: userId, profile: profileId, media: mediaId });
+    const { mediaId, profileId, rating, comment, isPublic, spoiler, userId } =
+      req.body;
+
+    if (!userId) {
+      return res.status(400).json({ message: "Missing userId" });
+    }
+
+    const existingReview = await Review.findOne({
+      user: userId,
+      profile: profileId,
+      media: mediaId,
+    });
     if (existingReview) {
-      return res.status(400).json({ message: "You have already reviewed this program." });
+      existingReview.rating = rating;
+      existingReview.comment = comment;
+      existingReview.isPublic = isPublic;
+      existingReview.spoiler = spoiler;
+      await existingReview.save();
+      return res
+        .status(200)
+        .json({ message: "Review updated", review: existingReview });
+      // return res
+      //   .status(400)
+      //   .json({ message: "You have already reviewed this program." });
     }
 
     const review = new Review({
@@ -25,38 +113,9 @@ const addReview = async (req, res, next) => {
 
     await review.save();
 
-    await Log.create({
-      action: "Review Added",
-      user: req.user._id,
-      details: {
-        reviewId: review._id,
-        mediaId,
-        profileId,
-        rating,
-        isPublic
-      },
-      level: "info"
-    });
-    
-    if (typeof mediaId !== "string" || !mediaId.startsWith("tmdb-")) {
-      const stats = await Review.aggregate([
-        { $match: { media: mediaId, rating: { $gt: 0 } } },
-        {
-          $group: {
-            _id: "$media",
-            averageRating: { $avg: "$rating" },
-            totalReviews: { $sum: 1 },
-          },
-        },
-      ]);
-      await Program.findByIdAndUpdate(mediaId, {
-        averageRating: stats[0]?.averageRating || 0,
-        reviewCount: stats[0]?.totalReviews || 0,
-      });
-    }
-
     res.status(201).json({ message: "Review created successfully", review });
   } catch (err) {
+    console.error("🔥 REVIEW ERROR:", err);
     next(err);
   }
 };
@@ -65,17 +124,19 @@ const addReview = async (req, res, next) => {
 const getReviewsByProgram = async (req, res, next) => {
   try {
     const { id: mediaId } = req.params;
-    const { limit = 10, offset = 0, sortBy = "createdAt", sortOrder = "desc" } = req.query;
+    const {
+      limit = 10,
+      offset = 0,
+      sortBy = "createdAt",
+      sortOrder = "desc",
+    } = req.query;
 
     const sort = {};
     sort[sortBy] = sortOrder === "asc" ? 1 : -1;
 
     const query = {
       media: mediaId,
-      $or: [
-        { isPublic: true },
-        ...(req.user ? [{ user: req.user._id }] : [])
-      ],
+      $or: [{ isPublic: true }, ...(req.user ? [{ user: req.user._id }] : [])],
     };
 
     const reviews = await Review.find(query)
@@ -126,7 +187,9 @@ const updateReview = async (req, res, next) => {
 
     const review = await Review.findById(reviewId);
     if (!review || review.user.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: "Not authorized or review not found" });
+      return res
+        .status(403)
+        .json({ message: "Not authorized or review not found" });
     }
 
     if (rating !== undefined) review.rating = rating;
@@ -142,10 +205,10 @@ const updateReview = async (req, res, next) => {
       details: {
         reviewId: review._id,
         mediaId: review.media,
-        updatedFields: { rating, comment, isPublic, spoiler }
+        updatedFields: { rating, comment, isPublic, spoiler },
       },
-      level: "info"
-    });    
+      level: "info",
+    });
 
     if (typeof review.media !== "string" || !review.media.startsWith("tmdb-")) {
       const stats = await Review.aggregate([
@@ -177,7 +240,9 @@ const deleteReview = async (req, res, next) => {
     const review = await Review.findById(reviewId);
 
     if (!review || review.user.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: "Not authorized or review not found" });
+      return res
+        .status(403)
+        .json({ message: "Not authorized or review not found" });
     }
 
     const mediaId = review.media;
@@ -236,99 +301,99 @@ const likeReview = async (req, res, next) => {
 
 // === Top Rated Programs (DB-only) ===
 const getTopRatedPrograms = async (req, res, next) => {
-    try {
-      const { limit = 10 } = req.query;
-  
-      const programs = await Review.aggregate([
-        { $match: { rating: { $gt: 0 }, media: { $type: "objectId" } } },
-        {
-          $group: {
-            _id: "$media",
-            averageRating: { $avg: "$rating" },
-            totalReviews: { $sum: 1 },
-          },
+  try {
+    const { limit = 10 } = req.query;
+
+    const programs = await Review.aggregate([
+      { $match: { rating: { $gt: 0 }, media: { $type: "objectId" } } },
+      {
+        $group: {
+          _id: "$media",
+          averageRating: { $avg: "$rating" },
+          totalReviews: { $sum: 1 },
         },
-        { $match: { totalReviews: { $gte: 1 } } },
-        {
-          $lookup: {
-            from: "programs",
-            localField: "_id",
-            foreignField: "_id",
-            as: "program",
-          },
+      },
+      { $match: { totalReviews: { $gte: 1 } } },
+      {
+        $lookup: {
+          from: "programs",
+          localField: "_id",
+          foreignField: "_id",
+          as: "program",
         },
-        { $unwind: "$program" },
-        {
-          $project: {
-            _id: "$program._id",
-            title: "$program.title",
-            type: "$program.type",
-            posterPath: "$program.posterPath",
-            averageRating: 1,
-            totalReviews: 1,
-          },
+      },
+      { $unwind: "$program" },
+      {
+        $project: {
+          _id: "$program._id",
+          title: "$program.title",
+          type: "$program.type",
+          posterPath: "$program.posterPath",
+          averageRating: 1,
+          totalReviews: 1,
         },
-        { $sort: { averageRating: -1, totalReviews: -1 } },
-        { $limit: parseInt(limit) },
-      ]);
-  
-      res.status(200).json(programs);
-    } catch (err) {
-      next(err);
-    }
+      },
+      { $sort: { averageRating: -1, totalReviews: -1 } },
+      { $limit: parseInt(limit) },
+    ]);
+
+    res.status(200).json(programs);
+  } catch (err) {
+    next(err);
+  }
 };
 
 // === Most Reviewed Programs (DB-only) ===
 const getMostReviewedPrograms = async (req, res, next) => {
-    try {
-      const { limit = 10 } = req.query;
-  
-      const programs = await Review.aggregate([
-        { $match: { rating: { $gt: 0 }, media: { $type: "objectId" } } },
-        {
-          $group: {
-            _id: "$media",
-            averageRating: { $avg: "$rating" },
-            totalReviews: { $sum: 1 },
-          },
+  try {
+    const { limit = 10 } = req.query;
+
+    const programs = await Review.aggregate([
+      { $match: { rating: { $gt: 0 }, media: { $type: "objectId" } } },
+      {
+        $group: {
+          _id: "$media",
+          averageRating: { $avg: "$rating" },
+          totalReviews: { $sum: 1 },
         },
-        { $match: { totalReviews: { $gte: 1 } } },
-        {
-          $lookup: {
-            from: "programs",
-            localField: "_id",
-            foreignField: "_id",
-            as: "program",
-          },
+      },
+      { $match: { totalReviews: { $gte: 1 } } },
+      {
+        $lookup: {
+          from: "programs",
+          localField: "_id",
+          foreignField: "_id",
+          as: "program",
         },
-        { $unwind: "$program" },
-        {
-          $project: {
-            _id: "$program._id",
-            title: "$program.title",
-            type: "$program.type",
-            posterPath: "$program.posterPath",
-            averageRating: 1,
-            totalReviews: 1,
-          },
+      },
+      { $unwind: "$program" },
+      {
+        $project: {
+          _id: "$program._id",
+          title: "$program.title",
+          type: "$program.type",
+          posterPath: "$program.posterPath",
+          averageRating: 1,
+          totalReviews: 1,
         },
-        { $sort: { totalReviews: -1, averageRating: -1 } },
-        { $limit: parseInt(limit) },
-      ]);
-  
-      res.status(200).json(programs);
-    } catch (err) {
-      next(err);
-    }
+      },
+      { $sort: { totalReviews: -1, averageRating: -1 } },
+      { $limit: parseInt(limit) },
+    ]);
+
+    res.status(200).json(programs);
+  } catch (err) {
+    next(err);
+  }
 };
 
 module.exports = {
-    addReview,
-    getReviewsByProgram,
-    getLast10ReviewsByUser,
-    updateReview,
-    deleteReview,
-    likeReview,
-    getTopRatedPrograms,
-    getMostReviewedPrograms
+  addReview,
+  getReviewsByProgram,
+  getLast10ReviewsByUser,
+  updateReview,
+  deleteReview,
+  likeReview,
+  getTopRatedPrograms,
+  getMostReviewedPrograms,
 };
