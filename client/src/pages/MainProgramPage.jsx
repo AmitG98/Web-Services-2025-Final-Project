@@ -1,28 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MainHeader from "../components/coreUi/MainHeader";
 import MainFooter from "../components/coreUi/MainFooter";
 import ContentRow from "../components/coreUi/ContentRow";
 import HeroSection from "../components/coreUi/HeroSection";
-import { useHomepagePrograms } from "../hooks/useProgramList";
+import { useHomepagePrograms, useNewAndPopularList } from "../hooks/useProgramList";
 import MoreInfo from "./MoreInfo";
 
 const MainProgramPage = ({ contentType = "all" }) => {
   const [selectedProgram, setSelectedProgram] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [moreInfoOpen, setMoreInfoOpen] = useState(false);
 
-  const { data: bannerOptions } = useHomepagePrograms({
+  const { data: bannerOptions = [] } = useNewAndPopularList({
+    queryKey: ["newAndPopular", 4],
+  });
+  
+  const {} = useHomepagePrograms({
     query: "popular",
     type: contentType === "all" ? "movie" : contentType,
   });
 
-  const randomIndex = Math.floor(Math.random() * (bannerOptions?.length || 0));
-  const randomBanner = bannerOptions?.[randomIndex] || {
-    title: "House Of Ninjas",
-    overview:
-      "Years after retiring from their formidable ninja lives, a dysfunctional family must return to shadowy missions to counteract a string of looming threats.",
-    backdrop_path: "HouseOfNinjas-Hero.png",
-  };
-  console.log("🎬 randomBanner:", randomBanner);
+  useEffect(() => {
+    if (bannerOptions.length === 0) return;
+
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % bannerOptions.length);
+    }, 5000);
+    return () => clearInterval(interval); 
+  }, [bannerOptions]);
+  
+  const currentBanner  = bannerOptions[currentIndex];
 
   return (
     <div className="min-h-screen flex flex-col bg-[#141414] text-white overflow-x-hidden">
@@ -31,9 +38,9 @@ const MainProgramPage = ({ contentType = "all" }) => {
       </div>
 
       <main className="flex-grow pt-0">
-        <HeroSection program={randomBanner} />
+        <HeroSection program={currentBanner } />
 
-        <div className="relative z-10 px-3 sm:px-10 lg:px-20 space-y-12 pt-5">
+        <div className="relative z-10 px-3 sm:px-10 lg:px-20 pt-40 space-y-12">
           {/*row1-recommended	התאמות אישיות למשתמש*/}
           <ContentRow
             title="Matched to You"

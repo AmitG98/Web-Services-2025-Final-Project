@@ -31,7 +31,7 @@ const MainHeader = ({ activePage }) => {
   ];
 
   return (
-    <header className="w-full px-4 py-3 bg-black/90 text-white flex items-center justify-between shadow-sm">
+    <header className="w-full px-4 py-3 bg-black/10 backdrop-blur-sm text-white flex items-center justify-between fixed top-0 left-0 z-50">
       <div className="flex items-center gap-8">
         <Link to="/home" className="text-2xl font-bold tracking-wide">
           <img
