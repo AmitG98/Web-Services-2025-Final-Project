@@ -83,7 +83,7 @@ const getHomepageContent = async (req, res, next) => {
       0,
       10
     );
-
+    console.log(`personalized: ${personalized.length}`);
     const myList = await buildMyList(myListRaw);
 
     await Log.create({
@@ -141,35 +141,72 @@ const getProgramDetails = async (req, res) => {
 };
 
 // ========== TMDB SEARCH/DISCOVERY ========== //
-const searchOrDiscoverPrograms = async (req, res, next) => {
+const fetchTmdbCombined = async () => {
   try {
-    const {
-      type = "movie",
-      query: searchTerm,
-      category,
-      language = "en-US",
-    } = req.query;
+    const moviePages = [1, 2, 3];
+    const tvPages = [1, 2, 3];
 
-    const endpoint = searchTerm ? `/search/${type}` : `/discover/${type}`;
+    const movieRequests = moviePages.map((page) =>
+      tmdbRequest("/movie/popular", { language: "en-US", page })
+    );
 
-    const params = {
-      language,
-      query: searchTerm,
-      with_genres: category,
-    };
+    const tvRequests = tvPages.map((page) =>
+      tmdbRequest("/tv/popular", { language: "en-US", page })
+    );
 
-    await Log.create({
-      action: "User Searched or Discovered Programs",
-      user: req.user ? req.user._id : null,
-      details: { type, query, genre },
-    });
+    const [movieResults, tvResults] = await Promise.all([
+      Promise.all(movieRequests),
+      Promise.all(tvRequests),
+    ]);
 
-    const results = await tmdbRequest(endpoint, params);
-    res.status(200).json(results);
+    const movies = movieResults.flat().map((item) => ({ ...item, type: "movie" }));
+    const tvShows = tvResults.flat().map((item) => ({ ...item, type: "tv" }));
+
+    const all = [...movies, ...tvShows];
+
+    const selected = all.slice(0, 100);
+
+    return selected;
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error fetching programs", error: err.message });
+    console.error("Error in fetchTmdbCombined:", err.message);
+    return [];
+  }
+};
+
+
+const searchPrograms = async (req, res, next) => {
+  try {
+    const { query, genre, language, type } = req.query;
+
+    let allItems = await fetchTmdbCombined();
+    let filtered = allItems;
+
+    if (query || genre || language || type) {
+      if (query) {
+        filtered = filtered.filter((item) =>
+          (item.title || item.name)?.toLowerCase().includes(query.toLowerCase())
+        );
+      }
+      if (genre) {
+        filtered = filtered.filter((item) =>
+          item.genre_ids?.includes(parseInt(genre))
+        );
+      }
+      if (language) {
+        filtered = filtered.filter((item) => item.original_language === language);
+      }
+      if (type) {
+        filtered = filtered.filter((item) => item.type === type);
+      }
+    } else {
+      filtered = allItems.sort(() => 0.5 - Math.random()).slice(0, 100);
+    }
+
+    const withImages = mapImageUrls(filterWithImage(filtered));
+    res.status(200).json({ items: withImages });
+  } catch (err) {
+    console.error("Error in getSearchResults:", err.message);
+    next(err);
   }
 };
 
@@ -212,6 +249,41 @@ const getExtraProgramInfo = async (req, res, next) => {
     res
       .status(500)
       .json({ message: "Error fetching extra info", error: err.message });
+  }
+};
+
+const getNewAndPopular = async (req, res, next) => {
+  try {
+    const limit = parseInt(req.query.limit, 10) || 90;
+
+    const [popularMovies, popularTV, latestMovies, latestTV] = await Promise.all([
+      tmdbRequest("/movie/popular", { language: "en-US", page: 1 }),
+      tmdbRequest("/tv/popular", { language: "en-US", page: 1 }),
+      tmdbRequest("/movie/now_playing", { language: "en-US", page: 1 }),
+      tmdbRequest("/tv/on_the_air", { language: "en-US", page: 1 }),
+    ]);
+
+    const allItems = [
+      ...popularMovies.map((item) => ({ ...item, type: "movie" })),
+      ...popularTV.map((item) => ({ ...item, type: "tv" })),
+      ...latestMovies.map((item) => ({ ...item, type: "movie" })),
+      ...latestTV.map((item) => ({ ...item, type: "tv" })),
+    ];
+
+    const filtered = allItems.filter((item) => item.poster_path || item.backdrop_path);
+
+    const mapped = mapImageUrls(filtered);
+    const sorted = mapped.sort((a, b) => {
+      const dateA = new Date(a.release_date || a.first_air_date || 0);
+      const dateB = new Date(b.release_date || b.first_air_date || 0);
+      return dateB - dateA;
+    });
+
+    const finalItems = sorted.slice(0,limit);
+    res.status(200).json({ items: finalItems });
+  } catch (err) {
+    console.error("Error in getNewAndPopular:", err.message);
+    next(err);
   }
 };
 
@@ -430,7 +502,7 @@ const getProgramsByGenreAndType = async (req, res) => {
 module.exports = {
   getHomepageContent,
   getProgramDetails,
-  searchOrDiscoverPrograms,
+  searchPrograms,
   getProgramsByType,
   getSeriesEpisodes,
   getExtraProgramInfo,
@@ -439,5 +511,6 @@ module.exports = {
   searchTmdbDirect,
   getTmdbDetailsPreview,
   getProgramsByGenreAndType,
-  filterWithImage
+  filterWithImage,
+  getNewAndPopular
 };
