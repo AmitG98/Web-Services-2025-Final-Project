@@ -8,11 +8,13 @@ const {
   getProgramsByType,
   getSeriesEpisodes,
   getExtraProgramInfo,
+  getNewAndPopular,
   createProgramManually,
   checkIfProgramExists,
   searchTmdbDirect,
   getTmdbDetailsPreview,
   getProgramsByGenreAndType,
+  searchPrograms
 } = require("../controllers/programController");
 
 const { verifyToken, isAdmin } = require("../middleware/authMiddleware");
@@ -26,7 +28,7 @@ router.get("/home", verifyToken, getHomepageContent);
 router.get("/tmdb/:tmdbId", verifyToken, getProgramDetails);
 
 // Search or discover programs (TMDB)
-router.get("/", searchOrDiscoverPrograms);
+router.get("/", searchPrograms);
 
 // Get only movies or only TV shows (TMDB)
 router.get("/type/:type", getProgramsByType);
@@ -38,6 +40,8 @@ router.get("/episodes/:seriesId/:seasonNumber", getSeriesEpisodes);
 router.get("/extras/:type/:id", getExtraProgramInfo);
 
 router.get("/by-genre", getProgramsByGenreAndType);
+
+router.get("/new-and-popular", verifyToken, getNewAndPopular);
 
 // ========== ADMIN ROUTES ========== //
 

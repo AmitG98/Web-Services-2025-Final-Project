@@ -6,9 +6,10 @@ import Login from "./pages/Login.jsx";
 import MainProgramPage from "./pages/MainProgramPage.jsx";
 import MoreInfo from "./pages/MoreInfo";
 import Profiles from "./pages/Profiles.jsx";
-import ProgramGridPage from "./pages/ProgramGridPage.jsx";
 import Browse from "./pages/Browse.jsx";
 import Review from "./pages/ReviewPage.jsx";
+import NewAndPopularPage from "./pages/NewAndPopularPage";
+import MyListPage from "./pages/MyListPage";
 // import SecureAccess from "./routes/SecureAccess.jsx";
 // import Home from "./pages/admin/AdminHome.jsx";
 // import Logs from "./pages/admin/Logs.jsx";
@@ -91,25 +92,11 @@ const router = createBrowserRouter([
   { path: "/review/:programId", element: <Review /> },
   {
     path: "/new&popular",
-    element: (
-      <ProgramGridPage
-        title="New & Popular"
-        query="newest"
-        type="movie"
-        activePage="new&popular"
-      />
-    ),
+    element: <NewAndPopularPage />,
   },
   {
     path: "/my-list",
-    element: (
-      <ProgramGridPage
-        title="My List"
-        query="myList"
-        type="movie"
-        activePage="my-list"
-      />
-    ),
+    element: <MyListPage />,
   },
   { path: "/browse", element: <Browse /> },
 ]);

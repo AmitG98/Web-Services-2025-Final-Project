@@ -3,12 +3,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getMyList, addToMyList, removeFromMyList } from "../api/myList";
 import { toast } from "sonner";
 
-export const useMyMovieList = () => {
-  return useQuery({
-    queryKey: ["MyList"],
-    queryFn: () => getMyList(),
+export const useMyMovieList = () =>
+  useQuery({
+    queryKey: ["myList"],
+    queryFn: getMyList,
+    refetchOnWindowFocus: false,
   });
-};
 
 export const useAddToMyList = () => {
   const queryClient = useQueryClient();

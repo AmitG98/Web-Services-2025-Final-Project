@@ -62,17 +62,13 @@ const buildMyList = async (myListRaw) => {
         if (match) {
           [, type, tmdbId] = match;
         } else if (!isNaN(programId)) {
-          console.warn(`MyList[${i}] - Plain numeric string. Assuming TMDB movie`);
           tmdbId = programId;
         } else {
-          console.warn(`MyList[${i}] - Invalid TMDB format`);
           return null;
         }
       } else if (typeof programId === "number") {
-        console.warn(`MyList[${i}] - Raw number. Assuming TMDB movie`);
         tmdbId = programId.toString();
       } else {
-        console.warn(`MyList[${i}] - Invalid or missing programId`);
         return null;
       }
 

@@ -2,8 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 // import { useQuery, useMutation } from "@tanstack/react-query";
 import {
   fetchHomepageContent,
-  getProgramsByType,
+  fetchNewAndPopular,
   getProgramDetails,
+  getProgramsByType
 } from "../api/program";
 import { toast } from "sonner";
 
@@ -21,14 +22,17 @@ export const useHomepagePrograms = (filters = {}) => {
 };
 
 // General program list by filters
-export const useProgramList = (type = "movie") =>
+export const useProgramList = (type) =>
   useQuery({
-    queryKey: ["programs", type],
+    queryKey: ["ProgramsByType", type],
     queryFn: () => getProgramsByType(type),
-    onError: () =>
-      toast.error("Failed to load programs", {
-        description: "Something went wrong!",
-      }),
+    refetchOnWindowFocus: false,
+});
+
+export const useNewAndPopularList = () =>
+  useQuery({
+    queryKey: ["newAndPopular"],
+    queryFn: fetchNewAndPopular,
     refetchOnWindowFocus: false,
   });
 

@@ -1,32 +1,46 @@
-import React, { useState } from "react";
+// pages/ProgramGridPage.jsx
+import React, { useState, useEffect } from "react";
 import Spinner from "../components/ui/spinner";
 import MainHeader from "../components/coreUi/MainHeader";
 import MainFooter from "../components/coreUi/MainFooter";
-import { useProgramList } from "../hooks/useProgramList";
-import { useMyMovieList } from "../hooks/useMyMovieList";
 import MoreInfo from "./MoreInfo";
 import ProgramCard from "../components/coreUi/ProgramCard";
+import { useMyMovieList } from "../hooks/useMyMovieList";
+import { useNewAndPopularList } from "../hooks/useProgramList";
 
-const ProgramGridPage = ({ title, query, type = "movie", activePage }) => {
+const ProgramGridPage = ({ query, title, activePage }) => {
   const [selectedProgram, setSelectedProgram] = useState(null);
 
-  const myListResult = useMyMovieList();
-  const programListResult = useProgramList(type);
-
   const isMyList = query === "myList";
-  const {
-    data: programData,
-    isLoading,
-    error,
-  } = isMyList ? myListResult : programListResult;
+  const isNewAndPopular = query === "newAndPopular";
 
-  console.log("📦 Loaded programs:", programData);
-  if (programData?.length) {
-    console.log(
-      "Poster URLs:",
-      programData.map((p) => p.posterPath)
-    );
-  }
+  const {
+    data: myListData = [],
+    isLoading: isMyListLoading,
+    error: myListError,
+  } = useMyMovieList();
+
+  const {
+    data: popularData = [],
+    isLoading: isPopularLoading,
+    error: popularError,
+  } = useNewAndPopularList();
+
+  const programData = isMyList ? myListData : popularData;
+  const isLoading = isMyList ? isMyListLoading : isPopularLoading;
+  const error = isMyList ? myListError : popularError;
+
+  useEffect(() => {
+    setSelectedProgram(null);
+  }, [query]);
+
+  const seenKeys = new Set();
+  const uniquePrograms = programData.filter((program) => {
+    const key = `${program.type || "unknown"}-${program.tmdbId || program._id || program.id}`;
+    if (seenKeys.has(key)) return false;
+    seenKeys.add(key);
+    return true;
+  });
 
   if (isLoading) return <Spinner />;
   if (error)
@@ -41,26 +55,32 @@ const ProgramGridPage = ({ title, query, type = "movie", activePage }) => {
       <div className="pt-24 px-6 md:px-20">
         <h3 className="font-semibold text-2xl mb-6">{title}</h3>
 
-        {programData?.length > 0 ? (
+        {uniquePrograms.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-            {programData.map((program) => (
-              <div key={program.tmdbId || program._id || program.id}>
-                <ProgramCard
-                  program={program}
-                  onClick={(program) => {
-                    console.log("🖱️ Program clicked:", program);
-                    const normalized = {
-                      ...program,
-                      id: program.programId?.split("-").pop(),
-                    };
-                    setSelectedProgram(normalized);
-                  }}
-                />
-                <p className="mt-2 text-sm font-medium truncate text-center">
-                  {program.title || program.name}
-                </p>
-              </div>
-            ))}
+            {uniquePrograms.map((program, index) => {
+              const key = `${program.type || "unknown"}-${program.tmdbId || program._id || program.id || index}`;
+              return (
+                <div key={key}>
+                  <ProgramCard
+                    program={program}
+                    onClick={() => {
+                      const normalized = {
+                        ...program,
+                        id:
+                          program.programId?.split("-").pop() ||
+                          program.tmdbId ||
+                          program._id ||
+                          index,
+                      };
+                      setSelectedProgram(normalized);
+                    }}
+                  />
+                  <p className="mt-2 text-sm font-medium truncate text-left">
+                    {program.title || program.name}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         ) : (
           <p className="text-white text-sm">No content to show.</p>
