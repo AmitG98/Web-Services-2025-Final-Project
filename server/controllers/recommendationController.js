@@ -1,5 +1,6 @@
 const Profile = require("../models/Profile");
-const { fetchProgramsByGenreAndType } = require("../utils/tmdbUtils");
+const { fetchProgramsByGenreAndType, fetchTmdbDetails } = require("../utils/tmdbUtils");
+
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -25,27 +26,57 @@ const genreMap = {
   western: 37,
 };
 
-async function getPersonalizedRecommendations(userId) {
-  const profile = await Profile.findOne({ user: userId });
+async function getPersonalizedRecommendations(profileId) {
+  const profile = await Profile.findById(profileId);
+
   if (!profile || !profile.userHistory || profile.userHistory.length === 0) {
     return [];
   }
 
-  const historyText = profile.userHistory.map((item) =>
-    `• ${item.action.toUpperCase()} ${item.programId} at ${item.timestamp.toISOString()}`
-  ).join("\n");
+  const uniqueHistory = [
+    ...new Map(profile.userHistory.map((item) => [`${item.programId}-${item.type}`, item])).values()
+  ];
 
-  const prompt = `
-You are an AI recommendation engine. Based on this user's activity history, summarize their viewing preferences.
-Activity:
-${historyText}
+  const limitedHistory = uniqueHistory.slice(0, 30);
 
-Output: a JSON with preferences including genres (like "action", "drama", "comedy"), types (movie or tv), and optional keywords.
-`;
+  const enrichedHistory = await Promise.all(
+    limitedHistory.map(async (item) => {
+      try {
+        const tmdb = await fetchTmdbDetails(item.programId, item.type);
+        return `• ${item.action.toUpperCase()}: ${tmdb.title || tmdb.name} (${item.type}) - genres: ${tmdb.genres.map((g) => g.name).join(", ")} - overview: ${(tmdb.overview || "").slice(0, 200)}...`;
+      } catch (err) {
+        console.warn(`Failed to fetch TMDB for ${item.programId} (${item.type}): ${err.message}`);
+        return null;
+      }
+    })
+  );
+  const historyText = enrichedHistory.filter(Boolean).join("\n");
 
-  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+  prompt = `You are a smart AI recommendation engine helping a streaming platform. 
+  You analyze user behavior data (clicks and likes) to infer viewing preferences and suggest content accordingly.
+  Each item in the user's activity log contains:
+  - a programId (a TMDB ID),
+  - an action (either "click" or "like"),
+  - a timestamp,
+  - a type (either "movie" or "tv").
+  
+  Your job is to:
+  1. Infer which **genres** the user might prefer (e.g., "action", "drama", "comedy"), based on frequency or pattern of interaction.
+  2. Identify preferred **types**: do they engage more with movies, TV, or both?
+  3. Optionally extract any **keywords or themes** that seem recurring (e.g., "crime", "supernatural", "romance").
+  4. Output a JSON with fields: genres, types, keywords, and optionally confidence and data_quality (e.g., "low", "medium", "high").
+  
+  Avoid vague answers. Even with limited data, make educated guesses and infer partial preferences based on interaction frequency, type bias, or time proximity of similar items.
+  Here is the user activity:
+  ${historyText}
+  
+  Output: JSON object only with no explanation or preamble.`
+
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
   const result = await model.generateContent(prompt);
   const responseText = await result.response.text();
+
+  console.log(responseText);
 
   let preferences;
   try {
@@ -66,10 +97,10 @@ Output: a JSON with preferences including genres (like "action", "drama", "comed
 
 const getRecommendations = async (req, res) => {
   try {
-    const { userId } = req.query;
-    if (!userId) return res.status(400).json({ error: "Missing userId" });
+    const { profileId } = req.query;
+    if (!profileId) return res.status(400).json({ error: "Missing userId" });
 
-    const results = await getPersonalizedRecommendations(userId);
+    const results = await getPersonalizedRecommendations(profileId);
     res.json(results);
   } catch (err) {
     console.error("Error:", err);

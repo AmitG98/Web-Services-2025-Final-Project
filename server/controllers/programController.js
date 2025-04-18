@@ -26,7 +26,8 @@ const filterWithImage = (items) =>
 const getHomepageContent = async (req, res, next) => {
   try {
     const userId = req.user._id;
-    const type = req.query.type; // "movie", "tv", or undefined
+    const profileId = req.query.profileId;
+    const type = req.query.type;
     const genre = req.query.genre || 35;
     const programFilter = type ? { type } : {};
 
@@ -43,7 +44,7 @@ const getHomepageContent = async (req, res, next) => {
       customTV,
       myListRaw,
     ] = await Promise.all([
-      getPersonalizedRecommendations(userId),
+      getPersonalizedRecommendations(profileId),
       type !== "tv"
         ? tmdbRequest("/discover/movie", { sort_by: "release_date.desc" })
         : [],

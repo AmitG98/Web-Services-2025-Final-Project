@@ -29,7 +29,6 @@ const ContentRow = ({
             <ProgramCard
               key={`${program.type}-${program.tmdbId || program._id || program.id}`}
               program={program.program || program}
-              
               onClick={(program) => onProgramClick?.(program)}
             />
           ))}

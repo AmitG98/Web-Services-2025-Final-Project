@@ -18,7 +18,7 @@ axiosClient.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${token}`;
     // console.log("🛂 Attached token:", token);
   } else {
-    // console.warn("🚫 No token in sessionStorage");
+    console.warn("No token in sessionStorage");
   }
   return config;
 });

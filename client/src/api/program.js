@@ -1,18 +1,19 @@
 import axios from "./axiosClient";
 
 export const fetchHomepageContent = async ({ type, genre } = {}) => {
+  const selectedProfile = JSON.parse(sessionStorage.getItem("selectedProfile"));
+  const profileId = selectedProfile?._id;
   const params = {};
 
   if (type) params.type = type;
   if (genre) params.genre = genre;
-  // console.log("📡 fetchHomepageContent → sending request with:", params);
+  params.profileId = profileId;
 
   const response = await axios.get("/programs/home", {
     params,
     withCredentials: true,
   });
 
-  // console.log("✅ fetchHomepageContent → response:", response.data);
   return response.data;
 };
 

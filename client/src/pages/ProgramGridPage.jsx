@@ -12,8 +12,7 @@ const ProgramGridPage = ({ query, title, activePage }) => {
   const [selectedProgram, setSelectedProgram] = useState(null);
 
   const isMyList = query === "myList";
-  const isNewAndPopular = query === "newAndPopular";
-
+  
   const {
     data: myListData = [],
     isLoading: isMyListLoading,
