@@ -294,7 +294,7 @@ const createProgramManually = async (req, res) => {
     if (req.user.role !== "admin") {
       return res.status(403).json({ message: "Not authorized" });
     }
-
+    
     const {
       tmdbId,
       title,
@@ -341,13 +341,20 @@ const createProgramManually = async (req, res) => {
         .json({ message: "Program already exists", programId: exists._id });
     }
 
+    const [mapped] = mapImageUrls([
+      {
+        posterPath,
+        backdropPath,
+      },
+    ]);
+
     const newProgram = new Program({
       tmdbId,
       title,
       type,
       overview,
-      posterPath,
-      backdropPath,
+      posterPath: mapped.posterPath,
+      backdropPath: mapped.backdropPath,
       genres,
       releaseDate,
       popularity,
@@ -468,6 +475,7 @@ const getTmdbDetailsPreview = async (req, res) => {
     const { tmdbId, type } = req.params;
     const result = await fetchTmdbDetails(tmdbId, type);
 
+    console.log(result);
     if (req.user) {
       await Log.create({
         action: "Admin Previewed TMDB Program",

@@ -46,7 +46,9 @@ export default function Logs() {
                 </td>
                 <td className="px-4 py-2 text-sm">{log.action}</td>
                 <td className="px-4 py-2 text-sm">
-                  {log.user?.name || log.user?.username || "System"}
+                  {log.user
+                    ? `${log.user.username || log.user.name || log.user._id}`
+                    : "System"}
                 </td>
                 <td className="px-4 py-2 text-sm">
                   {log.level || "info"}

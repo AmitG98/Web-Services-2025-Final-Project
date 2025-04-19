@@ -70,11 +70,6 @@ const Log = require("../models/Log");
 
 const addReview = async (req, res, next) => {
   try {
-    console.log("📥 Incoming review request");
-    console.log("🧾 req.body:", req.body);
-    console.log("👤 userId:", req.body.userId);
-    console.log("🧸 profileId:", req.body.profileId);
-
     const { mediaId, profileId, rating, comment, isPublic, spoiler, userId } =
       req.body;
 
@@ -96,9 +91,6 @@ const addReview = async (req, res, next) => {
       return res
         .status(200)
         .json({ message: "Review updated", review: existingReview });
-      // return res
-      //   .status(400)
-      //   .json({ message: "You have already reviewed this program." });
     }
 
     const review = new Review({
@@ -112,6 +104,7 @@ const addReview = async (req, res, next) => {
     });
 
     await review.save();
+    await logOncePerDay(userId, "Added review");
 
     res.status(201).json({ message: "Review created successfully", review });
   } catch (err) {
