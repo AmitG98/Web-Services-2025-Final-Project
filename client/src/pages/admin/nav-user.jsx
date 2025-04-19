@@ -22,11 +22,11 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "../../components/ui/sidebar";
-import { useAuth } from "../../context/authContext";
+import { useSessionContext } from "../../context/UserSessionProvider";
 
 export function NavUser({ user }) {
   const { isMobile } = useSidebar();
-  const { logout } = useAuth();
+  const { logout } = useSessionContext();
   
   const handleLogout = () => {
     logout();

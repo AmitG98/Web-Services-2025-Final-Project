@@ -28,11 +28,9 @@ function LoginForm() {
     setServerError(null);
     try {
       const res = await submitLogin(data);
-      console.log("🔐 Login response:", res);
-
+  
       if (res?.user) {
-        sessionStorage.setItem("user", JSON.stringify({ accessToken: res.accessToken }));
-        login(res.user);
+        login(res.user, res.accessToken, data.rememberMe);
         toast.success(`Welcome, ${res.user.username || res.user.email}`);
         navigate(res.user.role === "admin" ? "/admin-dashboard" : "/profiles");
         reset();
@@ -45,6 +43,7 @@ function LoginForm() {
       setServerError(message);
     }
   };
+  
 
   return (
     <form

@@ -7,24 +7,27 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true); 
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-
-    if (storedUser) {
-      setUser(JSON.parse(storedUser)); 
+    const storedSession =
+      JSON.parse(localStorage.getItem("user")) ||
+      JSON.parse(sessionStorage.getItem("user"));
+  
+    if (storedSession?.user) {
+      setUser(storedSession.user);
     }
-
-    setIsLoading(false); 
+  
+    setIsLoading(false);
   }, []);
-
+  
   const login = (userData) => {
     setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData)); 
   };
-
+  
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("user"); 
+    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
   };
+  
 
   if (isLoading) {
     return <Spinner/>; 

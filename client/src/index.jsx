@@ -2,14 +2,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import './index.css'; // אופציונלי, אם יש
-import { AuthProvider } from "./context/authContext";
+import './index.css';
+import { UserSessionProvider } from "./context/UserSessionProvider";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <AuthProvider>
+    <UserSessionProvider>
       <App />
-    </AuthProvider>
+    </UserSessionProvider>
   </React.StrictMode>
 );

@@ -4,30 +4,44 @@ const SessionContext = createContext();
 
 export const UserSessionProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
+  const [accessToken, setAccessToken] = useState(null);
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [loadingState, setLoadingState] = useState(true);
 
   useEffect(() => {
-    const savedUser = sessionStorage.getItem("auth-user");
+    const savedSession =
+      JSON.parse(localStorage.getItem("user")) ||
+      JSON.parse(sessionStorage.getItem("user"));
     const savedProfile = sessionStorage.getItem("selected-profile");
-    if (savedUser) {
-      setCurrentUser(JSON.parse(savedUser));
+
+    if (savedSession?.user) {
+      setCurrentUser(savedSession.user);
+      setAccessToken(savedSession.accessToken);
     }
     if (savedProfile) {
       setSelectedProfile(JSON.parse(savedProfile));
     }
+
     setLoadingState(false);
   }, []);
 
-  const login = (user) => {
+  const login = (user, accessToken, rememberMe) => {
+    const session = { user, accessToken };
+    if (rememberMe) {
+      localStorage.setItem("user", JSON.stringify(session));
+    } else {
+      sessionStorage.setItem("user", JSON.stringify(session));
+    }
     setCurrentUser(user);
-    sessionStorage.setItem("auth-user", JSON.stringify(user));
+    setAccessToken(accessToken);
   };
 
   const logout = () => {
     setCurrentUser(null);
+    setAccessToken(null);
     setSelectedProfile(null);
-    sessionStorage.removeItem("auth-user");
+    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
     sessionStorage.removeItem("selected-profile");
   };
 
@@ -40,7 +54,14 @@ export const UserSessionProvider = ({ children }) => {
 
   return (
     <SessionContext.Provider
-      value={{ currentUser, login, logout, selectedProfile, chooseProfile }}
+      value={{
+        currentUser,
+        accessToken,
+        login,
+        logout,
+        selectedProfile,
+        chooseProfile,
+      }}
     >
       {children}
     </SessionContext.Provider>

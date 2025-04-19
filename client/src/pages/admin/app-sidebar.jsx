@@ -15,10 +15,10 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "../../components/ui/sidebar";
-import { useAuth } from "../../context/authContext";
+import { useSessionContext } from "../../context/UserSessionProvider";
 
 export function AppSidebar({ ...props }) {
-  const { user } = useAuth();
+  const { user } = useSessionContext();
 
   const data = {
     user: {
