@@ -76,8 +76,6 @@ async function getPersonalizedRecommendations(profileId) {
   const result = await model.generateContent(prompt);
   const responseText = await result.response.text();
 
-  console.log(responseText);
-
   let preferences;
   try {
     const jsonText = responseText.match(/\{[\s\S]*\}/)?.[0];

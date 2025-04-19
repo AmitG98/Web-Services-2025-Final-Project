@@ -7,8 +7,7 @@ const MyList = require("../models/MyList");
 const Log = require("../models/Log");
 const { getPersonalizedRecommendations } = require("./recommendationController");
 const { fetchProgramsByGenreAndType, tmdbRequest, mapImageUrls, fetchTmdbDetails } = require("../utils/tmdbUtils");
-const { getTopWatchedInIsrael } = require("../utils/tmdbService");
-const { buildRecentReviews, getTopRated, buildMyList } = require("../utils/programUtils");
+const { buildRecentReviews, getTopRated, buildMyList, getTopWatchedInIsrael } = require("../utils/programUtils");
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
@@ -51,7 +50,7 @@ const getHomepageContent = async (req, res, next) => {
       type !== "movie"
         ? tmdbRequest("/discover/tv", { sort_by: "first_air_date.desc" })
         : [],
-      getTopWatchedInIsrael(15),
+      getTopWatchedInIsrael(15,type),
       Review.find({ user: userId, media: { $type: "string" } })
         .sort({ createdAt: -1 })
         .limit(10),

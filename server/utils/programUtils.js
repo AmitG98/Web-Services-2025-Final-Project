@@ -1,4 +1,59 @@
-const { getTMDBImageUrl, fetchTmdbDetails, tmdbRequest } = require("../utils/tmdbUtils");
+const { TMDB_BASE_URL, getTMDBImageUrl, fetchTmdbDetails, tmdbRequest } = require("../utils/tmdbUtils");
+const axios = require("axios");
+
+const getTopWatchedInIsrael = async (limit = 10, type) => {
+  const apiKey = process.env.TMDB_API_KEY;
+  if (!apiKey) throw new Error("TMDB API key is missing");
+
+  const endpoint = type && ["movie", "tv"].includes(type)
+    ? `${TMDB_BASE_URL}/trending/${type}/week`
+    : `${TMDB_BASE_URL}/trending/all/week`;
+
+  const response = await axios.get(endpoint, {
+    params: {
+      api_key: apiKey,
+      region: "IL",
+    },
+  });
+
+  let items = response.data.results;
+
+  if (!type) {
+    items = items.filter(item => ["movie", "tv"].includes(item.media_type));
+  }
+
+  if (type && ["movie", "tv"].includes(type)) {
+    items = items.filter(item => item.media_type === type);
+  }
+
+  items = items.slice(0, limit);
+
+  const detailed = await Promise.all(
+    items.map(async (item) => {
+      try {
+        const data = await fetchTmdbDetails(item.id, item.media_type || type);
+        return {
+          tmdbId: data.id,
+          type: item.media_type || type,
+          title: data.title || data.name,
+          overview: data.overview || "",
+          posterPath: data.poster_path,
+          backdropPath: data.backdrop_path,
+          genres: data.genres?.map(g => g.name) || [],
+          popularity: data.popularity || 0,
+          existsInDb: data.existsInDb,
+          releaseDate: data.release_date || data.first_air_date || null,
+        };
+      } catch (err) {
+        console.warn(`Failed to fetch details for TMDB ID ${item.id}:`, err.message);
+        return null;
+      }
+    })
+  );
+
+  return detailed.filter(Boolean);
+};
+
 
 const buildRecentReviews = async (reviews) => {
   if (!reviews.length) return [];
@@ -32,23 +87,38 @@ const buildRecentReviews = async (reviews) => {
   return enriched.filter((r) => r?.program?.posterPath);
 };
 
-const getTopRated = async (type = "movie", limit = 10) => {
+const getTopRated = async (type = "all", limit = 10) => {
   try {
-    const safeType = ["movie", "tv"].includes(type) ? type : "movie";
-    const endpoint = `/discover/${safeType}`;
-    const params = {
+    if (type === "all") {
+      const [movies, tv] = await Promise.all([
+        tmdbRequest("/discover/movie", {
+          sort_by: "vote_average.desc",
+          "vote_count.gte": 1000,
+          language: "en-US",
+        }),
+        tmdbRequest("/discover/tv", {
+          sort_by: "vote_average.desc",
+          "vote_count.gte": 1000,
+          language: "en-US",
+        }),
+      ]);
+      return [...movies, ...tv].slice(0, limit);
+    }
+
+    const endpoint = `/discover/${["movie", "tv"].includes(type) ? type : "movie"}`;
+    const results = await tmdbRequest(endpoint, {
       sort_by: "vote_average.desc",
       "vote_count.gte": 1000,
       language: "en-US",
-    };
+    });
 
-    const results = await tmdbRequest(endpoint, params);
     return results.slice(0, limit);
   } catch (err) {
     console.error("Error in getTopRated:", err.message);
     return [];
   }
 };
+
 
 const buildMyList = async (myListRaw) => {
   const enriched = await Promise.all(
@@ -98,4 +168,4 @@ const buildMyList = async (myListRaw) => {
   return result;
 };
 
-module.exports = { buildRecentReviews, getTopRated, buildMyList};
+module.exports = { buildRecentReviews, getTopRated, buildMyList, getTopWatchedInIsrael};
