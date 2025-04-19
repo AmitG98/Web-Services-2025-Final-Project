@@ -72,18 +72,39 @@ async function getPersonalizedRecommendations(profileId) {
   
   Output: JSON object only with no explanation or preamble.`
 
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-  const result = await model.generateContent(prompt);
-  const responseText = await result.response.text();
-
   let preferences;
   try {
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const result = await model.generateContent(prompt);
+    const responseText = await result.response.text();
+
     const jsonText = responseText.match(/\{[\s\S]*\}/)?.[0];
     preferences = JSON.parse(jsonText);
   } catch (e) {
-    console.error("Failed to parse Gemini output:", responseText);
+    if (err.status === 429 || err.message?.includes("quota")) {
+    console.warn("Gemini quota exceeded — returning fallback preferences.");
+    preferences = {
+      genres: ["action"],
+      types: ["movie"],
+      keywords: ["popular"],
+      confidence: "low",
+      data_quality: "fallback"
+    };
+    await Log.create({
+      user: profile.user,
+      action: "Used Gemini Fallback",
+      level: "warning",
+      details: {
+        reason: "quota_exceeded",
+        profileId,
+        fallback: preferences
+      },
+    });
+  } else {
+    console.error("Error using Gemini:", err);
     return [];
   }
+}
 
   const genreKey = preferences.genres?.[0]?.toLowerCase();
   const tmdbGenreId = genreMap[genreKey] || 28;
