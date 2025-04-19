@@ -199,7 +199,6 @@ const searchPrograms = async (req, res, next) => {
     }
 
     const withImages = mapImageUrls(filterWithImage(filtered));
-    await logOncePerDay(userId, "Searched Programs");
 
     res.status(200).json({ items: withImages });
   } catch (err) {
@@ -239,7 +238,6 @@ const getExtraProgramInfo = async (req, res, next) => {
     const { id, type } = req.params;
     const credits = await tmdbRequest(`/${type}/${id}/credits`);
     const images = await tmdbRequest(`/${type}/${id}/images`);
-    await logOncePerDay(userId, "Viewed Program Details");
     res.status(200).json({
       productionTeam: credits.crew || [],
       images: (images.backdrops || []).slice(0, 3),
