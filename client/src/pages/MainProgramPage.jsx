@@ -4,7 +4,6 @@ import MainFooter from "../components/coreUi/MainFooter";
 import ContentRow from "../components/coreUi/ContentRow";
 import HeroSection from "../components/coreUi/HeroSection";
 import {
-  useHomepagePrograms,
   useNewAndPopularList,
 } from "../hooks/useProgramList";
 import MoreInfo from "./MoreInfo";
@@ -16,11 +15,6 @@ const MainProgramPage = ({ contentType = "all" }) => {
 
   const { data: bannerOptions = [] } = useNewAndPopularList({
     queryKey: ["newAndPopular", 4],
-  });
-
-  const {} = useHomepagePrograms({
-    query: "popular",
-    type: contentType === "all" ? "movie" : contentType,
   });
 
   useEffect(() => {

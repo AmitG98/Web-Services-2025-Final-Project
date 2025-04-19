@@ -79,7 +79,6 @@ const HeroSection = ({ program, onMoreInfoClick }) => {
 
         {/* More Info Button */}
         <button
-          // onClick={() => onMoreInfoClick?.(program)}
           onClick={handleMoreInfoClick}
           className="mt-6 flex items-center gap-2 px-5 py-2 bg-gray-300 bg-opacity-20 hover:bg-opacity-40 text-white text-sm font-medium rounded-md transition"
         >

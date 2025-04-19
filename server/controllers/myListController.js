@@ -6,6 +6,9 @@ const { filterWithImage } = require("./programController");
 
 const addToList = async (req, res, next) => {
   try {
+    console.log("📥 [addToList] req.body:", req.body);
+    console.log("👤 [addToList] req.user._id:", req.user?._id);
+    
     const { programId, title, posterPath } = req.body;
     const userId = req.user._id;
 

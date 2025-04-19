@@ -9,11 +9,12 @@ import MaximizeIcon from "@mui/icons-material/OpenInFull";
 import MinimizeIcon from "@mui/icons-material/CloseFullscreen";
 import { Button } from "../components/ui/button";
 import Spinner from "../components/ui/spinner";
-import { useAuth } from "../context/authContext";
+// import { useAuth } from "../context/authContext";
 import { useAddToMyList } from "../hooks/useMyMovieList";
 import { useNavigate } from "react-router-dom";
 import EpisodesList from "../components/MoreInfo/EpisodesList";
 import ExtraProgramDetails from "../components/MoreInfo/ExtraProgramDetails";
+import { toast } from "sonner";
 
 export default function MoreInfo({
   isOpen = true,
@@ -21,7 +22,7 @@ export default function MoreInfo({
   program,
 }) {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const [open, setOpen] = React.useState(isOpen);
   const [isFullScreen, setIsFullScreen] = React.useState(false);
 
@@ -41,15 +42,37 @@ export default function MoreInfo({
     setIsFullScreen(!isFullScreen);
   };
 
-  const handleAddToList = () => {
-    if (!data) return;
+  const handleAddToList = async () => {
+    if (!data) {
+      console.warn("⚠️ אין data, לא שולחת לרשימה");
+      return;
+    }
+    console.log("📤 data before payload:", data);
+
     const payload = {
-      movieId: data.id,
-      userId: user._id,
-      title: data.title,
+      programId: data.id,
+      title:
+        data.title ||
+        data.name ||
+        data.original_title ||
+        data.original_name ||
+        "Untitled",
       posterPath: data.poster_path,
     };
-    addToList(payload);
+
+    console.log("📤 שולחת ל־addToList את:", payload);
+
+    try {
+      await addToList(payload);
+      console.log("✅ התווסף לרשימה בהצלחה");
+      toast.success(`"${payload.title}" was added to your list!`, {
+        duration: 10000, // 5 שניות
+      });
+      } catch (err) {
+      console.error("❌ שגיאה בהוספה לרשימה:", err);
+      console.error("🧾 תגובת השרת:", err?.response?.data);
+      toast.error("Failed to add program to your list.");
+    }
   };
 
   if (isLoading) return <Spinner />;
