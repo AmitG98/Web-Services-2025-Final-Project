@@ -9,20 +9,21 @@ import MaximizeIcon from "@mui/icons-material/OpenInFull";
 import MinimizeIcon from "@mui/icons-material/CloseFullscreen";
 import { Button } from "../components/ui/button";
 import Spinner from "../components/ui/spinner";
-// import { useAuth } from "../context/authContext";
 import { useAddToMyList } from "../hooks/useMyMovieList";
 import { useNavigate } from "react-router-dom";
 import EpisodesList from "../components/MoreInfo/EpisodesList";
 import ExtraProgramDetails from "../components/MoreInfo/ExtraProgramDetails";
 import { toast } from "sonner";
+import { useProfilesList } from "../hooks/useUserProfiles";
+import { addInteraction } from "../api/logs";
 
 export default function MoreInfo({
   isOpen = true,
   onClose = () => {},
   program,
 }) {
+  const { data: profile } = useProfilesList();
   const navigate = useNavigate();
-  // const { user } = useAuth();
   const [open, setOpen] = React.useState(isOpen);
   const [isFullScreen, setIsFullScreen] = React.useState(false);
 
@@ -44,11 +45,10 @@ export default function MoreInfo({
 
   const handleAddToList = async () => {
     if (!data) {
-      console.warn("⚠️ אין data, לא שולחת לרשימה");
+      console.warn("⚠️ No program data available, cannot add to list.");
       return;
     }
-    console.log("📤 data before payload:", data);
-
+    console.log("📤 Program data before preparing payload:", data);
     const payload = {
       programId: data.id,
       title:
@@ -59,18 +59,20 @@ export default function MoreInfo({
         "Untitled",
       posterPath: data.poster_path,
     };
-
-    console.log("📤 שולחת ל־addToList את:", payload);
-
+    console.log("📦 Sending to addToList:", payload);
     try {
+      // Add to user's list
       await addToList(payload);
-      console.log("✅ התווסף לרשימה בהצלחה");
+      // Log interaction as "like" in user history
+      if (profile?._id && data?._id) {
+        await addInteraction(profile._id, data._id, "like");
+      }
+      console.log("✅ Program successfully added to the list.");
       toast.success(`"${payload.title}" was added to your list!`, {
-        duration: 10000, // 5 שניות
+        duration: 10000,
       });
-      } catch (err) {
-      console.error("❌ שגיאה בהוספה לרשימה:", err);
-      console.error("🧾 תגובת השרת:", err?.response?.data);
+    } catch (err) {
+      console.error("❌ Error while adding to the list:", err);
       toast.error("Failed to add program to your list.");
     }
   };
