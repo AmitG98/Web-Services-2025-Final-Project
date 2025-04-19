@@ -13,9 +13,7 @@ const MainProgramPage = ({ contentType = "all" }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [moreInfoOpen, setMoreInfoOpen] = useState(false);
 
-  const { data: bannerOptions = [] } = useNewAndPopularList({
-    queryKey: ["newAndPopular", 4],
-  });
+  const { data: bannerOptions = [] } = useNewAndPopularList(4);
 
   useEffect(() => {
     if (bannerOptions.length === 0) return;

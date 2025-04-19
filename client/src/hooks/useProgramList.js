@@ -29,9 +29,9 @@ export const useProgramList = (type) =>
     refetchOnWindowFocus: false,
 });
 
-export const useNewAndPopularList = () =>
+export const useNewAndPopularList = (limit = 90) =>
   useQuery({
-    queryKey: ["newAndPopular"],
+    queryKey: ["newAndPopular", limit],
     queryFn: fetchNewAndPopular,
     refetchOnWindowFocus: false,
   });
