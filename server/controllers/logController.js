@@ -1,6 +1,6 @@
 const Log = require("../models/Log");
 
-exports.getAllLogs = async (req, res) => {
+const getAllLogs = async (req, res) => {
   try {
     const logs = await Log.find()
       .sort({ createdAt: -1 })
@@ -11,3 +11,5 @@ exports.getAllLogs = async (req, res) => {
     res.status(500).json({ message: "Failed to retrieve logs" });
   }
 };
+
+module.exports = { getAllLogs }

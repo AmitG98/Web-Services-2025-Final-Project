@@ -4,7 +4,7 @@ import { Input } from "./input"
 import { cva } from "class-variance-authority";
 import { Slot } from "@radix-ui/react-slot"
 import { PanelLeft } from "lucide-react"
-import { CustomButton } from "./button"
+import { Button } from "./button"
 import { useDetectMobileView } from "../../hooks/useMobile"
 import { cn } from "../../lib/utils"
 import { Separator } from "./separator"
@@ -45,7 +45,7 @@ const SidebarTrigger = React.forwardRef(({ className, onClick, ...props }, ref) 
   const { toggleSidebar } = useSidebar()
 
   return (
-    (<CustomButton
+    (<Button
       ref={ref}
       data-sidebar="trigger"
       variant="ghost"
@@ -58,7 +58,7 @@ const SidebarTrigger = React.forwardRef(({ className, onClick, ...props }, ref) 
       {...props}>
       <PanelLeft />
       <span className="sr-only">Toggle Sidebar</span>
-    </CustomButton>)
+    </Button>)
   );
 })
 SidebarTrigger.displayName = "SidebarTrigger"

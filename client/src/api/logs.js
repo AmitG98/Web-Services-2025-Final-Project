@@ -1,7 +1,7 @@
 import axios from "./axiosClient";
 
 export const fetchLogs = async () => {
-  const response = await axios.get("/api/logs");
+  const response = await axios.get("/logs");
   return response.data;
 };
 

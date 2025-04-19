@@ -5,6 +5,7 @@ const Program = require("../models/Program");
 const Review = require("../models/Review");
 const MyList = require("../models/MyList");
 const Log = require("../models/Log");
+const { logOncePerDay } = require("../utils/logsUtils");
 const { getPersonalizedRecommendations } = require("./recommendationController");
 const { fetchProgramsByGenreAndType, tmdbRequest, mapImageUrls, fetchTmdbDetails } = require("../utils/tmdbUtils");
 const { buildRecentReviews, getTopRated, buildMyList, getTopWatchedInIsrael } = require("../utils/programUtils");
@@ -28,7 +29,6 @@ const getHomepageContent = async (req, res, next) => {
     const profileId = req.query.profileId;
     const type = req.query.type;
     const genre = req.query.genre || 35;
-    const programFilter = type ? { type } : {};
 
     const [
       personalizedRaw,
@@ -83,13 +83,9 @@ const getHomepageContent = async (req, res, next) => {
       0,
       10
     );
-    console.log(`personalized: ${personalized.length}`);
     const myList = await buildMyList(myListRaw);
 
-    await Log.create({
-      action: "Fetched Homepage Content",
-      user: userId,
-    });
+    await logOncePerDay(userId, "Fetched Homepage Content");
 
     res.json({
       personalized,
@@ -203,6 +199,8 @@ const searchPrograms = async (req, res, next) => {
     }
 
     const withImages = mapImageUrls(filterWithImage(filtered));
+    await logOncePerDay(userId, "Searched Programs");
+
     res.status(200).json({ items: withImages });
   } catch (err) {
     console.error("Error in getSearchResults:", err.message);
@@ -241,6 +239,7 @@ const getExtraProgramInfo = async (req, res, next) => {
     const { id, type } = req.params;
     const credits = await tmdbRequest(`/${type}/${id}/credits`);
     const images = await tmdbRequest(`/${type}/${id}/images`);
+    await logOncePerDay(userId, "Viewed Program Details");
     res.status(200).json({
       productionTeam: credits.crew || [],
       images: (images.backdrops || []).slice(0, 3),
@@ -278,6 +277,8 @@ const getNewAndPopular = async (req, res, next) => {
       const dateB = new Date(b.release_date || b.first_air_date || 0);
       return dateB - dateA;
     });
+
+    await logOncePerDay(userId, "Viewed New and Popular page");
 
     const finalItems = sorted.slice(0,limit);
     res.status(200).json({ items: finalItems });

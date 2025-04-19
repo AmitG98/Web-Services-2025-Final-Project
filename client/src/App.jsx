@@ -10,11 +10,11 @@ import Browse from "./pages/Browse.jsx";
 import Review from "./pages/ReviewPage.jsx";
 import NewAndPopularPage from "./pages/NewAndPopularPage";
 import MyListPage from "./pages/MyListPage";
-// import SecureAccess from "./routes/SecureAccess.jsx";
-// import Home from "./pages/admin/AdminHome.jsx";
-// import Logs from "./pages/admin/Logs.jsx";
-// import DataManagement from "./pages/admin/DataManagement.jsx";
-// import ProgramForm from "./pages/admin/ProgramForm.jsx";
+import SecureAccess from "./routes/SecureAccess.jsx";
+import Home from "./pages/admin/AdminHome.jsx";
+import Logs from "./pages/admin/Logs.jsx";
+import DataManagement from "./pages/admin/DataManagement.jsx";
+import ProgramForm from "./pages/admin/ProgramForm.jsx";
 import { UserSessionProvider } from "./context/UserSessionProvider";
 import { AuthUserProvider } from "./hooks/useUserAuth";
 import { SearchGlobalProvider } from "./hooks/useGlobalSearch";
@@ -39,40 +39,40 @@ const router = createBrowserRouter([
     path: "/register",
     element: <Register />,
   },
-  // {
-  //   path: "/admin-dashboard",
-  //   element: (
-  //     <SecureAccess requireAdmin>
-  //       <Home />
-  //     </SecureAccess>
-  //   ),
-  //   children: [
-  //     {
-  //       index: true,
-  //       element: (
-  //         <SecureAccess requireAdmin>
-  //           <Logs />
-  //         </SecureAccess>
-  //       ),
-  //     },
-  //     {
-  //       path: "data-management",
-  //       element: (
-  //         <SecureAccess requireAdmin>
-  //           <DataManagement />
-  //         </SecureAccess>
-  //       ),
-  //     },
-  //     {
-  //       path: "add-program",
-  //       element: (
-  //         <SecureAccess requireAdmin>
-  //           <ProgramForm />
-  //         </SecureAccess>
-  //       ),
-  //     },
-  //   ],
-  // },
+  {
+    path: "/admin-dashboard",
+    element: (
+      <SecureAccess requireAdmin>
+        <Home />
+      </SecureAccess>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <SecureAccess requireAdmin>
+            <Logs />
+          </SecureAccess>
+        ),
+      },
+      {
+        path: "data-management",
+        element: (
+          <SecureAccess requireAdmin>
+            <DataManagement />
+          </SecureAccess>
+        ),
+      },
+      {
+        path: "add-program",
+        element: (
+          <SecureAccess requireAdmin>
+            <ProgramForm />
+          </SecureAccess>
+        ),
+      },
+    ],
+  },
   { path: "/profiles", element: <Profiles /> },
   {
     path: "/home",

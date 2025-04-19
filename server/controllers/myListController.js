@@ -6,9 +6,6 @@ const { getTMDBImageUrl } = require("../utils/tmdbUtils");
 
 const addToList = async (req, res, next) => {
   try {
-    console.log("📥 [addToList] req.body:", req.body);
-    console.log("👤 [addToList] req.user._id:", req.user?._id);
-    
     const { programId, title, posterPath } = req.body;
     const userId = req.user._id;
     const fullPosterPath = getTMDBImageUrl(posterPath, "w500");
@@ -66,7 +63,6 @@ const getMyList = async (req, res, next) => {
     next(err);
   }
 };
-
 
 const getRecentItems = async (req, res, next) => {
   try {

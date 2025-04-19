@@ -49,7 +49,7 @@ export const getExtraProgramInfo = async (type, id) => {
   return data;
 };
 
-// export const createProgram = (data) => axios.post('/api/programs/admin/create', data);
+export const createProgram = (data) => axios.post('/api/programs/admin/create', data);
 // export const checkProgram = (tmdbId) => axios.get(`/api/programs/admin/check/${tmdbId}`);
 // export const searchTmdb = (params) => axios.get('/api/programs/admin/search', { params });
-// export const getTmdbPreview = (type, tmdbId) => axios.get(`/api/programs/admin/tmdb/${type}/${tmdbId}`);
+export const getTmdbPreview = (type, tmdbId) => axios.get(`/api/programs/admin/tmdb/${type}/${tmdbId}`);

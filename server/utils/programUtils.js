@@ -102,7 +102,10 @@ const getTopRated = async (type = "all", limit = 10) => {
           language: "en-US",
         }),
       ]);
-      return [...movies, ...tv].slice(0, limit);
+
+      const combined = [...movies, ...tv];
+      const sorted = combined.sort((a, b) => b.vote_average - a.vote_average);
+      return sorted.slice(0, limit);
     }
 
     const endpoint = `/discover/${["movie", "tv"].includes(type) ? type : "movie"}`;
@@ -118,7 +121,6 @@ const getTopRated = async (type = "all", limit = 10) => {
     return [];
   }
 };
-
 
 const buildMyList = async (myListRaw) => {
   const enriched = await Promise.all(
