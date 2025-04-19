@@ -23,7 +23,7 @@ export const getProgramDetails = async (tmdbId) => {
 };
 
 export const fetchNewAndPopular = async ({ queryKey }) => {
-  const [_key, limit = 90] = queryKey;
+  const [, limit = 90] = queryKey;
 
   const res = await axios.get("/programs/new-and-popular", {
     params: { limit }
