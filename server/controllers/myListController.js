@@ -2,7 +2,7 @@ const MyList = require("../models/MyList");
 const Log = require("../models/Log");
 const { buildMyList } = require("../utils/programUtils");
 const { filterWithImage } = require("./programController");
-
+const { getTMDBImageUrl } = require("../utils/tmdbUtils");
 
 const addToList = async (req, res, next) => {
   try {
@@ -11,8 +11,8 @@ const addToList = async (req, res, next) => {
     
     const { programId, title, posterPath } = req.body;
     const userId = req.user._id;
-
-    const entry = await MyList.create({ userId, programId, title, posterPath });
+    const fullPosterPath = getTMDBImageUrl(posterPath, "w500");
+    const entry = await MyList.create({ userId, programId, title, posterPath: fullPosterPath });
 
     await Log.create({
       action: "Added to My List",

@@ -6,7 +6,7 @@ const buildRecentReviews = async (reviews) => {
   const enriched = await Promise.all(
     reviews.map(async (review, i) => {
       const tmdbId = review.media;
-      const typeGuess = "movie"; // שיפור: אפשר לזהות מסוג ID בעתיד
+      const typeGuess = "movie";
 
       try {
         const tmdb = await fetchTmdbDetails(tmdbId, typeGuess);
@@ -74,14 +74,17 @@ const buildMyList = async (myListRaw) => {
 
       try {
         const tmdb = await fetchTmdbDetails(tmdbId, type);
+        const posterPath = getTMDBImageUrl(tmdb.poster_path, "w500");
+        const backdropPath = getTMDBImageUrl(tmdb.backdrop_path, "w780");
+
         return {
           ...item.toObject(),
           program: {
             tmdbId: tmdb.id,
             type,
             title: tmdb.title || tmdb.name,
-            posterPath: getTMDBImageUrl(tmdb.poster_path, "w500"),
-            backdropPath: getTMDBImageUrl(tmdb.backdrop_path, "w780"),
+            posterPath,
+            backdropPath,
           },
         };
       } catch (err) {
