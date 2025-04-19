@@ -278,8 +278,6 @@ const getNewAndPopular = async (req, res, next) => {
       return dateB - dateA;
     });
 
-    await logOncePerDay(userId, "Viewed New and Popular page");
-
     const finalItems = sorted.slice(0,limit);
     res.status(200).json({ items: finalItems });
   } catch (err) {
