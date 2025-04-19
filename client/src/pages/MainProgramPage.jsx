@@ -3,7 +3,10 @@ import MainHeader from "../components/coreUi/MainHeader";
 import MainFooter from "../components/coreUi/MainFooter";
 import ContentRow from "../components/coreUi/ContentRow";
 import HeroSection from "../components/coreUi/HeroSection";
-import { useHomepagePrograms, useNewAndPopularList } from "../hooks/useProgramList";
+import {
+  useHomepagePrograms,
+  useNewAndPopularList,
+} from "../hooks/useProgramList";
 import MoreInfo from "./MoreInfo";
 
 const MainProgramPage = ({ contentType = "all" }) => {
@@ -14,7 +17,7 @@ const MainProgramPage = ({ contentType = "all" }) => {
   const { data: bannerOptions = [] } = useNewAndPopularList({
     queryKey: ["newAndPopular", 4],
   });
-  
+
   const {} = useHomepagePrograms({
     query: "popular",
     type: contentType === "all" ? "movie" : contentType,
@@ -26,10 +29,10 @@ const MainProgramPage = ({ contentType = "all" }) => {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % bannerOptions.length);
     }, 5000);
-    return () => clearInterval(interval); 
+    return () => clearInterval(interval);
   }, [bannerOptions]);
-  
-  const currentBanner  = bannerOptions[currentIndex];
+
+  const currentBanner = bannerOptions[currentIndex];
 
   return (
     <div className="min-h-screen flex flex-col bg-[#141414] text-white overflow-x-hidden">
@@ -38,9 +41,16 @@ const MainProgramPage = ({ contentType = "all" }) => {
       </div>
 
       <main className="flex-grow pt-0">
-        <HeroSection program={currentBanner } />
+        {/* <HeroSection program={currentBanner} /> */}
+        <HeroSection
+          program={currentBanner}
+          onMoreInfoClick={(program) => {
+            setSelectedProgram(program);
+            setMoreInfoOpen(true);
+          }}
+        />
 
-        <div className="relative z-10 px-3 sm:px-10 lg:px-20 pt-40 space-y-12">
+        <div className="relative z-10 px-3 sm:px-10 lg:px-20 pt-20 space-y-12">
           {/*row1-recommended	התאמות אישיות למשתמש*/}
           <ContentRow
             title="Matched to You"
@@ -131,7 +141,7 @@ const MainProgramPage = ({ contentType = "all" }) => {
         <MoreInfo
           isOpen={moreInfoOpen}
           onClose={() => setMoreInfoOpen(false)}
-          program={selectedProgram} 
+          program={selectedProgram}
         />
       )}
 

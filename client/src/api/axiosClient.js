@@ -11,17 +11,17 @@ const axiosClient = axios.create({
   },
 });
 
-axiosClient.interceptors.request.use((config) => {
-  const session = JSON.parse(sessionStorage.getItem("user"));
-  const token = session?.accessToken;
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-    // console.log("🛂 Attached token:", token);
-  } else {
-    console.warn("No token in sessionStorage");
-  }
-  return config;
-});
+// axiosClient.interceptors.request.use((config) => {
+//   const session = JSON.parse(sessionStorage.getItem("user"));
+//   // const token = session?.accessToken;
+//   // if (token) {
+//   //   config.headers.Authorization = `Bearer ${token}`;
+//   //   // console.log("🛂 Attached token:", token);
+//   // } else {
+//   //   console.warn("No token in sessionStorage");
+//   // }
+//   return config;
+// });
 
 axiosClient.interceptors.response.use(
   (response) => response,

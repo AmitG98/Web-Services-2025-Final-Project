@@ -1,16 +1,36 @@
 import React from "react";
+import { addInteraction } from "../../api/logs";
+import { useProfilesList } from "../../hooks/useUserProfiles";
 
-const HeroSection = ({ program }) => {
+const HeroSection = ({ program, onMoreInfoClick }) => {
+  const { data: profile } = useProfilesList();
+
   if (!program) return null;
 
   const title = program.title || program.name || "Untitled";
   const titleWords = title.split(" ");
 
-  // תמיכה בתמונה לוקאלית או מ-TMDB
-  const isLocalImage = !program.backdrop_path?.startsWith("http") && !program.backdrop_path?.startsWith("/"); 
+  const isLocalImage =
+    !program.backdrop_path?.startsWith("http") &&
+    !program.backdrop_path?.startsWith("/");
   const imageUrl = isLocalImage
     ? `/${program.backdrop_path}`
     : `https://image.tmdb.org/t/p/original${program.backdrop_path}`;
+
+  const handleMoreInfoClick = async () => {
+    if (profile?._id && (program?._id || program?.id || program?.tmdbId)) {
+      const programIdForLog = program._id || program.id || program.tmdbId;
+      try {
+        await addInteraction(profile._id, programIdForLog, "click");
+      } catch (err) {
+        console.error(
+          "❌ Failed to log click interaction from HeroSection:",
+          err
+        );
+      }
+    }
+    onMoreInfoClick?.(program);
+  };
 
   return (
     <div
@@ -31,18 +51,20 @@ const HeroSection = ({ program }) => {
           style={{ fontFamily: "Anton, sans-serif" }}
         >
           {titleWords.length > 4
-            ? titleWords.reduce((rows, word, index) => {
-                if (index % 2 === 0) {
-                  rows.push([word]);
-                } else {
-                  rows[rows.length - 1].push(word);
-                }
-                return rows;
-              }, []).map((pair, idx) => (
-                <div key={idx} className="uppercase">
-                  {pair.join(" ")}
-                </div>
-              ))
+            ? titleWords
+                .reduce((rows, word, index) => {
+                  if (index % 2 === 0) {
+                    rows.push([word]);
+                  } else {
+                    rows[rows.length - 1].push(word);
+                  }
+                  return rows;
+                }, [])
+                .map((pair, idx) => (
+                  <div key={idx} className="uppercase">
+                    {pair.join(" ")}
+                  </div>
+                ))
             : titleWords.map((word, index) => (
                 <div key={index} className="uppercase">
                   {word}
@@ -55,9 +77,12 @@ const HeroSection = ({ program }) => {
           {program.overview}
         </p>
 
-
         {/* More Info Button */}
-        <button className="mt-6 flex items-center gap-2 px-5 py-2 bg-gray-300 bg-opacity-20 hover:bg-opacity-40 text-white text-sm font-medium rounded-md transition">
+        <button
+          // onClick={() => onMoreInfoClick?.(program)}
+          onClick={handleMoreInfoClick}
+          className="mt-6 flex items-center gap-2 px-5 py-2 bg-gray-300 bg-opacity-20 hover:bg-opacity-40 text-white text-sm font-medium rounded-md transition"
+        >
           <img src="/Info.png" alt="info" className="w-4 h-4" />
           More Info
         </button>

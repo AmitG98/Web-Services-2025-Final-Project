@@ -63,16 +63,8 @@ const ProgramGridPage = ({ query, title, activePage }) => {
                   <ProgramCard
                     program={program}
                     onClick={() => {
-                      const normalized = {
-                        ...program,
-                        id:
-                          program.programId?.split("-").pop() ||
-                          program.tmdbId ||
-                          program._id ||
-                          index,
-                      };
-                      setSelectedProgram(normalized);
-                    }}
+                      setSelectedProgram(program);
+                    }}                    
                   />
                   <p className="mt-2 text-sm font-medium truncate text-left">
                     {program.title || program.name}

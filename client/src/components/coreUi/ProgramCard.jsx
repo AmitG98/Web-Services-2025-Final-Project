@@ -15,9 +15,14 @@ const ProgramCard = ({ program, onClick }) => {
     }
   
     const normalizedProgram = { ...program, id };
-  
-    if (profile?._id && program?._id) {
-      await addInteraction(profile._id, program._id, "click");
+
+    if (profile?._id && (program?._id || program?.id || program?.tmdbId)) {
+      const programIdForLog = program._id || program.id || program.tmdbId;
+      try {
+        await addInteraction(profile._id, programIdForLog, "click");
+      } catch (err) {
+        console.error("❌ Failed to log click interaction:", err);
+      }
     }
     onClick?.(normalizedProgram);
   };
