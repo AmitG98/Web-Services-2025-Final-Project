@@ -38,9 +38,8 @@ export const fetchNewAndPopular = async ({ queryKey }) => {
 export const getProgramsByType = (type) => axios.get(`/programs/type/${type}`);
 
 export const searchPrograms = async (filters = {}) => {
-  const params = new URLSearchParams(filters).toString();
-  const response = await axios.get(`/programs/search?${params}`);
-  return response.data.items || [];
+  const response = await axios.get("/programs", { params: filters });
+  return response.data.items || response.data || [];
 };
 
 // export const getSeriesEpisodes = (seriesId, seasonNumber) => axios.get(`/api/programs/episodes/${seriesId}/${seasonNumber}`);

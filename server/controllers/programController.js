@@ -169,7 +169,6 @@ const fetchTmdbCombined = async () => {
   }
 };
 
-
 const searchPrograms = async (req, res, next) => {
   try {
     const { query, genre, language, type } = req.query;

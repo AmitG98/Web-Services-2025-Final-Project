@@ -1,10 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
-// import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import {
   fetchHomepageContent,
   fetchNewAndPopular,
   getProgramDetails,
-  getProgramsByType
+  getProgramsByType,
+  searchPrograms,
+  createProgram
 } from "../api/program";
 import { toast } from "sonner";
 
@@ -45,19 +46,19 @@ export const useProgramDetails = (id, type = "movie") =>
     onError: () => toast.error("Couldn't fetch details"),
   });
 
-// // Program search
-// export const useProgramSearch = (params = {}) =>
-//   useQuery({
-//     queryKey: ["search", params],
-//     queryFn: () => searchPrograms(params),
-//     onError: () => toast.error("Search failed"),
-//     refetchOnWindowFocus: false,
-//   });
+// Program search
+export const useProgramSearch = (params = {}) =>
+  useQuery({
+    queryKey: ["search", params],
+    queryFn: () => searchPrograms(params),
+    onError: () => toast.error("Search failed"),
+    refetchOnWindowFocus: false,
+  });
 
-// // Add a new program
-// export const useAddNewProgram = () =>
-//   useMutation({
-//     mutationFn: createProgram,
-//     onSuccess: () => toast.success("Program added"),
-//     onError: () => toast.error("Adding program failed"),
-//   });
+// Add a new program
+export const useAddNewProgram = () =>
+  useMutation({
+    mutationFn: createProgram,
+    onSuccess: () => toast.success("Program added"),
+    onError: () => toast.error("Adding program failed"),
+  });

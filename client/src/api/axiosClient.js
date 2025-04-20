@@ -20,8 +20,6 @@ axiosClient.interceptors.request.use((config) => {
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
-  } else {
-    console.warn("No token in session/localStorage");
   }
 
   return config;
@@ -36,7 +34,6 @@ axiosClient.interceptors.response.use(
     ) {
       localStorage.removeItem("user");
       sessionStorage.removeItem("user");
-      console.warn("401 Unauthorized – token removed");
     }
     return Promise.reject(error);
   }
