@@ -105,7 +105,7 @@ const Browse = () => {
             placeholder="Search programs..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-white text-black px-3 py-1 rounded w-64"
+            className="bg-black text-white px-3 py-1 rounded border border-white w-64 placeholder-white"
           />
         </div>
 
