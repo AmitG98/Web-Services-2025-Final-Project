@@ -51,7 +51,9 @@ const ProgramGridPage = ({ query, title, activePage }) => {
       </div>
 
       <div className="pt-24 px-6 md:px-20">
-        <h3 className="font-semibold text-2xl mb-6">{title}</h3>
+        <h3 className="text-white font-extrabold text-[2rem] sm:text-[2.8rem] leading-[1.1] tracking-wider uppercase mb-6"
+          style={{ fontFamily: "Anton, sans-serif" }}>{title}
+        </h3>
 
         {uniquePrograms.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
