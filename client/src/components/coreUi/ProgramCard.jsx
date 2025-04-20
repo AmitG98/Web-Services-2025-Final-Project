@@ -6,14 +6,20 @@ const ProgramCard = ({ program, onClick }) => {
   const { data: profile } = useProfilesList();
 
   const handleClick = async () => {
-    console.log("🧩 [ProgramCard] program object:", program);
-    const id = program?.id || program?.programId?.split("-").pop() || program?.tmdbId;
-    
+    // console.log("🧩 [ProgramCard] program object:", program);
+    // const id = program?.id || program?.programId?.split("-").pop() || program?.tmdbId;
+    const id =
+      program?.id ||
+      (typeof program?.programId === "string"
+        ? program.programId.split("-").pop()
+        : program?.programId) ||
+      program?.tmdbId;
+
     if (!id) {
       console.warn("⚠️ [ProgramCard] Missing usable ID. Can't proceed.");
       return;
     }
-  
+
     const normalizedProgram = { ...program, id };
 
     if (profile?._id && (program?._id || program?.id || program?.tmdbId)) {

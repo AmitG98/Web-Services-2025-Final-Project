@@ -80,7 +80,7 @@ export default function MoreInfo({
   if (isLoading) return <Spinner />;
   if (!data) return null;
 
-  console.log("data:", data);
+  // console.log("data:", data);
   return (
     <Dialog
       fullScreen={isFullScreen}

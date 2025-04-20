@@ -1,16 +1,13 @@
 import axios from "./axiosClient";
 
+// Fetch all items from the user's list
 export const getMyList = () =>
   axios.get("/myList").then((res) => res.data.items);
 
+// Add a program to the user's list
 export const addToMyList = (data) => {
-  console.log("📦 addToMyList → שולח לשרת את:", data);
-
   return axios.post("/myList", data).catch((err) => {
-    console.error("❌ axios.post נכשל:", err?.response?.data);
+    console.error("❌ axios.post failed:", err?.response?.data);
     throw err;
   });
 };
-
-// export const removeFromMyList = (programId) => axios.delete(`/myList/${programId}`);
-// export const getRecentMyList = () => axios.get('/myList/recent');

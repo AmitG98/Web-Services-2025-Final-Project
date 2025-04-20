@@ -62,9 +62,9 @@ const ProgramGridPage = ({ query, title, activePage }) => {
                 <div key={key}>
                   <ProgramCard
                     program={program}
-                    onClick={() => {
-                      setSelectedProgram(program);
-                    }}                    
+                    onClick={(normalizedProgram) => {
+                      setSelectedProgram(normalizedProgram);
+                    }}                                     
                   />
                   <p className="mt-2 text-sm font-medium truncate text-left">
                     {program.title || program.name}
