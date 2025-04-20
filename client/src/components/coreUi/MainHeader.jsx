@@ -14,14 +14,8 @@ import {
 
 const MainHeader = ({ activePage }) => {
   const { currentUser, logout } = useSessionContext();
-  const { updateSearch } = useGlobalSearch();
-  const [input, setInput] = useState("");
   const selectedProfile = JSON.parse(sessionStorage.getItem("selectedProfile"));
   const navigate = useNavigate();
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") updateSearch(input);
-  };
 
   const navLinks = [
     { label: "Home", to: "/home", key: "all" },
