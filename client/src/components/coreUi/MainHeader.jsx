@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { useSessionContext } from "../../context/UserSessionProvider";
-import { useGlobalSearch } from "../../hooks/useGlobalSearch";
-import { ChevronsUpDown, Bell, Search } from "lucide-react";
+import { ChevronsUpDown, Bell } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
   CusMenuDropdown,
