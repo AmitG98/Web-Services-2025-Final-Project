@@ -5,7 +5,6 @@ export const getMyList = () =>
 
 export const addToMyList = (data) => {
   return axios.post("/myList", data).catch((err) => {
-    console.error("axios.post failed:", err?.response?.data);
     throw err;
   });
 };

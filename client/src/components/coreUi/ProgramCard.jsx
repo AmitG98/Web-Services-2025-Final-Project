@@ -14,7 +14,6 @@ const ProgramCard = ({ program, onClick }) => {
       program?.tmdbId;
 
     if (!id) {
-      console.warn("[ProgramCard] Missing usable ID. Can't proceed.");
       return;
     }
 

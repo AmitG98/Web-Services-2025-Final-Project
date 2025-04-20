@@ -27,30 +27,6 @@ const addToList = async (req, res, next) => {
   }
 };
 
-// const removeFromList = async (req, res, next) => {
-//   try {
-//     const entry = await MyList.findOneAndDelete({
-//       userId: req.user._id,
-//       programId: req.params.programId,
-//     });
-
-//     if (!entry) {
-//       return res.status(404).json({ message: "Program not found in your list." });
-//     }
-
-//     await Log.create({
-//       action: "Removed from My List",
-//       user: req.user._id,
-//       details: { programId: req.params.programId },
-//       level: "info",
-//     });    
-
-//     res.status(200).json({ message: "Removed from list." });
-//   } catch (err) {
-//     next(err);
-//   }
-// };
-
 const getMyList = async (req, res, next) => {
   try {
     const rawItems = await MyList.find({ userId: req.user._id }).sort({ createdAt: -1 });
@@ -59,26 +35,11 @@ const getMyList = async (req, res, next) => {
 
     res.status(200).json({ items: filtered });
   } catch (err) {
-    console.error("Error in getMyList:", err.message);
     next(err);
   }
 };
 
-// const getRecentItems = async (req, res, next) => {
-//   try {
-//     const items = await MyList.find({ userId: req.user._id })
-//       .sort({ createdAt: -1 })
-//       .limit(10);
-
-//     res.status(200).json(items);
-//   } catch (err) {
-//     next(err);
-//   }
-// };
-
 module.exports = {
     addToList,
-    // removeFromList,
     getMyList,
-    // getRecentItems
 }

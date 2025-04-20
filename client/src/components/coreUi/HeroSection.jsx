@@ -23,10 +23,7 @@ const HeroSection = ({ program, onMoreInfoClick }) => {
       try {
         await addInteraction(profile._id, programIdForLog, "click");
       } catch (err) {
-        console.error(
-          "Failed to log click interaction from HeroSection:",
-          err
-        );
+        console.error("Failed to log click interaction from HeroSection:",err);
       }
     }
     onMoreInfoClick?.(program);

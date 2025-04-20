@@ -4,14 +4,11 @@ const router = express.Router();
 const {
   getHomepageContent,
   getProgramDetails,
-  // searchOrDiscoverPrograms,
   getProgramsByType,
   getSeriesEpisodes,
   getExtraProgramInfo,
   getNewAndPopular,
   createProgramManually,
-  // checkIfProgramExists,
-  // searchTmdbDirect,
   getTmdbDetailsPreview,
   getProgramsByGenreAndType,
   searchPrograms
@@ -29,8 +26,6 @@ router.get("/by-genre", getProgramsByGenreAndType);
 router.get("/new-and-popular", verifyToken, getNewAndPopular);
 
 router.post("/admin/create", verifyToken, isAdmin, createProgramManually);
-// router.get("/admin/check/:tmdbId", verifyToken, isAdmin, checkIfProgramExists);
-// router.get("/admin/search", verifyToken, isAdmin, searchTmdbDirect);
 router.get("/admin/tmdb/:type/:tmdbId", verifyToken, isAdmin, getTmdbDetailsPreview);
 
 module.exports = router;

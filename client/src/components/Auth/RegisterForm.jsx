@@ -46,7 +46,6 @@ function RegisterForm() {
     Object.keys(payload).forEach((key) => {
       if (payload[key] == null) delete payload[key];
     });
-    console.log("📦 Final payload:", payload);
     try {
       await submitRegister(payload);
       toast.success("Account created! Please sign in.");
@@ -55,7 +54,6 @@ function RegisterForm() {
     } catch (err) {
       const message =
         err?.response?.data?.message || "Registration failed. Please try again.";
-      console.error("Registration error:", message);
       setServerError(message);  
       toast.error("Registration failed", { description: message });
     }

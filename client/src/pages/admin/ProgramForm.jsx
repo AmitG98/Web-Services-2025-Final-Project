@@ -44,7 +44,6 @@ export default function ProgramForm() {
       setError("");
       setMessage("Fetched successfully from TMDB");
     } catch (err) {
-      console.error("TMDB fetch error:", err);
       setMessage("Failed to fetch from TMDB");
     }
   };
@@ -70,7 +69,6 @@ export default function ProgramForm() {
         genreIds: [],
       });
     } catch (err) {
-      console.error("Create error:", err);
       setError(
         err.response?.data?.message || "Failed to create program. Please try again."
       );

@@ -22,7 +22,7 @@ const Profiles = () => {
   const { mutate: updateProfile } = useUpdateProfile();
 
   const handleSelect = (profile) => {
-    sessionStorage.setItem("selectedProfile", JSON.stringify(profile)); // הוספה כאן
+    sessionStorage.setItem("selectedProfile", JSON.stringify(profile));
     chooseProfile(profile);
     navigate("/home");
   };

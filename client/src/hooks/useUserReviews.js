@@ -5,8 +5,7 @@ import { toast } from "sonner";
 export const useSubmitReview = () => {
   return useMutation({
     mutationFn: addReview,
-    onMutate: (data) => {
-      console.log("📡 Submitting via useMutation:", data);
+    onMutate: () => {
     },
     onSuccess: () => {
       toast.success("Review posted!");

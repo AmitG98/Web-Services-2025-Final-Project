@@ -45,7 +45,6 @@ export default function MoreInfo({
 
   const handleAddToList = async () => {
     if (!data) {
-      console.warn("No program data available, cannot add to list.");
       return;
     }
     const payload = {
@@ -67,7 +66,6 @@ export default function MoreInfo({
         duration: 10000,
       });
     } catch (err) {
-      console.error("Error while adding to the list:", err);
       toast.error("Failed to add program to your list.");
     }
   };

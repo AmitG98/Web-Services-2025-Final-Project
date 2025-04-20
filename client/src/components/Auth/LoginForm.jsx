@@ -36,7 +36,6 @@ function LoginForm() {
         reset();
       }
     } catch (err) {
-      console.error("Login error:", err);
       const message =
         err?.response?.data?.message || "Something went wrong. Try again.";
       toast.error("Login failed", { description: message });

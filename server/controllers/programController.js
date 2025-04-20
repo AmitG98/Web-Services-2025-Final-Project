@@ -385,84 +385,11 @@ const createProgramManually = async (req, res) => {
   }
 };
 
-// const checkIfProgramExists = async (req, res) => {
-//   try {
-//     const { tmdbId } = req.params;
-//     if (!tmdbId)
-//       return res.status(400).json({ message: "TMDB ID is required" });
-
-//     const program = await Program.findOne({ tmdbId: Number(tmdbId) });
-
-//     await Log.create({
-//       action: "Admin Checked Program Existence",
-//       user: req.user._id,
-//       details: { tmdbId, exists: !!program },
-//     });
-
-//     res.status(200).json({
-//       exists: !!program,
-//       program: program
-//         ? {
-//             _id: program._id,
-//             title: program.title,
-//             type: program.type,
-//             tmdbId: program.tmdbId,
-//           }
-//         : null,
-//     });
-//   } catch (err) {
-//     res.status(500).json({ message: "Error checking program" });
-//   }
-// };
-
-// const searchTmdbDirect = async (req, res) => {
-//   try {
-//     const { query, page = 1 } = req.query;
-//     if (!query)
-//       return res.status(400).json({ message: "Search query is required" });
-
-//     const url = `https://api.themoviedb.org/3/search/multi`;
-//     const response = await axios.get(url, {
-//       params: { api_key: TMDB_API_KEY, query, page },
-//     });
-
-//     let results = response.data.results.filter(
-//       (item) => item.media_type === "movie" || item.media_type === "tv"
-//     );
-
-//     const ids = results.map((item) => item.id);
-//     const existing = await Program.find({ tmdbId: { $in: ids } }).select(
-//       "tmdbId"
-//     );
-
-//     const existingIds = existing.map((doc) => doc.tmdbId);
-//     results = results.map((item) => ({
-//       ...item,
-//       existsInDb: existingIds.includes(item.id),
-//     }));
-
-//     await Log.create({
-//       action: "Admin Searched TMDB",
-//       user: req.user._id,
-//       details: { query },
-//     });
-
-//     res.status(200).json({
-//       page: response.data.page,
-//       totalPages: response.data.total_pages,
-//       results,
-//     });
-//   } catch (err) {
-//     res.status(500).json({ message: "Error searching TMDB" });
-//   }
-// };
-
 const getTmdbDetailsPreview = async (req, res) => {
   try {
     const { tmdbId, type } = req.params;
     const result = await fetchTmdbDetails(tmdbId, type);
 
-    console.log(result);
     if (req.user) {
       await Log.create({
         action: "Admin Previewed TMDB Program",
@@ -502,8 +429,6 @@ module.exports = {
   getSeriesEpisodes,
   getExtraProgramInfo,
   createProgramManually,
-  // checkIfProgramExists,
-  // searchTmdbDirect,
   getTmdbDetailsPreview,
   getProgramsByGenreAndType,
   filterWithImage,

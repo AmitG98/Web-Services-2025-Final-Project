@@ -72,7 +72,6 @@ const ReviewPage = () => {
             "review"
           );
         } catch (err) {
-          console.warn("Interaction failed:", err?.response || err);
         } finally {
           navigate("/home");
         }
