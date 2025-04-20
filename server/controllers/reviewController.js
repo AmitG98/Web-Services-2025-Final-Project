@@ -1,6 +1,5 @@
 const Review = require("../models/Review");
-const Program = require("../models/Program");
-const Log = require("../models/Log");
+const { logOncePerDay } = require("../utils/logsUtils");
 
 const addReview = async (req, res, next) => {
   try {

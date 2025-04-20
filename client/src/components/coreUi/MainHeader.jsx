@@ -25,8 +25,8 @@ const MainHeader = ({ activePage }) => {
 
   const navLinks = [
     { label: "Home", to: "/home", key: "all" },
+    { label: "TVShows", to: "/tv-shows", key: "tv" },
     { label: "Movies", to: "/movies", key: "movie" },
-    { label: "TV Shows", to: "/tv-shows", key: "tv" },
     { label: "New & Popular", to: "/new&popular", key: "new&popular" },
     { label: "My List", to: "/my-list", key: "my-list" },
     { label: "Browse", to: "/browse", key: "browse" },
@@ -61,20 +61,7 @@ const MainHeader = ({ activePage }) => {
       </div>
 
       <div className="flex items-center gap-5">
-        <div className="relative hidden sm:block">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="bg-neutral-800 px-3 py-1 rounded-md text-sm w-52"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-          />
-          <Search size={16} className="absolute right-2 top-2 text-gray-400" />
-        </div>
-
         <Bell className="cursor-pointer" />
-
         <CusMenuDropdown>
           <CusMenuTrigger>
             <div className="flex items-center gap-2 cursor-pointer">
