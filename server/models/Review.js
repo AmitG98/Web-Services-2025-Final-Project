@@ -6,7 +6,6 @@ const reviewSchema = new Schema(
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     profile: { type: Schema.Types.ObjectId, ref: "Profile", required: true },
 
-    // Media: can be a TMDB id (string like "tmdb-12345") or MongoDB ObjectId (Program)
     media: { type: Schema.Types.Mixed, required: true },
 
     rating: {
@@ -14,7 +13,7 @@ const reviewSchema = new Schema(
       min: 0,
       max: 5,
       required: true,
-      default: 0, // 0 = comment only
+      default: 0,
     },
     comment: {
       type: String,
@@ -28,22 +27,13 @@ const reviewSchema = new Schema(
   { timestamps: true }
 );
 
-// === Indexes ===
-
-// One review per profile+media (even if they use multiple users or devices)
 reviewSchema.index({ user: 1, profile: 1, media: 1 }, { unique: true });
 
-// Useful query patterns
-reviewSchema.index({ media: 1, createdAt: -1 }); // Latest reviews
-reviewSchema.index({ media: 1, rating: -1 });    // Top-rated
-reviewSchema.index({ user: 1, createdAt: -1 });  // User history
-reviewSchema.index({ isPublic: 1 });             // Public filters
+reviewSchema.index({ media: 1, createdAt: -1 });
+reviewSchema.index({ media: 1, rating: -1 });
+reviewSchema.index({ user: 1, createdAt: -1 });
+reviewSchema.index({ isPublic: 1 });
 
-// === Static methods ===
-
-/**
- * Calculate average rating + review count for a given media
- */
 reviewSchema.statics.getAverageRating = async function (mediaId) {
   try {
     let mediaQuery;
@@ -79,9 +69,6 @@ reviewSchema.statics.getAverageRating = async function (mediaId) {
   }
 };
 
-/**
- * Return top-rated media objects (only internal Programs), sorted by averageRating
- */
 reviewSchema.statics.getTopRatedMedia = async function (limit = 10) {
   return this.aggregate([
     { $match: { rating: { $gt: 0 }, media: { $type: "objectId" } } },

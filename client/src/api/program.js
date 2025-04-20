@@ -42,15 +42,10 @@ export const searchPrograms = async (filters = {}) => {
   return response.data.items || response.data || [];
 };
 
-// export const getSeriesEpisodes = (seriesId, seasonNumber) => axios.get(`/api/programs/episodes/${seriesId}/${seasonNumber}`);
-// export const getExtraInfo = (type, id) => axios.get(`/api/programs/extras/${type}/${id}`);
-
 export const getExtraProgramInfo = async (type, id) => {
   const { data } = await axios.get(`/programs/extras/${type}/${id}`);
   return data;
 };
 
 export const createProgram = (data) => axios.post('/programs/admin/create', data);
-// export const checkProgram = (tmdbId) => axios.get(`/api/programs/admin/check/${tmdbId}`);
-// export const searchTmdb = (params) => axios.get('/api/programs/admin/search', { params });
 export const getTmdbPreview = (type, tmdbId) => axios.get(`/programs/admin/tmdb/${type}/${tmdbId}`);

@@ -13,4 +13,4 @@ export const addInteraction = async (profileId, programId, action) => {
       action
     });
     return res.data;
-  };
+};

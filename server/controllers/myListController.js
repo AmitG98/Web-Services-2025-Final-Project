@@ -64,21 +64,21 @@ const getMyList = async (req, res, next) => {
   }
 };
 
-const getRecentItems = async (req, res, next) => {
-  try {
-    const items = await MyList.find({ userId: req.user._id })
-      .sort({ createdAt: -1 })
-      .limit(10);
+// const getRecentItems = async (req, res, next) => {
+//   try {
+//     const items = await MyList.find({ userId: req.user._id })
+//       .sort({ createdAt: -1 })
+//       .limit(10);
 
-    res.status(200).json(items);
-  } catch (err) {
-    next(err);
-  }
-};
+//     res.status(200).json(items);
+//   } catch (err) {
+//     next(err);
+//   }
+// };
 
 module.exports = {
     addToList,
     removeFromList,
     getMyList,
-    getRecentItems
+    // getRecentItems
 }
