@@ -309,7 +309,7 @@ const getMostReviewedPrograms = async (req, res, next) => {
 
 module.exports = {
   addReview,
-  getReviewsByProgram,
+  // getReviewsByProgram,
   getLast10ReviewsByUser,
   // updateReview,
   // deleteReview,
