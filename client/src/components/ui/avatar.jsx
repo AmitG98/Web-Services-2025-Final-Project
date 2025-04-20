@@ -2,7 +2,6 @@ import React, { forwardRef } from "react";
 import * as RadixAvatar from "@radix-ui/react-avatar";
 import { cn } from "../../lib/utils";
 
-// Wrapper for avatar container
 const UserAvatar = forwardRef(({ className, ...rest }, ref) => (
   <RadixAvatar.Root
     ref={ref}
@@ -12,7 +11,6 @@ const UserAvatar = forwardRef(({ className, ...rest }, ref) => (
 ));
 UserAvatar.displayName = "UserAvatarRoot";
 
-// Avatar image component
 const UserAvatarImage = forwardRef(({ className, ...rest }, ref) => (
   <RadixAvatar.Image
     ref={ref}
@@ -22,7 +20,6 @@ const UserAvatarImage = forwardRef(({ className, ...rest }, ref) => (
 ));
 UserAvatarImage.displayName = "UserAvatarImage";
 
-// Avatar fallback (when no image)
 const UserAvatarFallback = forwardRef(({ className, ...rest }, ref) => (
   <RadixAvatar.Fallback
     ref={ref}

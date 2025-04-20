@@ -6,8 +6,6 @@ const ProgramCard = ({ program, onClick }) => {
   const { data: profile } = useProfilesList();
 
   const handleClick = async () => {
-    // console.log("🧩 [ProgramCard] program object:", program);
-    // const id = program?.id || program?.programId?.split("-").pop() || program?.tmdbId;
     const id =
       program?.id ||
       (typeof program?.programId === "string"
@@ -16,7 +14,7 @@ const ProgramCard = ({ program, onClick }) => {
       program?.tmdbId;
 
     if (!id) {
-      console.warn("⚠️ [ProgramCard] Missing usable ID. Can't proceed.");
+      console.warn("[ProgramCard] Missing usable ID. Can't proceed.");
       return;
     }
 
@@ -27,22 +25,13 @@ const ProgramCard = ({ program, onClick }) => {
       try {
         await addInteraction(profile._id, programIdForLog, "click");
       } catch (err) {
-        console.error("❌ Failed to log click interaction:", err);
+        console.error("Failed to log click interaction:", err);
       }
     }
     onClick?.(normalizedProgram);
   };
 
   const imageUrl = program.posterPath;
-
-  // console.log("🧩 Image Debug:", {
-  //   title: program.title || program.name,
-  //   posterPath: program.posterPath,
-  //   rawPoster: program.poster_path,
-  //   fallbackUsed: !program.posterPath && !program.poster_path,
-  //   imageUrl,
-  // });
-
   return (
     <img
       src={imageUrl}

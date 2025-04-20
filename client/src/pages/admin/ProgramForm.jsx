@@ -112,7 +112,6 @@ export default function ProgramForm() {
         </div>
       )}
 
-      {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           name="tmdbId"

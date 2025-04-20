@@ -1,4 +1,3 @@
-// hooks/useSelectedProfile.js
 export const useSelectedProfile = () => {
     const stored = sessionStorage.getItem("selectedProfile");
     try {

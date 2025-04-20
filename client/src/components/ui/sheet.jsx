@@ -74,7 +74,6 @@ const SheetFooter = ({ className, ...props }) => (
 );
 SheetFooter.displayName = "SheetFooter";
 
-// === Exports === //
 export {
   Sheet,
   SheetTrigger,

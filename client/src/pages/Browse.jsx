@@ -97,9 +97,7 @@ const Browse = () => {
         <MainHeader activePage="browse" />
       </div>
 
-      {/* Filters Header */}
       <div className="w-full px-6 mt-24 text-white space-y-4">
-        {/* Title + Search */}
         <div className="flex justify-between items-center px-3">
           <h1 className="font-semibold text-3xl">Browse</h1>
           <input
@@ -111,7 +109,6 @@ const Browse = () => {
           />
         </div>
 
-        {/* Filters Row */}
         <div className="flex flex-wrap gap-4 px-3">
           <Dropdown
             options={languageOptions}
@@ -145,7 +142,6 @@ const Browse = () => {
         </div>
       </div>
 
-      {/* Results Grid – centered container, left-aligned items */}
       <div className="w-full flex justify-center mt-16 px-5">
         <div className="flex flex-wrap justify-start gap-4 max-w-6xl w-full">
           {isLoading ? (
@@ -170,7 +166,6 @@ const Browse = () => {
         </div>
       </div>
 
-      {/* More Info Popup */}
       {selectedProgram && (
         <MoreInfo
           program={selectedProgram}

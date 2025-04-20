@@ -26,9 +26,6 @@ const ReviewPage = () => {
   const selectedProfile = JSON.parse(sessionStorage.getItem("selectedProfile"));
   const { mutate: addReview, isLoading } = useSubmitReview();
 
-  console.log("🎯 selectedProfile:", selectedProfile);
-  console.log("🎯 programId:", programId);
-
   if (!selectedProfile) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
@@ -51,9 +48,6 @@ const ReviewPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("🚀 Submit clicked!");
-    console.log("🧾 Form values:", form);
-
     if (!selectedProfile?._id) return;
 
     if (form.rating === 0 && form.comment.trim() === "") {
@@ -69,8 +63,6 @@ const ReviewPage = () => {
       userId: selectedProfile.user,
     };
 
-    console.log("📝 Sending review:", reviewData);
-
     addReview(reviewData, {
       onSuccess: async () => {
         try {
@@ -80,7 +72,7 @@ const ReviewPage = () => {
             "review"
           );
         } catch (err) {
-          console.warn("⚠️ Interaction failed:", err?.response || err);
+          console.warn("Interaction failed:", err?.response || err);
         } finally {
           navigate("/home");
         }

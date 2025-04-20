@@ -1,10 +1,8 @@
-// src/components/ui/SmartDropdown.jsx
 import React, { forwardRef } from "react";
 import * as RDropdown from "@radix-ui/react-dropdown-menu";
 import { Check, ChevronRight, Circle } from "lucide-react";
 import { cn } from "../../lib/utils";
 
-// Wrappers
 const SmartDropdown = RDropdown.Root;
 const SmartDropdownTrigger = RDropdown.Trigger;
 const SmartDropdownGroup = RDropdown.Group;
@@ -12,7 +10,6 @@ const SmartDropdownPortal = RDropdown.Portal;
 const SmartDropdownSub = RDropdown.Sub;
 const SmartDropdownRadioGroup = RDropdown.RadioGroup;
 
-// === Sub Menu Trigger ===
 const SmartDropdownSubTrigger = forwardRef(({ className, inset, children, ...props }, ref) => (
   <RDropdown.SubTrigger
     ref={ref}
@@ -29,7 +26,6 @@ const SmartDropdownSubTrigger = forwardRef(({ className, inset, children, ...pro
 ));
 SmartDropdownSubTrigger.displayName = "SmartDropdownSubTrigger";
 
-// === Sub Content ===
 const SmartDropdownSubContent = forwardRef(({ className, ...props }, ref) => (
   <RDropdown.SubContent
     ref={ref}
@@ -42,7 +38,6 @@ const SmartDropdownSubContent = forwardRef(({ className, ...props }, ref) => (
 ));
 SmartDropdownSubContent.displayName = "SmartDropdownSubContent";
 
-// === Main Dropdown Content ===
 const SmartDropdownContent = forwardRef(({ className, sideOffset = 4, ...props }, ref) => (
   <RDropdown.Portal>
     <RDropdown.Content
@@ -58,7 +53,6 @@ const SmartDropdownContent = forwardRef(({ className, sideOffset = 4, ...props }
 ));
 SmartDropdownContent.displayName = "SmartDropdownContent";
 
-// === Item ===
 const SmartDropdownItem = forwardRef(({ className, inset, ...props }, ref) => (
   <RDropdown.Item
     ref={ref}
@@ -72,7 +66,6 @@ const SmartDropdownItem = forwardRef(({ className, inset, ...props }, ref) => (
 ));
 SmartDropdownItem.displayName = "SmartDropdownItem";
 
-// === Checkbox ===
 const SmartDropdownCheckbox = forwardRef(({ className, children, checked, ...props }, ref) => (
   <RDropdown.CheckboxItem
     ref={ref}
@@ -93,7 +86,6 @@ const SmartDropdownCheckbox = forwardRef(({ className, children, checked, ...pro
 ));
 SmartDropdownCheckbox.displayName = "SmartDropdownCheckbox";
 
-// === Radio ===
 const SmartDropdownRadio = forwardRef(({ className, children, ...props }, ref) => (
   <RDropdown.RadioItem
     ref={ref}
@@ -113,7 +105,6 @@ const SmartDropdownRadio = forwardRef(({ className, children, ...props }, ref) =
 ));
 SmartDropdownRadio.displayName = "SmartDropdownRadio";
 
-// === Label ===
 const SmartDropdownLabel = forwardRef(({ className, inset, ...props }, ref) => (
   <RDropdown.Label
     ref={ref}
@@ -123,7 +114,6 @@ const SmartDropdownLabel = forwardRef(({ className, inset, ...props }, ref) => (
 ));
 SmartDropdownLabel.displayName = "SmartDropdownLabel";
 
-// === Separator ===
 const SmartDropdownSeparator = forwardRef(({ className, ...props }, ref) => (
   <RDropdown.Separator
     ref={ref}
@@ -133,14 +123,12 @@ const SmartDropdownSeparator = forwardRef(({ className, ...props }, ref) => (
 ));
 SmartDropdownSeparator.displayName = "SmartDropdownSeparator";
 
-// === Shortcut (Visual only) ===
 const SmartDropdownShortcut = ({ className, ...props }) => (
   <span className={cn("ml-auto text-xs tracking-widest opacity-60", className)} {...props} />
 );
 
 SmartDropdownShortcut.displayName = "SmartDropdownShortcut";
 
-// === Export ===
 export {
   SmartDropdown,
   SmartDropdownTrigger,

@@ -15,7 +15,7 @@ export const useCreateProfile = () => {
     mutationFn: addProfile,
     onSuccess: () => {
       toast.success("Profile added");
-      queryClient.invalidateQueries(["profiles"]); // ✅ רענון נתונים
+      queryClient.invalidateQueries(["profiles"]);
     },
     onError: () => {
       toast.error("Failed to add profile");

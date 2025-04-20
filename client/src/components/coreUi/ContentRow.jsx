@@ -2,9 +2,6 @@ import React from "react";
 import { useHomepagePrograms } from "../../hooks/useProgramList";
 import ProgramCard from "./ProgramCard";
 import Spinner from "../ui/spinner";
-// import MoreInfo from "../../pages/MoreInfo";
-// import { useProfilesList } from "../../hooks/useUserProfiles";
-// import { addInteraction } from "../../api/logs";
 
 const ContentRow = ({
   title,
@@ -14,7 +11,6 @@ const ContentRow = ({
 }) => {
 
   const { data, isLoading, isError } = useHomepagePrograms({ query: queryKey, type });
-// const { data: profile } = useProfilesList();
   const content = data?.[queryKey];
   
   if (isLoading) return <Spinner />;

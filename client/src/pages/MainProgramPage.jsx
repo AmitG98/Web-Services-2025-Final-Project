@@ -33,7 +33,6 @@ const MainProgramPage = ({ contentType = "all" }) => {
       </div>
 
       <main className="flex-grow pt-0">
-        {/* <HeroSection program={currentBanner} /> */}
         <HeroSection
           program={currentBanner}
           onMoreInfoClick={(program) => {
@@ -43,7 +42,6 @@ const MainProgramPage = ({ contentType = "all" }) => {
         />
 
         <div className="relative z-10 px-3 sm:px-10 lg:px-20 pt-20 space-y-12">
-          {/*row1-recommended	התאמות אישיות למשתמש*/}
           <ContentRow
             title="Matched to You"
             queryKey="personalized"
@@ -54,7 +52,6 @@ const MainProgramPage = ({ contentType = "all" }) => {
             }}
           />
 
-          {/* row2-newest	התכנים הכי חדשים בנטפליקס */}
           <ContentRow
             title="New on Netflix"
             queryKey="newest"
@@ -95,7 +92,6 @@ const MainProgramPage = ({ contentType = "all" }) => {
             }}
           />
 
-          {/* row6-animated	תוכניות מקטגוריית אנימציה */}
           <ContentRow
             title="Animation"
             queryKey="animated"
@@ -106,7 +102,6 @@ const MainProgramPage = ({ contentType = "all" }) => {
             }}
           />
 
-          {/* row7-custom	תוכניות מקטגוריה לבחירתכם */}
           <ContentRow
             title="Comedy"
             queryKey="custom"

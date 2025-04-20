@@ -45,10 +45,9 @@ export default function MoreInfo({
 
   const handleAddToList = async () => {
     if (!data) {
-      console.warn("⚠️ No program data available, cannot add to list.");
+      console.warn("No program data available, cannot add to list.");
       return;
     }
-    console.log("📤 Program data before preparing payload:", data);
     const payload = {
       programId: data.id,
       title:
@@ -59,20 +58,16 @@ export default function MoreInfo({
         "Untitled",
       posterPath: data.poster_path,
     };
-    console.log("📦 Sending to addToList:", payload);
     try {
-      // Add to user's list
       await addToList(payload);
-      // Log interaction as "like" in user history
       if (profile?._id && data?._id) {
         await addInteraction(profile._id, data._id, "like");
       }
-      console.log("✅ Program successfully added to the list.");
       toast.success(`"${payload.title}" was added to your list!`, {
         duration: 10000,
       });
     } catch (err) {
-      console.error("❌ Error while adding to the list:", err);
+      console.error("Error while adding to the list:", err);
       toast.error("Failed to add program to your list.");
     }
   };
@@ -80,7 +75,6 @@ export default function MoreInfo({
   if (isLoading) return <Spinner />;
   if (!data) return null;
 
-  // console.log("data:", data);
   return (
     <Dialog
       fullScreen={isFullScreen}

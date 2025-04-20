@@ -9,7 +9,6 @@ import {
 } from "../api/program";
 import { toast } from "sonner";
 
-// Homepage content
 export const useHomepagePrograms = (filters = {}) => {
   return useQuery({
     queryKey: ["homepage-programs", filters],
@@ -22,7 +21,6 @@ export const useHomepagePrograms = (filters = {}) => {
   });
 };
 
-// General program list by filters
 export const useProgramList = (type) =>
   useQuery({
     queryKey: ["ProgramsByType", type],
@@ -37,7 +35,6 @@ export const useNewAndPopularList = (limit = 90) =>
     refetchOnWindowFocus: false,
   });
 
-// Program details by ID
 export const useProgramDetails = (id, type = "movie") =>
   useQuery({
     queryKey: ["program-detail", id, type],
@@ -46,7 +43,6 @@ export const useProgramDetails = (id, type = "movie") =>
     onError: () => toast.error("Couldn't fetch details"),
   });
 
-// Program search
 export const useProgramSearch = (params = {}) =>
   useQuery({
     queryKey: ["search", params],
@@ -55,7 +51,6 @@ export const useProgramSearch = (params = {}) =>
     refetchOnWindowFocus: false,
   });
 
-// Add a new program
 export const useAddNewProgram = () =>
   useMutation({
     mutationFn: createProgram,

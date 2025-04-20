@@ -1,4 +1,3 @@
-// hooks/useExtraProgramInfo.js
 import { useQuery } from "@tanstack/react-query";
 import { getExtraProgramInfo } from "../api/program";
 

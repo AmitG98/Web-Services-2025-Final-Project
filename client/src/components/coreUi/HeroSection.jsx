@@ -24,7 +24,7 @@ const HeroSection = ({ program, onMoreInfoClick }) => {
         await addInteraction(profile._id, programIdForLog, "click");
       } catch (err) {
         console.error(
-          "❌ Failed to log click interaction from HeroSection:",
+          "Failed to log click interaction from HeroSection:",
           err
         );
       }
@@ -40,12 +40,10 @@ const HeroSection = ({ program, onMoreInfoClick }) => {
       }}
     >
       <div className="pl-8 sm:pl-16 md:pl-24 lg:pl-32 max-w-2xl text-left pt-70 sm:pt-48">
-        {/* Netflix subtitle */}
         <p className="text-lg text-balance font-bold tracking-widest text-[#e50914] mb-1">
           N <span className="text-white">SERIES</span>
         </p>
 
-        {/* Title */}
         <div
           className="text-white font-extrabold text-[2rem] sm:text-[2.8rem] leading-[1.1] tracking-wider"
           style={{ fontFamily: "Anton, sans-serif" }}
@@ -72,12 +70,10 @@ const HeroSection = ({ program, onMoreInfoClick }) => {
               ))}
         </div>
 
-        {/* Overview */}
         <p className="mt-4 text-sm sm:text-base text-gray-300 leading-snug max-w-[90vw] sm:max-w-[85vw] lg:max-w-[75vw]">
           {program.overview}
         </p>
 
-        {/* More Info Button */}
         <button
           onClick={handleMoreInfoClick}
           className="mt-6 flex items-center gap-2 px-5 py-2 bg-gray-300 bg-opacity-20 hover:bg-opacity-40 text-white text-sm font-medium rounded-md transition"

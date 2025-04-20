@@ -1,4 +1,3 @@
-// pages/ProgramGridPage.jsx
 import React, { useState, useEffect } from "react";
 import Spinner from "../components/ui/spinner";
 import MainHeader from "../components/coreUi/MainHeader";

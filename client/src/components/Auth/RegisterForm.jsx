@@ -56,7 +56,7 @@ function RegisterForm() {
       const message =
         err?.response?.data?.message || "Registration failed. Please try again.";
       console.error("Registration error:", message);
-      setServerError(message); // מציגים שגיאה מתחת לטופס
+      setServerError(message);  
       toast.error("Registration failed", { description: message });
     }
   };
