@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useUserAuth } from "../../hooks/useUserAuth";
+import { useSessionContext } from "../../context/UserSessionProvider";
 import { useGlobalSearch } from "../../hooks/useGlobalSearch";
 import { ChevronsUpDown, Bell, Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import {
   CusMenuDropdown,
   CusMenuTrigger,
@@ -12,10 +13,11 @@ import {
 } from "./CustomMenuDropdown";
 
 const MainHeader = ({ activePage }) => {
-  const { activeUser, logout } = useUserAuth();
+  const { currentUser, logout } = useSessionContext();
   const { updateSearch } = useGlobalSearch();
   const [input, setInput] = useState("");
   const selectedProfile = JSON.parse(sessionStorage.getItem("selectedProfile"));
+  const navigate = useNavigate();
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") updateSearch(input);
@@ -86,8 +88,15 @@ const MainHeader = ({ activePage }) => {
           </CusMenuTrigger>
 
           <CusMenuContent className="w-40 bg-white text-black">
-            <CusMenuLabel>{activeUser?.username}</CusMenuLabel>
-            <CusMenuItem onClick={logout}>Logout</CusMenuItem>
+            <CusMenuLabel>{currentUser?.username}</CusMenuLabel>
+            <CusMenuItem
+              onClick={() => {
+                logout();
+                navigate("/login");
+              }}
+            >
+              Logout
+            </CusMenuItem>
           </CusMenuContent>
         </CusMenuDropdown>
       </div>
