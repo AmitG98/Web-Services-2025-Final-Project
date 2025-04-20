@@ -12,12 +12,18 @@ export const UserSessionProvider = ({ children }) => {
     const savedSession =
       JSON.parse(localStorage.getItem("user")) ||
       JSON.parse(sessionStorage.getItem("user"));
-    const savedProfile = sessionStorage.getItem("selected-profile");
 
-    if (savedSession?.user) {
+    const now = Date.now();
+
+    if (savedSession?.expiresAt && savedSession.expiresAt < now) {
+      localStorage.removeItem("user");
+      sessionStorage.removeItem("user");
+    } else if (savedSession?.user && savedSession?.accessToken) {
       setCurrentUser(savedSession.user);
       setAccessToken(savedSession.accessToken);
     }
+
+    const savedProfile = sessionStorage.getItem("selected-profile");
     if (savedProfile) {
       setSelectedProfile(JSON.parse(savedProfile));
     }
@@ -26,12 +32,17 @@ export const UserSessionProvider = ({ children }) => {
   }, []);
 
   const login = (user, accessToken, rememberMe) => {
-    const session = { user, accessToken };
+    const expiresAt = Date.now() + 60 * 60 * 1000;  
+    const session = { user, accessToken, expiresAt };
+    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
+
     if (rememberMe) {
       localStorage.setItem("user", JSON.stringify(session));
     } else {
       sessionStorage.setItem("user", JSON.stringify(session));
     }
+
     setCurrentUser(user);
     setAccessToken(accessToken);
   };
