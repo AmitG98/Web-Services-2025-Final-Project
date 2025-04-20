@@ -43,12 +43,11 @@ axiosClient.interceptors.response.use(
 );
 
 const tmdbRequest = async (endpoint) => {
-  const apiKey = process.env.REACT_APP_TMDB_API_KEY; // אם זה קוד רץ ב-client (React)
+  const apiKey = process.env.REACT_APP_TMDB_API_KEY;
   const url = `https://api.themoviedb.org/3${endpoint}?api_key=${apiKey}`;
   const response = await axios.get(url);
   return response.data;
 };
 
-// ייצוא
 export default axiosClient;
 export { tmdbRequest };

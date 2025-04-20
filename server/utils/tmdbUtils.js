@@ -31,20 +31,6 @@ const fetchTmdbDetails = async (tmdbId, type) => {
   };
 };
 
-// const tmdbRequest = async (endpoint, params = {}) => {
-//   const config = {
-//     params: {
-//       api_key: TMDB_API_KEY,
-//       language: "en-US",
-//       page: 1,
-//       ...params,
-//     },
-//   };
-//   const url = `https://api.themoviedb.org/3${endpoint}`;
-//   const response = await axios.get(url, config);
-//   return response.data.results || response.data;
-// };
-
 const tmdbRequest = async (endpoint, params = {}) => {
   const url = `${TMDB_BASE_URL}${endpoint}`;
   const config = {
@@ -72,7 +58,5 @@ const fetchProgramsByGenreAndType = async (type = "movie", genreId = 28) => {
     sort_by: "popularity.desc",
   });
 };
-
-
 
 module.exports = {TMDB_BASE_URL, tmdbRequest, fetchTmdbDetails, mapImageUrls, fetchProgramsByGenreAndType, getTMDBImageUrl};

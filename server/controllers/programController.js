@@ -22,7 +22,6 @@ const filterWithImage = (items) =>
       item.backdropPath
   );
 
-// ========== HOMEPAGE ROWS ========== //
 const getHomepageContent = async (req, res, next) => {
   try {
     const userId = req.user._id;
@@ -103,7 +102,6 @@ const getHomepageContent = async (req, res, next) => {
   }
 };
 
-// ========== PROGRAM DETAILS ========== //
 const getProgramDetails = async (req, res) => {
   const { tmdbId } = req.params;
   try {
@@ -136,7 +134,6 @@ const getProgramDetails = async (req, res) => {
   }
 };
 
-// ========== TMDB SEARCH/DISCOVERY ========== //
 const fetchTmdbCombined = async () => {
   try {
     const moviePages = [1, 2, 3];
@@ -168,7 +165,6 @@ const fetchTmdbCombined = async () => {
     return [];
   }
 };
-
 
 const searchPrograms = async (req, res, next) => {
   try {
@@ -207,7 +203,6 @@ const searchPrograms = async (req, res, next) => {
   }
 };
 
-// ========== MOVIES & TV SHOWS PAGES ========== //
 const getProgramsByType = async (req, res, next) => {
   try {
     const { type } = req.params;
@@ -220,7 +215,6 @@ const getProgramsByType = async (req, res, next) => {
   }
 };
 
-// ========== EPISODES & EXTRA INFO ========== //
 const getSeriesEpisodes = async (req, res, next) => {
   try {
     const { seriesId, seasonNumber } = req.params;
@@ -284,7 +278,6 @@ const getNewAndPopular = async (req, res, next) => {
   }
 };
 
-// ========== CREATE PROGRAM (ADMIN) ==========
 const createProgramManually = async (req, res) => {
   try {
     if (req.user.role !== "admin") {
@@ -392,79 +385,77 @@ const createProgramManually = async (req, res) => {
   }
 };
 
-// ========== CHECK IF PROGRAM EXISTS ==========
-const checkIfProgramExists = async (req, res) => {
-  try {
-    const { tmdbId } = req.params;
-    if (!tmdbId)
-      return res.status(400).json({ message: "TMDB ID is required" });
+// const checkIfProgramExists = async (req, res) => {
+//   try {
+//     const { tmdbId } = req.params;
+//     if (!tmdbId)
+//       return res.status(400).json({ message: "TMDB ID is required" });
 
-    const program = await Program.findOne({ tmdbId: Number(tmdbId) });
+//     const program = await Program.findOne({ tmdbId: Number(tmdbId) });
 
-    await Log.create({
-      action: "Admin Checked Program Existence",
-      user: req.user._id,
-      details: { tmdbId, exists: !!program },
-    });
+//     await Log.create({
+//       action: "Admin Checked Program Existence",
+//       user: req.user._id,
+//       details: { tmdbId, exists: !!program },
+//     });
 
-    res.status(200).json({
-      exists: !!program,
-      program: program
-        ? {
-            _id: program._id,
-            title: program.title,
-            type: program.type,
-            tmdbId: program.tmdbId,
-          }
-        : null,
-    });
-  } catch (err) {
-    res.status(500).json({ message: "Error checking program" });
-  }
-};
+//     res.status(200).json({
+//       exists: !!program,
+//       program: program
+//         ? {
+//             _id: program._id,
+//             title: program.title,
+//             type: program.type,
+//             tmdbId: program.tmdbId,
+//           }
+//         : null,
+//     });
+//   } catch (err) {
+//     res.status(500).json({ message: "Error checking program" });
+//   }
+// };
 
-// ========== SEARCH TMDB FOR ADMIN ==========
-const searchTmdbDirect = async (req, res) => {
-  try {
-    const { query, page = 1 } = req.query;
-    if (!query)
-      return res.status(400).json({ message: "Search query is required" });
+// const searchTmdbDirect = async (req, res) => {
+//   try {
+//     const { query, page = 1 } = req.query;
+//     if (!query)
+//       return res.status(400).json({ message: "Search query is required" });
 
-    const url = `https://api.themoviedb.org/3/search/multi`;
-    const response = await axios.get(url, {
-      params: { api_key: TMDB_API_KEY, query, page },
-    });
+//     const url = `https://api.themoviedb.org/3/search/multi`;
+//     const response = await axios.get(url, {
+//       params: { api_key: TMDB_API_KEY, query, page },
+//     });
 
-    let results = response.data.results.filter(
-      (item) => item.media_type === "movie" || item.media_type === "tv"
-    );
+//     let results = response.data.results.filter(
+//       (item) => item.media_type === "movie" || item.media_type === "tv"
+//     );
 
-    const ids = results.map((item) => item.id);
-    const existing = await Program.find({ tmdbId: { $in: ids } }).select(
-      "tmdbId"
-    );
+//     const ids = results.map((item) => item.id);
+//     const existing = await Program.find({ tmdbId: { $in: ids } }).select(
+//       "tmdbId"
+//     );
 
-    const existingIds = existing.map((doc) => doc.tmdbId);
-    results = results.map((item) => ({
-      ...item,
-      existsInDb: existingIds.includes(item.id),
-    }));
+//     const existingIds = existing.map((doc) => doc.tmdbId);
+//     results = results.map((item) => ({
+//       ...item,
+//       existsInDb: existingIds.includes(item.id),
+//     }));
 
-    await Log.create({
-      action: "Admin Searched TMDB",
-      user: req.user._id,
-      details: { query },
-    });
+//     await Log.create({
+//       action: "Admin Searched TMDB",
+//       user: req.user._id,
+//       details: { query },
+//     });
 
-    res.status(200).json({
-      page: response.data.page,
-      totalPages: response.data.total_pages,
-      results,
-    });
-  } catch (err) {
-    res.status(500).json({ message: "Error searching TMDB" });
-  }
-};
+//     res.status(200).json({
+//       page: response.data.page,
+//       totalPages: response.data.total_pages,
+//       results,
+//     });
+//   } catch (err) {
+//     res.status(500).json({ message: "Error searching TMDB" });
+//   }
+// };
 
 const getTmdbDetailsPreview = async (req, res) => {
   try {
@@ -487,7 +478,6 @@ const getTmdbDetailsPreview = async (req, res) => {
   }
 };
 
-// ========== route handler ========== //
 const getProgramsByGenreAndType = async (req, res) => {
   const { genre, type = "movie" } = req.query;
 
@@ -512,8 +502,8 @@ module.exports = {
   getSeriesEpisodes,
   getExtraProgramInfo,
   createProgramManually,
-  checkIfProgramExists,
-  searchTmdbDirect,
+  // checkIfProgramExists,
+  // searchTmdbDirect,
   getTmdbDetailsPreview,
   getProgramsByGenreAndType,
   filterWithImage,
