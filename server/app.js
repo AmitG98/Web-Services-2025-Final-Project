@@ -20,7 +20,17 @@ const app = express();
 
 app.use("/public", express.static(path.join(__dirname, "public")));
 
-app.use(cors({ origin: ["http://localhost:3000","https://web-services-2025-final-project.netlify.app"], credentials: true }));
+// app.use(cors({ origin: ["http://localhost:3000","https://web-services-2025-final-project.netlify.app"], credentials: true }));
+app.use(cors({
+  origin: [
+    "http://localhost:3000",
+    "https://web-services-2025-final-project.netlify.app",
+    "https://webservices-2025-final-project.onrender.com",
+    "https://webservices-2025-final-project.netlify.com"
+  ],
+  credentials: true
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
